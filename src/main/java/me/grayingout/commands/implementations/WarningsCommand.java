@@ -13,6 +13,7 @@ import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -57,7 +58,7 @@ public class WarningsCommand extends BotCommand {
         /* Member no longer in guild */
         if (member == null) {
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Member not Found", "The specified member is no longer in the guild")
+                createMemberNotFoundEmbed()
             ).queue(message -> {
                 message.delete().queueAfter(3, TimeUnit.SECONDS);
             });
@@ -109,10 +110,7 @@ public class WarningsCommand extends BotCommand {
                     if (member == null) {
                         event.getMessage().editMessage(
                             new MessageEditBuilder()
-                                .setEmbeds(EmbedFactory.createWarningEmbed(
-                                    "Member not Found",
-                                    "The member this warning list belongs to is no longer in the server"
-                                ))
+                                .setEmbeds(createMemberNotFoundEmbed())
                                 .setComponents(new ArrayList<>())
                                 .build()
                         ).queue(message -> {
@@ -143,17 +141,7 @@ public class WarningsCommand extends BotCommand {
                     }
                     
                     /* Edit the message to show the new embed and buttons */
-                    event.getMessage().editMessage(
-                        new MessageEditBuilder()
-                            .setEmbeds(createWarningsPageEmbed(
-                                event.getJDA(),
-                                member,
-                                warnings,
-                                page
-                            ))
-                            .setActionRow(getNavigationButtons(page, warnings.size()))
-                            .build()
-                    ).queue();
+                    updateWarningsListMessage(event.getMessage(), member, warnings, page);
                 });
                 break;
             }
@@ -171,10 +159,7 @@ public class WarningsCommand extends BotCommand {
                     if (member == null) {
                         event.getMessage().editMessage(
                             new MessageEditBuilder()
-                                .setEmbeds(EmbedFactory.createWarningEmbed(
-                                    "Member not Found",
-                                    "The member this warning list belongs to is no longer in the server"
-                                ))
+                                .setEmbeds(createMemberNotFoundEmbed())
                                 .setComponents(new ArrayList<>())
                                 .build()
                         ).queue(message -> {
@@ -204,17 +189,7 @@ public class WarningsCommand extends BotCommand {
                     }
                     
                     /* Edit the message to show the new embed and buttons */
-                    event.getMessage().editMessage(
-                        new MessageEditBuilder()
-                            .setEmbeds(createWarningsPageEmbed(
-                                event.getJDA(),
-                                member,
-                                warnings,
-                                newPage
-                            ))
-                            .setActionRow(getNavigationButtons(newPage, warnings.size()))
-                            .build()
-                    ).queue();
+                    updateWarningsListMessage(event.getMessage(), member, warnings, newPage);
                 });
                 break;
             }
@@ -232,10 +207,7 @@ public class WarningsCommand extends BotCommand {
                     if (member == null) {
                         event.getMessage().editMessage(
                             new MessageEditBuilder()
-                                .setEmbeds(EmbedFactory.createWarningEmbed(
-                                    "Member not Found",
-                                    "The member this warning list belongs to is no longer in the server"
-                                ))
+                                .setEmbeds(createMemberNotFoundEmbed())
                                 .setComponents(new ArrayList<>())
                                 .build()
                         ).queue(message -> {
@@ -265,21 +237,50 @@ public class WarningsCommand extends BotCommand {
                     }
     
                     /* Edit the message with new embed and buttons */
-                    event.getMessage().editMessage(
-                        new MessageEditBuilder()
-                            .setEmbeds(createWarningsPageEmbed(
-                                event.getJDA(),
-                                member,
-                                warnings,
-                                newPage
-                            ))
-                            .setActionRow(getNavigationButtons(newPage, warnings.size()))
-                            .build()
-                    ).queue();
+                    updateWarningsListMessage(event.getMessage(), member, warnings, newPage);
                 });
                 break;
             }
         }
+    }
+
+    /**
+     * Creates a warning embed that the user was not found
+     * 
+     * @return
+     */
+    private final MessageEmbed createMemberNotFoundEmbed() {
+        return EmbedFactory.createWarningEmbed(
+            "Member not Found",
+            "The requested member was not found in the guild - maybe they left"
+        );
+    }
+
+    /**
+     * Updates the page shown on a warnings list message
+     * 
+     * @param message  The warnings list message
+     * @param member   The member those warnings are being shown
+     * @param warnings The lst of warnings
+     * @param newPage  The new page
+     */
+    private final void updateWarningsListMessage(
+        Message message,
+        Member member,
+        List<MemberWarning> warnings,
+        int newPage
+    ) {
+        message.editMessage(
+            new MessageEditBuilder()
+                .setEmbeds(createWarningsPageEmbed(
+                    message.getJDA(),
+                    member,
+                    warnings,
+                    newPage
+                ))
+                .setActionRow(getNavigationButtons(newPage, warnings.size()))
+                .build()
+        ).queue();
     }
 
     /**
