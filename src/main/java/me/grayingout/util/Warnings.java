@@ -3,11 +3,13 @@ package me.grayingout.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import me.grayingout.database.warnings.MemberWarning;
+import me.grayingout.database.warnings.MemberWarningsListMessage;
+import me.grayingout.database.warnings.WarningsDatabase;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
@@ -39,26 +41,54 @@ public final class Warnings {
     /**
      * Updates the page shown on a warnings list message
      * 
-     * @param message  The warnings list message
-     * @param member   The member those warnings are being shown
-     * @param warnings The lst of warnings
-     * @param newPage  The new page
+     * @param warningsListMessageData The data for the warnings message
+     * @param page                    The warnings page to show
      */
     public static final void updateWarningsListMessage(
-        Message message,
-        Member member,
-        List<MemberWarning> warnings,
-        int newPage
+        MemberWarningsListMessage warningsListMessageData,
+        int page
     ) {
-        message.editMessage(
+        Member member = warningsListMessageData.getWarnedMember();
+
+        /* Check member still in guild */
+        if (member == null) {
+            warningsListMessageData.getMessage().editMessage(
+                new MessageEditBuilder()
+                    .setEmbeds(Warnings.createMemberNotFoundEmbed())
+                    .setComponents(new ArrayList<>())
+                    .build()
+            ).queue(message -> {
+                message.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
+
+        /* Get the member's warnings */
+        List<MemberWarning> warnings = WarningsDatabase.getMemberWarnings(member);
+        if (warnings == null) {
+            return;
+        }
+
+        /* Make sure page is within bounds */
+        int boundedPage = Math.max(Math.min(getNumberOfPages(warnings.size()), page), 1);
+
+        /* Update page in database */
+        boolean success = WarningsDatabase.updateMemberWarningsListMessagePage(
+            warningsListMessageData.getMessage(), boundedPage);
+        if (!success) {
+            return;
+        }
+        
+        /* Edit message */
+        warningsListMessageData.getMessage().editMessage(
             new MessageEditBuilder()
                 .setEmbeds(createWarningsPageEmbed(
-                    message.getJDA(),
+                    warningsListMessageData.getMessage().getJDA(),
                     member,
                     warnings,
-                    newPage
+                    boundedPage
                 ))
-                .setActionRow(getNavigationButtons(newPage, warnings.size()))
+                .setActionRow(getNavigationButtons(boundedPage, warnings.size()))
                 .build()
         ).queue();
     }

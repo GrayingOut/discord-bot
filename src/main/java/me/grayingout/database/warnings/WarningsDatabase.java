@@ -59,6 +59,8 @@ public final class WarningsDatabase {
             statement.execute(
                   "CREATE TABLE IF NOT EXISTS MemberWarningsListMessage ("
                 + "  message_id INTEGER NOT NULL PRIMARY KEY,"
+                + "  channel_id INTEGER NOT NULL,"
+                + "  guild_id INTEGER NOT NULL,"
                 + "  warned_user_id INTEGER NOT NULL,"
                 + "  page INTEGER NOT NULL"
                 + ")");
@@ -268,11 +270,13 @@ public final class WarningsDatabase {
      */
     public static final boolean putMemberWarningsListMessage(Message message, Member member, int page) {
         try (PreparedStatement statement = dbConnection.prepareStatement(
-            "INSERT INTO MemberWarningsListMessage (message_id, warned_user_id, page) VALUES (?, ?, ?)"
+            "INSERT INTO MemberWarningsListMessage (message_id, channel_id, guild_id, warned_user_id, page) VALUES (?, ?, ?, ?, ?)"
         )) {
             statement.setLong(1, message.getIdLong());
-            statement.setLong(2, member.getIdLong());
-            statement.setInt(3, page);
+            statement.setLong(2, message.getChannel().getIdLong());
+            statement.setLong(3, message.getGuild().getIdLong());
+            statement.setLong(4, member.getIdLong());
+            statement.setInt(5, page);
 
             statement.executeUpdate();
 
@@ -305,8 +309,12 @@ public final class WarningsDatabase {
                 return null;
             }
 
+            /* Construct MemberWarningsListMessage */
             return new MemberWarningsListMessage(
+                message.getJDA(),
                 set.getLong("message_id"),
+                set.getLong("channel_id"),
+                set.getLong("guild_id"),
                 set.getLong("warned_user_id"),
                 set.getInt("page")
             );

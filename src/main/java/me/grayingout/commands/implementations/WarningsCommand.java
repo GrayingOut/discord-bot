@@ -1,6 +1,5 @@
 package me.grayingout.commands.implementations;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +20,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 
 /**
  * A slash command to get the warnings of a guild
@@ -92,47 +90,8 @@ public class WarningsCommand extends BotCommand {
 
                 /* Get the warnings list message data */
                 MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
-    
-                /* Get the member related to the data */
-                mwlm.getWarnedMember(event.getGuild())
-                .thenAccept(member -> {
-                    /* Member not in server */
-                    if (member == null) {
-                        event.getMessage().editMessage(
-                            new MessageEditBuilder()
-                                .setEmbeds(Warnings.createMemberNotFoundEmbed())
-                                .setComponents(new ArrayList<>())
-                                .build()
-                        ).queue(message -> {
-                            message.delete().queueAfter(3, TimeUnit.SECONDS);
-                        });
-                        return;
-                    }
-
-                    /* Get the member's warnings */ 
-                    List<MemberWarning> warnings = WarningsDatabase.getMemberWarnings(member);
-                    if (warnings == null) {
-                        return;
-                    }
-                    
-                    /* Get the current page - making sure in range */
-                    int page = mwlm.getCurrentPage();
-                    if (page < 1) {
-                        page = 1;
-                    }
-                    if (page > Warnings.getNumberOfPages(warnings.size())) {
-                        page = Warnings.getNumberOfPages(warnings.size());
-                    }
-    
-                    /* Update the page in the database */
-                    boolean success = WarningsDatabase.updateMemberWarningsListMessagePage(event.getMessage(), page);
-                    if (!success) {
-                        return;
-                    }
-                    
-                    /* Edit the message to show the new embed and buttons */
-                    Warnings.updateWarningsListMessage(event.getMessage(), member, warnings, page);
-                });
+                
+                Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage());
                 break;
             }
 
@@ -142,45 +101,7 @@ public class WarningsCommand extends BotCommand {
                 /* Get the warnings list message data */
                 MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
     
-                /* Get the member related to the data */
-                mwlm.getWarnedMember(event.getGuild())
-                .thenAccept(member -> {
-                    /* Member not in server */
-                    if (member == null) {
-                        event.getMessage().editMessage(
-                            new MessageEditBuilder()
-                                .setEmbeds(Warnings.createMemberNotFoundEmbed())
-                                .setComponents(new ArrayList<>())
-                                .build()
-                        ).queue(message -> {
-                            message.delete().queueAfter(3, TimeUnit.SECONDS);
-                        });
-                        return;
-                    }
-
-                    /* Get the member's warnings */
-                    List<MemberWarning> warnings = WarningsDatabase.getMemberWarnings(member);
-                    if (warnings == null) {
-                        return;
-                    }
-                    
-                    /* Get the new page */
-                    int newPage = mwlm.getCurrentPage() + 1;
-
-                    /* Check page is valid */
-                    if (newPage > Warnings.getNumberOfPages(warnings.size())) {
-                        newPage = Warnings.getNumberOfPages(warnings.size());
-                    }
-
-                    /* Update the page in the database */
-                    boolean success = WarningsDatabase.updateMemberWarningsListMessagePage(event.getMessage(), newPage);
-                    if (!success) {
-                        return;
-                    }
-                    
-                    /* Edit the message to show the new embed and buttons */
-                    Warnings.updateWarningsListMessage(event.getMessage(), member, warnings, newPage);
-                });
+                Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage() + 1);
                 break;
             }
 
@@ -190,45 +111,7 @@ public class WarningsCommand extends BotCommand {
                 /* Get the warnings list message data */
                 MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
     
-                /* Get the member related to the data */
-                mwlm.getWarnedMember(event.getGuild())
-                .thenAccept(member -> {
-                    /* Member not in server */
-                    if (member == null) {
-                        event.getMessage().editMessage(
-                            new MessageEditBuilder()
-                                .setEmbeds(Warnings.createMemberNotFoundEmbed())
-                                .setComponents(new ArrayList<>())
-                                .build()
-                        ).queue(message -> {
-                            message.delete().queueAfter(3, TimeUnit.SECONDS);
-                        });
-                        return;
-                    }
-
-                    /* Get the member's warnings */
-                    List<MemberWarning> warnings = WarningsDatabase.getMemberWarnings(member);
-                    if (warnings == null) {
-                        return;
-                    }
-    
-                    /* Get the new page */
-                    int newPage = mwlm.getCurrentPage() - 1;
-    
-                    /* Check page is valid */
-                    if (newPage < 1) {
-                        newPage = 1;
-                    }
-    
-                    /* Update the new page in the database */
-                    boolean success = WarningsDatabase.updateMemberWarningsListMessagePage(event.getMessage(), newPage);
-                    if (!success) {
-                        return;
-                    }
-    
-                    /* Edit the message with new embed and buttons */
-                    Warnings.updateWarningsListMessage(event.getMessage(), member, warnings, newPage);
-                });
+                Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage() - 1);
                 break;
             }
         }
