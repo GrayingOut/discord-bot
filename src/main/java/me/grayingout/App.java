@@ -14,6 +14,11 @@ public final class App {
     public static final Dotenv env = Dotenv.configure().ignoreIfMissing().load();
 
     /**
+     * The {@code Bot} instance
+     */
+    private static Bot bot;
+
+    /**
      * The main method
      * 
      * @param args Command line arguments
@@ -39,6 +44,15 @@ public final class App {
         }
 
         /* Create a new bot */
-        new Bot(token);
+        bot = new Bot(token);
+    }
+
+    /**
+     * Gets the {@code Bot} instance
+     * 
+     * @return The bot
+     */
+    public static final Bot getBot() {
+        return bot;
     }
 }

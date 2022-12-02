@@ -56,6 +56,15 @@ public final class Bot extends ListenerAdapter {
     }
 
     /**
+     * Get the {@code JDA} instance of the bot
+     * 
+     * @return The bot JDA
+     */
+    public final JDA getJDA() {
+        return jda;
+    }
+
+    /**
      * Detect slash command usage
      */
     @Override
