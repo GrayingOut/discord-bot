@@ -4,9 +4,14 @@ This is a simple bot application for discord that I am using to test features an
 It is not meant to be used in an actual server, but feel free to use.
 
 Features:
-- Slash commands
-- Warning system
+- Slash command support
+- Hello command
+- Warning system (guild specific)
+    - Warn member
+    - Remove warning
+    - Clear warnings
+    - List warnings
 - Bulk deletion
 - Slowmode
-- Rules command (used to print a pretty embed)
+- Rules command (used to print a pretty embed) - edit code to customise
 - Persistence with sqlite
