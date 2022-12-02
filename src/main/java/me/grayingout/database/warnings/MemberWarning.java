@@ -2,10 +2,9 @@ package me.grayingout.database.warnings;
 
 import java.time.LocalDateTime;
 
-import net.dv8tion.jda.api.JDA;
+import me.grayingout.App;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 
 /**
  * A class which holds the data fetched from the warnings database
@@ -19,19 +18,39 @@ public final class MemberWarning {
     private final int warningId;
 
     /**
-     * The date and time the warning was received
+     * The id of the guild the warning was in
      */
-    private final LocalDateTime receivedAt;
+    private final long guildId;
+
+    /**
+     * The guild the warning was in
+     */
+    private final Guild guild;
 
     /**
      * The user id of the member that received the warning
      */
-    private final long warnedUserId;
+    private final long memberId;
+
+    /**
+     * The member that received the warning
+     */
+    private final Member member;
 
     /**
      * The user id of the member that gave the warning
      */
-    private final long warnerUserId;
+    private final long moderatorId;
+
+    /**
+     * The member that gave the warning
+     */
+    private final Member moderator;
+
+    /**
+     * The date and time the warning was received
+     */
+    private final LocalDateTime receivedAt;
 
     /**
      * The reason of the warning
@@ -42,17 +61,23 @@ public final class MemberWarning {
      * Constructs a new {@code MemberWarning}
      * 
      * @param warningId    The id of the warning
+     * @param guildId      The guild the warning was in
      * @param receivedAt   The date and time the warning was received
      * @param warnedUserId The user id of the member that received the warning
      * @param warnerUserId The user id of the member that gave the warning
      * @param reason       The reason for the warning
      */
-    public MemberWarning(int warningId, LocalDateTime receivedAt, long warnedUserId, long warnerUserId, String reason) {
+    public MemberWarning(int warningId, long guildId, long memberId, long moderatorId, LocalDateTime receivedAt, String reason) {
         this.warningId = warningId;
+        this.guildId = guildId;
+        this.memberId = memberId;
+        this.moderatorId = moderatorId;
         this.receivedAt = receivedAt;
-        this.warnedUserId = warnedUserId;
-        this.warnerUserId = warnerUserId;
         this.reason = reason;
+
+        this.guild = App.getBot().getJDA().getGuildById(guildId);
+        this.member = this.guild.getMemberById(memberId);
+        this.moderator = this.guild.getMemberById(moderatorId);
     }
 
     /**
@@ -74,32 +99,21 @@ public final class MemberWarning {
     }
 
     /**
-     * Get the user id of the user warned
+     * Get the user id of the member warned
      * 
-     * @return The user id of the warned user
+     * @return The user id of the warned member
      */
-    public long getWarnedUserId() {
-        return warnedUserId;
+    public long getMemberId() {
+        return memberId;
     }
 
     /**
-     * Gets the warned member from the provided guild
+     * Gets the warned member
      * 
-     * @param guild The guild of the member
      * @return The member
      */
-    public Member getWarnedMember(Guild guild) {
-        return guild.getMemberById(warnedUserId);
-    }
-
-    /**
-     * Gets the warned user
-     * 
-     * @param jda The JDA instance
-     * @return The user
-     */
-    public User getWarnedUser(JDA jda) {
-        return jda.getUserById(warnedUserId);
+    public Member getMember(Guild guild) {
+        return member;
     }
 
     /**
@@ -107,8 +121,8 @@ public final class MemberWarning {
      * 
      * @return The user id of the warner user
      */
-    public long getWarnerUserId() {
-        return warnerUserId;
+    public long getModeratorId() {
+        return moderatorId;
     }
 
     /**
@@ -117,18 +131,8 @@ public final class MemberWarning {
      * @param guild The guild of the member
      * @return The member
      */
-    public Member getWarnerMember(Guild guild) {
-        return guild.getMemberById(warnerUserId);
-    }
-
-    /**
-     * Gets the warner user
-     * 
-     * @param jda The JDA instance
-     * @return The user
-     */
-    public User getWarnerUser(JDA jda) {
-        return jda.getUserById(warnerUserId);
+    public Member getModerator(Guild guild) {
+        return moderator;
     }
 
     /**
@@ -143,11 +147,12 @@ public final class MemberWarning {
     @Override
     public String toString() {
         return String.format(
-            "MemberWarning[%s, %s, %s, %s, %s]",
+            "MemberWarning[warning_id=%s, guild_id=%s, member_id=%s, moderator_id=%s, received_at=%s, reason=\"%s\"]",
             warningId,
+            guildId,
+            memberId,
+            moderatorId,
             receivedAt,
-            warnedUserId,
-            warnerUserId,
             reason
         );
     }

@@ -1,6 +1,6 @@
 package me.grayingout.database.warnings;
 
-import net.dv8tion.jda.api.JDA;
+import me.grayingout.App;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -43,15 +43,14 @@ public class MemberWarningsListMessage {
     private final Guild guild;
 
     /**
-     * The user id of the member the warnings
-     * list belongs to
+     * The user id of the warnings list member
      */
-    private final long warnedUserId;
+    private final long memberId;
 
     /**
-     * The member warned
+     * The warnings list member
      */
-    private final Member warnedMember;
+    private final Member member;
 
     /**
      * The current page being shown
@@ -61,21 +60,21 @@ public class MemberWarningsListMessage {
     /**
      * Creates a new {@code MemberWarningsListMessage}
      * 
-     * @param jda          The JDA instance
      * @param messageId    The id of the message
      * @param channelId    The id of the channel the message was sent in
-     * @param guildId      The id the guild the message was sent in
-     * @param warnedUserId The id of the member the list belongs to
+     * @param guildId      The id of the guild the message was sent in
+     * @param memberId     The id of the member whose warnings are showing
      * @param page         The current page
      */
-    public MemberWarningsListMessage(JDA jda, long messageId, long channelId, long guildId, long warnedUserId, int page) {
+    public MemberWarningsListMessage(long messageId, long channelId, long guildId, long memberId, int page) {
         this.messageId = messageId;
         this.channelId = channelId;
         this.guildId = guildId;
-        this.warnedUserId = warnedUserId;
+        this.memberId = memberId;
         this.page = page;
-        this.guild = jda.getGuildById(guildId);
-        this.warnedMember = this.guild.getMemberById(warnedUserId);
+
+        this.guild = App.getBot().getJDA().getGuildById(guildId);
+        this.member = this.guild.getMemberById(memberId);
         this.channel = this.guild.getChannelById(MessageChannel.class, channelId);
         this.message = this.channel.retrieveMessageById(messageId).complete();
     }
@@ -135,12 +134,12 @@ public class MemberWarningsListMessage {
     }
 
     /**
-     * Gets the id of the user the list belongs to
+     * Gets the id of the member the list belongs to
      * 
-     * @return The user id
+     * @return The member id
      */
-    public final long getWarnedUserId() {
-        return warnedUserId;
+    public final long getMemberId() {
+        return memberId;
     }
     
     /**
@@ -149,8 +148,8 @@ public class MemberWarningsListMessage {
      * 
      * @returns The guild specific member
      */
-    public final Member getWarnedMember() {
-        return warnedMember;
+    public final Member getMember() {
+        return member;
     }
 
     /**

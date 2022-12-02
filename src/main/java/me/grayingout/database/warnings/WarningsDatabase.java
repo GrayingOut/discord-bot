@@ -49,9 +49,10 @@ public final class WarningsDatabase {
             statement.execute(
                   "CREATE TABLE IF NOT EXISTS MemberWarning ("
                 + "  warning_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "  guild_id INTEGER NOT NULL,"
+                + "  member_id INTEGER NOT NULL,"
+                + "  moderator_id INTEGER NOT NULL,"
                 + "  received_at INTEGER NOT NULL,"
-                + "  warned_user_id INTEGER NOT NULL,"
-                + "  warner_user_id INTEGER NOT NULL,"
                 + "  reason TEXT NOT NULL"
                 + ")");
             
@@ -61,7 +62,7 @@ public final class WarningsDatabase {
                 + "  message_id INTEGER NOT NULL PRIMARY KEY,"
                 + "  channel_id INTEGER NOT NULL,"
                 + "  guild_id INTEGER NOT NULL,"
-                + "  warned_user_id INTEGER NOT NULL,"
+                + "  member_id INTEGER NOT NULL,"
                 + "  page INTEGER NOT NULL"
                 + ")");
         } catch (SQLException e) {
@@ -85,12 +86,12 @@ public final class WarningsDatabase {
      * Give a warning to a member and returns the created
      * {@code MemberWarning} or {@code null} if an error occurred
      * 
-     * @param warnedMember The member receiving the warning
-     * @param warnerMember The member giving the warning
-     * @param reason       The reason for the warning
+     * @param member    The member receiving the warning
+     * @param moderator The member giving the warning
+     * @param reason    The reason for the warning
      * @returns The created member warning
      */
-    public static final MemberWarning putWarning(Member warnedMember, Member warnerMember, String reason) {
+    public static final MemberWarning putWarning(Member member, Member moderator, String reason) {
         /* A transaction is being used as it requires two queries at the same
          * time: one to insert, and one to select the inserted row. A transaction
          * prevents a race condition
@@ -100,13 +101,14 @@ public final class WarningsDatabase {
             transactionConnection.setAutoCommit(false);
 
             PreparedStatement insertStatement = transactionConnection.prepareStatement(
-                "INSERT INTO MemberWarning (received_at, warned_user_id, warner_user_id, reason) VALUES (?, ?, ?, ?)"
+                "INSERT INTO MemberWarning (guild_id, member_id, moderator_id, received_at, reason) VALUES (?, ?, ?, ?, ?)"
             );
             /* Using UTC+0 offset for timestamp */
-            insertStatement.setLong(1, LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0)));
-            insertStatement.setLong(2, warnedMember.getIdLong());
-            insertStatement.setLong(3, warnerMember.getIdLong());
-            insertStatement.setString(4, reason);
+            insertStatement.setLong(1, member.getGuild().getIdLong());
+            insertStatement.setLong(2, member.getIdLong());
+            insertStatement.setLong(3, moderator.getIdLong());
+            insertStatement.setLong(4, LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0)));
+            insertStatement.setString(5, reason);
 
             /* Insert */
             insertStatement.executeUpdate();
@@ -116,15 +118,16 @@ public final class WarningsDatabase {
 
             /* Check for result */
             if (!set.next()) {
-                return new MemberWarning(-1, null, -1, -1, null);
+                return null;
             }
 
             /* Construct warning */
             MemberWarning warning = new MemberWarning(
                 set.getInt("warning_id"),
+                set.getLong("guild_id"),
+                set.getLong("member_id"),
+                set.getLong("moderator_id"),
                 LocalDateTime.ofEpochSecond(set.getLong("received_at"), 0, ZoneOffset.ofHours(0)),
-                set.getLong("warned_user_id"),
-                set.getLong("warner_user_id"),
                 set.getString("reason")
             );
 
@@ -149,9 +152,10 @@ public final class WarningsDatabase {
      */
     public static final List<MemberWarning> getMemberWarnings(Member member) {
         try (PreparedStatement statement = dbConnection.prepareStatement(
-            "SELECT * FROM MemberWarning WHERE warned_user_id == ? ORDER BY received_at DESC"
+            "SELECT * FROM MemberWarning WHERE guild_id == ? AND member_id == ? ORDER BY received_at DESC"
         )) {
-            statement.setLong(1, member.getIdLong());
+            statement.setLong(1, member.getGuild().getIdLong());
+            statement.setLong(2, member.getIdLong());
 
             ArrayList<MemberWarning> warnings = new ArrayList<>();
 
@@ -161,9 +165,10 @@ public final class WarningsDatabase {
             while (set.next()) {
                 warnings.add(new MemberWarning(
                     set.getInt("warning_id"),
+                    set.getLong("guild_id"),
+                    set.getLong("member_id"),
+                    set.getLong("moderator_id"),
                     LocalDateTime.ofEpochSecond(set.getLong("received_at"), 0, ZoneOffset.ofHours(0)),
-                    set.getLong("warned_user_id"),
-                    set.getLong("warner_user_id"),
                     set.getString("reason")
                 ));
             }
@@ -185,9 +190,10 @@ public final class WarningsDatabase {
      */
     public static final boolean clearMemberWarnings(Member member) {
         try (PreparedStatement statement = dbConnection.prepareStatement(
-            "DELETE FROM MemberWarning WHERE warned_user_id == ?"
+            "DELETE FROM MemberWarning WHERE guild_id == ? AND member_id == ?"
         )) {
-            statement.setLong(1, member.getIdLong());
+            statement.setLong(1, member.getGuild().getIdLong());
+            statement.setLong(2, member.getIdLong());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -208,10 +214,11 @@ public final class WarningsDatabase {
      */
     public static final boolean deleteWarning(Member member, int id) {
         try (PreparedStatement statement = dbConnection.prepareStatement(
-            "DELETE FROM MemberWarning WHERE warned_user_id == ? AND warning_id == ?"
+            "DELETE FROM MemberWarning WHERE warning_id == ? AND guild_id == ? AND member_id == ?"
         )) {
-            statement.setLong(1, member.getIdLong());
-            statement.setInt(2, id);
+            statement.setInt(1, id);
+            statement.setLong(2, member.getGuild().getIdLong());
+            statement.setLong(3, member.getIdLong());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -228,14 +235,17 @@ public final class WarningsDatabase {
      * a new {@code MemberWarning} or {@code null} if the id
      * does not exist
      * 
-     * @param id The id of the warning
+     * @param member The member the warning belongs to
+     * @param id     The id of the warning
      * @return The warning, or {@code null}
      */
-    public static final MemberWarning getMemberWarningById(int id) {
+    public static final MemberWarning getMemberWarningById(Member member, int id) {
         try (PreparedStatement statement = dbConnection.prepareStatement(
-            "SELECT * FROM MemberWarning WHERE warning_id == ?"
+            "SELECT * FROM MemberWarning WHERE warning_id == ? AND member_id == ? AND guild_id == ?"
         )) {
             statement.setInt(1, id);
+            statement.setLong(2, member.getIdLong());
+            statement.setLong(3, member.getGuild().getIdLong());
 
             ResultSet set = statement.executeQuery();
 
@@ -247,9 +257,10 @@ public final class WarningsDatabase {
             /* Return result */
             return new MemberWarning(
                 set.getInt("warning_id"),
+                set.getLong("guild_id"),
+                set.getLong("member_id"),
+                set.getLong("moderator_id"),
                 LocalDateTime.ofEpochSecond(set.getLong("received_at"), 0, ZoneOffset.ofHours(0)),
-                set.getLong("warned_user_id"),
-                set.getLong("warner_user_id"),
                 set.getString("reason")
             );
         } catch (SQLException e) {
@@ -270,7 +281,7 @@ public final class WarningsDatabase {
      */
     public static final boolean putMemberWarningsListMessage(Message message, Member member, int page) {
         try (PreparedStatement statement = dbConnection.prepareStatement(
-            "INSERT INTO MemberWarningsListMessage (message_id, channel_id, guild_id, warned_user_id, page) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO MemberWarningsListMessage (message_id, channel_id, guild_id, member_id, page) VALUES (?, ?, ?, ?, ?)"
         )) {
             statement.setLong(1, message.getIdLong());
             statement.setLong(2, message.getChannel().getIdLong());
@@ -311,11 +322,10 @@ public final class WarningsDatabase {
 
             /* Construct MemberWarningsListMessage */
             return new MemberWarningsListMessage(
-                message.getJDA(),
                 set.getLong("message_id"),
                 set.getLong("channel_id"),
                 set.getLong("guild_id"),
-                set.getLong("warned_user_id"),
+                set.getLong("member_id"),
                 set.getInt("page")
             );
         } catch (SQLException e) {

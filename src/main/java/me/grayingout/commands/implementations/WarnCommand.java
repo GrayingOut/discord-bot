@@ -34,8 +34,8 @@ public class WarnCommand extends BotCommand {
         event.deferReply().queue();
         
         /* Get the warned member and warner member */
-        Member warnedMember = event.getOption("member").getAsMember();
-        Member warnerMember = event.getMember();
+        Member member = event.getOption("member").getAsMember();
+        Member moderator = event.getMember();
         
         /* Default reason */
         String reason = "<no reason provided>";
@@ -47,28 +47,28 @@ public class WarnCommand extends BotCommand {
 
         /* Put the warning into the database */
         MemberWarning warning = WarningsDatabase.putWarning(
-            warnedMember,
-            warnerMember,
+            member,
+            moderator,
             reason);
         
         /* Send response */
         if (warning != null) {
             Field[] fields = {
-                new Field("Warned Member", String.format(
+                new Field("Member", String.format(
                     "%s (%s)",
-                    warnedMember.getAsMention(),
-                    warnedMember.getIdLong()), false),
-                new Field("Warned Member", String.format(
+                    member.getAsMention(),
+                    member.getIdLong()), false),
+                new Field("Moderator", String.format(
                     "%s (%s)",
-                    warnerMember.getAsMention(),
-                    warnerMember.getIdLong()), false),
+                    moderator.getAsMention(),
+                    moderator.getIdLong()), false),
                 new Field("Reason", reason, false),
                 new Field("Warning Id", Integer.toString(warning.getWarningId()), false)
             };
 
             /* Send embed */
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createSuccessEmbed("Member Warned", warnedMember.getAsMention() + " has been warned", fields)
+                EmbedFactory.createSuccessEmbed("Member Warned", member.getAsMention() + " has been warned", fields)
             ).queue();
             return;
         }

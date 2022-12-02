@@ -71,7 +71,7 @@ public class WarningsCommand extends BotCommand {
 
         /* Create the message */
         MessageCreateData messageCreateData = new MessageCreateBuilder()
-            .addEmbeds(Warnings.createWarningsPageEmbed(event.getJDA(), member, warnings, 1))
+            .addEmbeds(Warnings.createWarningsPageEmbed(member, warnings, 1))
             .addActionRow(buttons)
             .build();
 

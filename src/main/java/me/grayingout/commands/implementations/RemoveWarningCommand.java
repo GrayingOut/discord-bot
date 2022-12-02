@@ -52,21 +52,12 @@ public class RemoveWarningCommand extends BotCommand {
             return;
         }
 
-        /* Check id belongs to member */
-        MemberWarning warning = WarningsDatabase.getMemberWarningById(id);
-        
         /* Check warning exists */
+        MemberWarning warning = WarningsDatabase.getMemberWarningById(member, id);
+        
         if (warning == null) {
             event.getHook().sendMessageEmbeds(
                 EmbedFactory.createWarningEmbed("Invalid Id", "Warning not found for the provided id")
-            ).queue();
-            return;
-        }
-
-        /* Check warning belongs to member */
-        if (warning.getWarnedUserId() != member.getIdLong()) {
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Invalid Owner", "The warning id provided does not belong to the provided member")
             ).queue();
             return;
         }

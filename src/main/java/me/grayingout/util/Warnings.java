@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import me.grayingout.database.warnings.MemberWarning;
 import me.grayingout.database.warnings.MemberWarningsListMessage;
 import me.grayingout.database.warnings.WarningsDatabase;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
@@ -48,7 +47,7 @@ public final class Warnings {
         MemberWarningsListMessage warningsListMessageData,
         int page
     ) {
-        Member member = warningsListMessageData.getWarnedMember();
+        Member member = warningsListMessageData.getMember();
 
         /* Check member still in guild */
         if (member == null) {
@@ -83,7 +82,6 @@ public final class Warnings {
         warningsListMessageData.getMessage().editMessage(
             new MessageEditBuilder()
                 .setEmbeds(createWarningsPageEmbed(
-                    warningsListMessageData.getMessage().getJDA(),
                     member,
                     warnings,
                     boundedPage
@@ -122,13 +120,12 @@ public final class Warnings {
     /**
      * Creates an embed for a page of warnings
      * 
-     * @param jda       The JDA instance
      * @param member    The warned member
      * @param warnings  The warnings
      * @param page      The current page
      * @return The built embed
      */
-    public static final MessageEmbed createWarningsPageEmbed(JDA jda, Member member, List<MemberWarning> warnings, int page) {
+    public static final MessageEmbed createWarningsPageEmbed(Member member, List<MemberWarning> warnings, int page) {
         /* Get indexes of the start and end of the page */
         int pageStartIndex = getPageStartIndex(page, warnings.size());
         int pageEndIndex = getPageEndIndex(page, warnings.size());
@@ -140,8 +137,8 @@ public final class Warnings {
             warningFields.add(new Field(
                 String.format(
                     ":pen_ballpoint: Warned by **%s** (%s)",
-                    warning.getWarnerUser(jda).getAsTag(),
-                    warning.getWarnerUserId()),
+                    warning.getModerator(member.getGuild()).getUser().getAsTag(),
+                    warning.getModeratorId()),
                 String.format(
                     "**Reason:** %s\n**Warned on:** %s\n[%s]",
                     warning.getReason(),
