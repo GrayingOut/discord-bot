@@ -1,8 +1,8 @@
-package me.grayingout.commands.implementations;
+package me.grayingout.bot.commands.implementations;
 
 import java.time.LocalDateTime;
 
-import me.grayingout.commands.BotCommand;
+import me.grayingout.bot.commands.BotCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

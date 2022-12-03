@@ -1,18 +1,16 @@
-package me.grayingout.commands.implementations;
+package me.grayingout.bot.commands.implementations;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import me.grayingout.commands.BotCommand;
+import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.database.warnings.MemberWarning;
-import me.grayingout.database.warnings.MemberWarningsListMessage;
 import me.grayingout.database.warnings.WarningsDatabase;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.Warnings;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -80,40 +78,5 @@ public class WarningsCommand extends BotCommand {
             /* Add message to database */
             WarningsDatabase.putMemberWarningsListMessage(message, member, 1);
         });
-    }
-
-    @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
-        switch (event.getButton().getId()) {
-            case "warnings_list_refresh_page": {
-                event.deferEdit().queue();
-
-                /* Get the warnings list message data */
-                MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
-                
-                Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage());
-                break;
-            }
-
-            case "warnings_list_next_page": {
-                event.deferEdit().queue();
-
-                /* Get the warnings list message data */
-                MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
-    
-                Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage() + 1);
-                break;
-            }
-
-            case "warnings_list_prev_page": {
-                event.deferEdit().queue();
-
-                /* Get the warnings list message data */
-                MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
-    
-                Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage() - 1);
-                break;
-            }
-        }
     }
 }

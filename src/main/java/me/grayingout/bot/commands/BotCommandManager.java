@@ -1,18 +1,18 @@
-package me.grayingout.commands;
+package me.grayingout.bot.commands;
 
-import me.grayingout.commands.implementations.BulkDeleteCommand;
-import me.grayingout.commands.implementations.ClearWarningsCommand;
-import me.grayingout.commands.implementations.HelloCommand;
-import me.grayingout.commands.implementations.RemoveWarningCommand;
-import me.grayingout.commands.implementations.RulesCommand;
-import me.grayingout.commands.implementations.SlowmodeCommand;
-import me.grayingout.commands.implementations.WarnCommand;
-import me.grayingout.commands.implementations.WarningsCommand;
+import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
+import me.grayingout.bot.commands.implementations.ClearWarningsCommand;
+import me.grayingout.bot.commands.implementations.HelloCommand;
+import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
+import me.grayingout.bot.commands.implementations.RulesCommand;
+import me.grayingout.bot.commands.implementations.SlowmodeCommand;
+import me.grayingout.bot.commands.implementations.WarnCommand;
+import me.grayingout.bot.commands.implementations.WarningsCommand;
 
 /**
  * Stores references to all bot commands
  */
-public final class BotCommandStore {
+public final class BotCommandManager {
     /**
      * The {@code /hello [user:user]} slash command
      */

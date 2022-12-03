@@ -1,6 +1,6 @@
-package me.grayingout.commands.implementations;
+package me.grayingout.bot.commands.implementations;
 
-import me.grayingout.commands.BotCommand;
+import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;

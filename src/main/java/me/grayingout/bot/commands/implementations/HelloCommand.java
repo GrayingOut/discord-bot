@@ -1,6 +1,6 @@
-package me.grayingout.commands.implementations;
+package me.grayingout.bot.commands.implementations;
 
-import me.grayingout.commands.BotCommand;
+import me.grayingout.bot.commands.BotCommand;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;

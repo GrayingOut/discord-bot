@@ -1,6 +1,6 @@
-package me.grayingout.commands.implementations;
+package me.grayingout.bot.commands.implementations;
 
-import me.grayingout.commands.BotCommand;
+import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.database.warnings.MemberWarning;
 import me.grayingout.database.warnings.WarningsDatabase;
 import me.grayingout.util.EmbedFactory;

@@ -1,6 +1,7 @@
 package me.grayingout;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import me.grayingout.bot.Bot;
 import me.grayingout.database.warnings.WarningsDatabase;
 
 /**
