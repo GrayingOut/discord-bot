@@ -17,3 +17,11 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Slowmode
 - Rules command (used to print a pretty embed) - edit code to customise
 - Persistence with sqlite
+
+## Running yourself
+
+Run using the exec-maven-plugin build goal
+
+```bash
+mvn clean verify exec:java
+```
