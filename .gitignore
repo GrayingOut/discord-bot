@@ -7,10 +7,6 @@
 # database files
 *.db
 
-# Compiled class file
-*.class
-bin
-
 # Log file
 *.log
 
