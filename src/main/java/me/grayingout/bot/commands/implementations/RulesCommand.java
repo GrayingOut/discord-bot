@@ -27,6 +27,7 @@ public class RulesCommand extends BotCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply(true).queue();
+
         /* Create the rules embed */
         MessageEmbed embed = new EmbedBuilder()
             .setTitle("Server Rules")
@@ -39,9 +40,10 @@ public class RulesCommand extends BotCommand {
             .addField("**5. Do not advertise**", "Do not advertise on this server.", false)
             .addField("**6. Do not impersonate**", "Do not pretend to be someone of significance.", false)
             .addField("**7. Use common sense**", "This is not an exhaustive list. Use common sense and be respectful. Moderators have the final say.", false)
-            .setFooter("Written by GrayingOut#1801**", "https://grayingout.repl.co/static/imgs/pfp.png")
+            .setFooter("Written by GrayingOut#1801", "https://grayingout.repl.co/static/imgs/pfp.png")
             .setTimestamp(LocalDateTime.now())
             .build();
+        
         /* Send the embed and message to user */
         event.getChannel().sendMessageEmbeds(embed).queue();
         event.getHook().sendMessage("Rules have been sent").queue();
