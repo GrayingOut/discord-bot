@@ -25,6 +25,7 @@ public final class ConfigDatabase {
      * The connection to the warnings db
      */
     private static Connection dbConnection;
+    
     /**
      * Connect to the database
      */
@@ -43,7 +44,7 @@ public final class ConfigDatabase {
             /* Creates the table that stores member warnings */
             statement.execute(
                   "CREATE TABLE IF NOT EXISTS GuildConfiguration ("
-                + "  guild_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "  guild_id INTEGER NOT NULL PRIMARY KEY,"
                 + "  logging_channel_id INTEGER DEFAULT -1"
                 + ")");
         } catch (SQLException e) {
