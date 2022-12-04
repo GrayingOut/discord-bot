@@ -37,3 +37,5 @@ Run using the exec-maven-plugin build goal
 ```bash
 mvn clean verify exec:java
 ```
+
+## Found a bug/issue
