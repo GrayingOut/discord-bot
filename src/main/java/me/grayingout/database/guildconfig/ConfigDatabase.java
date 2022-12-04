@@ -65,7 +65,7 @@ public final class ConfigDatabase {
     }
 
     /**
-     * Gets the logging channel id of the specific guild
+     * Gets the logging channel id of a specific guild
      * 
      * @param guild The guild
      * @return The logging channel id, or {@code -1} if it does not exist or an error occurred
@@ -88,6 +88,16 @@ public final class ConfigDatabase {
             e.printStackTrace();
             return -1;
         }
+    }
+
+    /**
+     * Gets the logging channel of a specific guild
+     * 
+     * @param guild The guild
+     * @return The channel, or {@code null} if not channel exists
+     */
+    public static final GuildMessageChannel getLoggingChannel(Guild guild) {
+        return guild.getChannelById(GuildMessageChannel.class, getLoggingChannelId(guild));
     }
 
     /**
