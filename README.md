@@ -6,6 +6,7 @@ It is not meant to be used in an actual server, but feel free to use.
 The bot requires the `ADMINISTRATOR` permission to function properly.
 
 ## Features
+- Message cache
 - Slash command support
 - Hello command
 - Warning system (guild specific)
@@ -13,6 +14,12 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
     - Remove warning
     - Clear warnings
     - List warnings
+- Deleted message logging
+    - Logs the author, channel, message content, embeds and attachments
+    - Also has an unknown deleted message embed for a message that was
+      not in the message cache
+- Logging channel
+    - Use `/set-logging-channel <channel:channel>` to set the channel to use
 - Bulk deletion
 - Slowmode
 - Rules command (used to print a pretty embed) - edit code to customise
