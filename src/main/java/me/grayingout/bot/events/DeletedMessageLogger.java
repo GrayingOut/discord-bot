@@ -10,6 +10,7 @@ import me.grayingout.database.guildconfig.ConfigDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
@@ -83,6 +84,13 @@ public class DeletedMessageLogger extends ListenerAdapter {
             .setFooter(message.getId())
             .setTimestamp(LocalDateTime.now());
         
+        /* Add attachments */
+        StringBuilder attachments = new StringBuilder();
+        for (Attachment attachment : message.getAttachments()) {
+            attachments.append(attachment.getProxyUrl() + "\n");
+        }
+        builder.addField("Attachments", attachments.toString(), false);
+
         /* Create list of embeds */
         embeds.add(builder.build());
         embeds.addAll(message.getEmbeds());
