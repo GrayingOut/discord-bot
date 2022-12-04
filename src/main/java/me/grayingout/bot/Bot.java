@@ -3,12 +3,15 @@ package me.grayingout.bot;
 import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.BotCommandManager;
-import me.grayingout.bot.interactions.WarningsListInteractionHandler;
+import me.grayingout.bot.events.DeletedMessageLogger;
+import me.grayingout.bot.events.MessageCache;
+import me.grayingout.bot.events.interactions.WarningsListInteractionHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
  * The wrapper class for the {@code JDA}
@@ -30,8 +33,12 @@ public final class Bot extends ListenerAdapter {
         jda = JDABuilder.createDefault(token)
             .addEventListeners(
                 this,
-                new WarningsListInteractionHandler()
+                new WarningsListInteractionHandler(),
+                new DeletedMessageLogger(),
+                MessageCache.getInstance()
             )
+            .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+            .setEventPassthrough(true)
             .setActivity(Activity.competing("World Domination"))
             .build();
 
@@ -52,7 +59,8 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.WARN_COMMAND.getCommandData(),
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.CLEAR_WARNINGS_COMMAND.getCommandData(),
-                BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData()
+                BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData(),
+                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -111,6 +119,9 @@ public final class Bot extends ListenerAdapter {
             case "remove-warning":
                 /* Delete a specific warning from a member */
                 BotCommandManager.REMOVE_WARNING_COMMAND.execute(event);
+                break;
+            case "set-logging-channel":
+                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.execute(event);
                 break;
             default:
                 throw new RuntimeException("Unhandled slash command: " + event.getName());

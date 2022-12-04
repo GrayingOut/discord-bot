@@ -1,4 +1,4 @@
-package me.grayingout.bot.interactions;
+package me.grayingout.bot.events.interactions;
 
 import me.grayingout.database.warnings.MemberWarningsListMessage;
 import me.grayingout.database.warnings.WarningsDatabase;

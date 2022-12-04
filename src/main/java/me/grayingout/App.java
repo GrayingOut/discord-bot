@@ -2,6 +2,7 @@ package me.grayingout;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import me.grayingout.bot.Bot;
+import me.grayingout.database.guildconfig.ConfigDatabase;
 import me.grayingout.database.warnings.WarningsDatabase;
 
 /**
@@ -41,6 +42,11 @@ public final class App {
         WarningsDatabase.connect();
         if (!WarningsDatabase.isConnected()) {
             System.err.println("Failed to connect to warnings DB");
+            return;
+        }
+        ConfigDatabase.connect();
+        if (!ConfigDatabase.isConnected()) {
+            System.err.println("Failed to connect to configurations DB");
             return;
         }
 

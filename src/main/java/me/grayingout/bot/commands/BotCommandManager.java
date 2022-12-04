@@ -5,6 +5,7 @@ import me.grayingout.bot.commands.implementations.ClearWarningsCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
+import me.grayingout.bot.commands.implementations.SetLoggingChannelCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarnCommand;
 import me.grayingout.bot.commands.implementations.WarningsCommand;
@@ -52,4 +53,9 @@ public final class BotCommandManager {
      * The {@code /remove-warning <member:user> <id:integer>} slash command
      */
     public static final RemoveWarningCommand REMOVE_WARNING_COMMAND = new RemoveWarningCommand();
+
+    /**
+     * The {@code /set-logging-channel <channel:channel>} slash command
+     */
+    public static final SetLoggingChannelCommand SET_LOGGING_CHANNEL_COMMAND = new SetLoggingChannelCommand();
 }
