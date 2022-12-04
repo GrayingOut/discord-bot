@@ -3,9 +3,9 @@ package me.grayingout.bot;
 import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.BotCommandManager;
-import me.grayingout.bot.events.DeletedMessageLogger;
 import me.grayingout.bot.events.MessageCache;
 import me.grayingout.bot.events.interactions.WarningsListInteractionHandler;
+import me.grayingout.bot.logging.DeletedMessageLogger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;

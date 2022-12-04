@@ -18,6 +18,8 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
     - Logs the author, channel, message content, embeds and attachments
     - Also has an unknown deleted message embed for a message that was
       not in the message cache
+- Moderator slash command usage logging
+    - Currently just the `/bulk-delete` slash command
 - Logging channel
     - Use `/set-logging-channel <channel:channel>` to set the channel to use
 - Bulk deletion

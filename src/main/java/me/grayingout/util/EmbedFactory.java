@@ -7,20 +7,42 @@ import java.util.Collection;
 import java.util.List;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 /**
  * A class used for making different types
  * of pre-made embeds
  */
 public final class EmbedFactory {
-    
+
     /**
-     * Creates an embed for logging a deleted message
+     * An embed for logging a bulk delete command usage
+     * 
+     * @param moderator The user that used the command
+     * @param channel   The channel the command was used in
+     * @param count     The number of messages deleted
+     * @return The build embed
+     */
+    public static final MessageEmbed createBulkDeleteUsageEmbed(Member moderator, GuildMessageChannel channel, int count) {
+        MessageEmbed embed = new EmbedBuilder()
+            .setColor(Color.RED)
+            .setTitle("🧨 **" + count + " Messages Purged in " + channel.getAsMention() + "**")
+            .addField("Channel", channel.getAsMention() + " (" + channel.getId() + ")", false)
+            .addField("Moderator", moderator.getAsMention() + " (" + moderator.getId() + ")", false)
+            .addField("Count", Integer.toString(count), false)
+            .build();
+        
+        return embed;
+    }
+
+    /**
+     * An embed for logging a deleted message
      * 
      * @param message The deleted message
      * @return The built embed, and any embeds on the message
@@ -31,19 +53,25 @@ public final class EmbedFactory {
         /* Build deleted message embed */
         EmbedBuilder builder = new EmbedBuilder()
             .setColor(Color.RED)
-            .setTitle("✂ **Deleted Message in " + message.getChannel().getAsMention() + "**")
+            .setTitle("✂ **Message Deleted in " + message.getChannel().getAsMention() + "**")
             .addField("Channel", message.getChannel().getAsMention() + " (" + message.getChannel().getId() + ")", false)
             .addField("Author", message.getAuthor().getAsMention() + " (" + message.getAuthor().getId() + ")", false)
-            .addField("Content", message.getContentRaw(), false)
             .setFooter(message.getId())
             .setTimestamp(LocalDateTime.now());
         
-        /* Add attachments */
+        /* Add content field if has content */
+        if (message.getContentRaw().length() > 0) {
+            builder.addField("Content", message.getContentRaw(), false);
+        }
+        
+        /* Add attachments if it has attachments */
         StringBuilder attachments = new StringBuilder();
         for (Attachment attachment : message.getAttachments()) {
             attachments.append(attachment.getProxyUrl() + "\n");
         }
-        builder.addField("Attachments", attachments.toString(), false);
+        if (attachments.length() > 0) {
+            builder.addField("Attachments", attachments.toString(), false);
+        }
 
         /* Create list of embeds */
         embeds.add(builder.build());
@@ -53,7 +81,7 @@ public final class EmbedFactory {
     }
 
     /**
-     * Creates an embed for logging a deleted message that wasn't
+     * An embed for logging a deleted message that wasn't
      * in the {@code MessageCache}
      * 
      * @param channel   The channel the message was deleted from
@@ -66,7 +94,7 @@ public final class EmbedFactory {
         /* Build deleted message embed */
         EmbedBuilder builder = new EmbedBuilder()
             .setColor(Color.RED)
-            .setTitle("✂ **Deleted Message in " + channel.getAsMention() + "**")
+            .setTitle("✂ **Message Deleted in " + channel.getAsMention() + "**")
             .setDescription(":warning: A message was deleted that was not stored in the bot's message cache. Limited data is available.")
             .addField("Channel", channel.getAsMention() + " (" + channel.getId() + ")", false)
             .setFooter(Long.toString(messageId))

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.grayingout.bot.commands.BotCommand;
+import me.grayingout.util.BotLogging;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -68,6 +69,9 @@ public class BulkDeleteCommand extends BotCommand {
 
         /* Delete messages */
         channel.purgeMessages(messages);
+
+        /* Log the usage */
+        BotLogging.logBulkDeleteCommandUsage(event.getMember(), channel, messages.size());
 
         /* Send response and delete after 3 seconds */
         event.getHook().sendMessageEmbeds(
