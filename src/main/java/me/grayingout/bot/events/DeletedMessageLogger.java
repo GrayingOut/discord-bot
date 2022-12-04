@@ -41,8 +41,8 @@ public class DeletedMessageLogger extends ListenerAdapter {
         /* Get the deleted message from the cache */
         Message message = MessageCache.getInstance().getMessageByIdLong(event.getMessageIdLong());
 
-        /* Ignore if sent in logging channel (can only check if message was in cache) */
-        if (message != null && message.getChannel().getIdLong() == loggingChannelId) {
+        /* Ignore if deleted in logging channel (can only check if message was in cache) */
+        if (event.getChannel().getIdLong() == loggingChannelId) {
             return;
         }
         
