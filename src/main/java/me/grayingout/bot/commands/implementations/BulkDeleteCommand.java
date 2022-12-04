@@ -67,7 +67,7 @@ public class BulkDeleteCommand extends BotCommand {
         }
 
         /* Delete messages */
-        channel.deleteMessages(messages).queue();
+        channel.purgeMessages(messages);
 
         /* Send response and delete after 3 seconds */
         event.getHook().sendMessageEmbeds(
@@ -75,5 +75,5 @@ public class BulkDeleteCommand extends BotCommand {
         ).queue(message -> {
             message.delete().queueAfter(3, TimeUnit.SECONDS);
         });
-    }    
+    }
 }
