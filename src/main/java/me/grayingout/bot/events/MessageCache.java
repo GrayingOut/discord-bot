@@ -32,6 +32,11 @@ public class MessageCache implements EventListener {
         messages = new HashMap<>();
     }
 
+    /**
+     * Gets the {@code MessageCache} instance
+     * 
+     * @return The instance
+     */
     public static final MessageCache getInstance() {
         if (instance == null) {
             instance = new MessageCache();
