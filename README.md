@@ -25,10 +25,17 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Rules command (used to print a pretty embed) - edit code to customise
 - Persistence with sqlite
 
+## Working On
+- Better database system
+
 ## Future Features (maybe)
 - [ ] Saving the message cache to a database
 - [ ] Use one database file (why i haven't already is beyond me)
 - [ ] External config file (something like `bot.config.json`)
+- [ ] Levelling system
+- [ ] Polls
+- [ ] Giveaways
+- [ ] Role messages - messages that give you roles
 
 ## Running yourself
 
