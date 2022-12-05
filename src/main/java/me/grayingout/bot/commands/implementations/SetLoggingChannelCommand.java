@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 /**
  * A slash command used to set the channel the
- * bot uses for logging - restricted to MANAGE_SERVER
+ * bot uses for logging - restricted to {@code Permission.MANAGE_SERVER}
  */
 public final class SetLoggingChannelCommand extends BotCommand {
 

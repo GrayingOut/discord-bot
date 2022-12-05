@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 /**
  * A slash command used to send the rules embed in the
- * current channel - restricted to admins
+ * current channel - restricted to {@code Permission.ADMINISTRATOR}
  */
 public class RulesCommand extends BotCommand {
 
