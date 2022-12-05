@@ -2,8 +2,6 @@ package me.grayingout;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import me.grayingout.bot.Bot;
-import me.grayingout.database.WarningsDatabase;
-import me.grayingout.database.ConfigDatabase;
 
 /**
  * The main class
@@ -37,18 +35,6 @@ public final class App {
         }
 
         System.out.println("Starting bot with token: " + token);
-
-        /* Initialise databases */
-        WarningsDatabase.connect();
-        if (!WarningsDatabase.isConnected()) {
-            System.err.println("Failed to connect to warnings DB");
-            return;
-        }
-        ConfigDatabase.connect();
-        if (!ConfigDatabase.isConnected()) {
-            System.err.println("Failed to connect to configurations DB");
-            return;
-        }
 
         /* Create a new bot */
         bot = new Bot(token);

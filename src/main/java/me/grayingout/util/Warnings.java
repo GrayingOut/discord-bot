@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.database.objects.MemberWarning;
 import me.grayingout.database.objects.MemberWarningsListMessage;
 import net.dv8tion.jda.api.entities.Member;
@@ -63,7 +63,7 @@ public final class Warnings {
         }
 
         /* Get the member's warnings */
-        List<MemberWarning> warnings = WarningsDatabase.getMemberWarnings(member);
+        List<MemberWarning> warnings = DatabaseAccessorManager.getWarningsDatabaseAccessor().getMemberWarnings(member);
         if (warnings == null) {
             return;
         }
@@ -72,11 +72,8 @@ public final class Warnings {
         int boundedPage = Math.max(Math.min(getNumberOfPages(warnings.size()), page), 1);
 
         /* Update page in database */
-        boolean success = WarningsDatabase.updateMemberWarningsListMessagePage(
+        DatabaseAccessorManager.getWarningsDatabaseAccessor().updateMemberWarningsListMessagePage(
             warningsListMessageData.getMessage(), boundedPage);
-        if (!success) {
-            return;
-        }
         
         /* Edit message */
         warningsListMessageData.getMessage().editMessage(

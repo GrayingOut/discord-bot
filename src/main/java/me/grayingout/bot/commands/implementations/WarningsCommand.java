@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.database.objects.MemberWarning;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.Warnings;
@@ -52,7 +52,7 @@ public class WarningsCommand extends BotCommand {
         }
 
         /* Get member's warnings */
-        List<MemberWarning> warnings = WarningsDatabase.getMemberWarnings(member);
+        List<MemberWarning> warnings = DatabaseAccessorManager.getWarningsDatabaseAccessor().getMemberWarnings(member);
         if (warnings == null) {
             event.getHook().sendMessageEmbeds(
                 EmbedFactory.createWarningEmbed("Database Access Error", "Failed to get member warnings. Contact the bot developer.")
@@ -76,7 +76,7 @@ public class WarningsCommand extends BotCommand {
         /* Send the message and update the database on success */
         event.getHook().sendMessage(messageCreateData).queue(message -> {
             /* Add message to database */
-            WarningsDatabase.putMemberWarningsListMessage(message, member, 1);
+            DatabaseAccessorManager.getWarningsDatabaseAccessor().putMemberWarningsListMessage(message, member, 1);
         });
     }
 }

@@ -1,7 +1,7 @@
 package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.database.objects.MemberWarning;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Member;
@@ -53,7 +53,7 @@ public class RemoveWarningCommand extends BotCommand {
         }
 
         /* Check warning exists */
-        MemberWarning warning = WarningsDatabase.getMemberWarningById(member, id);
+        MemberWarning warning = DatabaseAccessorManager.getWarningsDatabaseAccessor().getMemberWarningById(member, id);
         
         if (warning == null) {
             event.getHook().sendMessageEmbeds(
@@ -63,17 +63,10 @@ public class RemoveWarningCommand extends BotCommand {
         }
         
         /* Send response message */
-        boolean success = WarningsDatabase.deleteWarning(member, id);
+        DatabaseAccessorManager.getWarningsDatabaseAccessor().deleteWarning(member, id);
         
-        if (success) {
-            /* Send success message and delete after 3 seconds */
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createSuccessEmbed("Warning Removed", "Warning has been removed from member")
-            ).queue();
-            return;
-        }
         event.getHook().sendMessageEmbeds(
-            EmbedFactory.createWarningEmbed("Database Access Error", "Failed to delete warning. Contact the bot developer.")
+            EmbedFactory.createSuccessEmbed("Warning Removed", "Warning has been removed from member")
         ).queue();
     }
 }

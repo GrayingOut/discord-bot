@@ -2,7 +2,7 @@ package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.logging.BotLoggingChannel;
-import me.grayingout.database.ConfigDatabase;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -41,13 +41,8 @@ public final class SetLoggingChannelCommand extends BotCommand {
         }
 
         /* Update the logging channel */
-        boolean success = ConfigDatabase.updateLoggingChannelId(event.getGuild(), (GuildMessageChannel) channel);
-        if (!success) {
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Database Access Error", "Failed to update database. Contact the bot developer.")
-            ).queue();;
-            return;
-        }
+        DatabaseAccessorManager.getConfigurationDatabaseAccessor()
+            .updateLoggingChannelId(event.getGuild(), (GuildMessageChannel) channel);
 
         /* Update the logging channel */
         BotLoggingChannel.refreshLoggingChannel(event.getGuild());

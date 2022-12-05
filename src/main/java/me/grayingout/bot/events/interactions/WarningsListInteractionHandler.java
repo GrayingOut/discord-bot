@@ -1,6 +1,6 @@
 package me.grayingout.bot.events.interactions;
 
-import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.database.objects.MemberWarningsListMessage;
 import me.grayingout.util.Warnings;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -18,7 +18,9 @@ public final class WarningsListInteractionHandler extends ListenerAdapter {
                 event.deferEdit().queue();
 
                 /* Get the warnings list message data */
-                MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
+                MemberWarningsListMessage mwlm = DatabaseAccessorManager
+                    .getWarningsDatabaseAccessor()
+                    .getMemberWarningsListMessage(event.getMessage());
                 
                 Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage());
                 break;
@@ -28,7 +30,9 @@ public final class WarningsListInteractionHandler extends ListenerAdapter {
                 event.deferEdit().queue();
 
                 /* Get the warnings list message data */
-                MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
+                MemberWarningsListMessage mwlm = DatabaseAccessorManager
+                    .getWarningsDatabaseAccessor()
+                    .getMemberWarningsListMessage(event.getMessage());
     
                 Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage() + 1);
                 break;
@@ -38,7 +42,9 @@ public final class WarningsListInteractionHandler extends ListenerAdapter {
                 event.deferEdit().queue();
 
                 /* Get the warnings list message data */
-                MemberWarningsListMessage mwlm = WarningsDatabase.getMemberWarningsListMessage(event.getMessage());
+                MemberWarningsListMessage mwlm = DatabaseAccessorManager
+                    .getWarningsDatabaseAccessor()
+                    .getMemberWarningsListMessage(event.getMessage());
     
                 Warnings.updateWarningsListMessage(mwlm, mwlm.getCurrentPage() - 1);
                 break;

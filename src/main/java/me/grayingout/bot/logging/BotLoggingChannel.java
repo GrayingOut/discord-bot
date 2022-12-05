@@ -3,7 +3,7 @@ package me.grayingout.bot.logging;
 import java.util.HashMap;
 
 import me.grayingout.bot.events.MessageCache;
-import me.grayingout.database.ConfigDatabase;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -38,7 +38,7 @@ public final class BotLoggingChannel {
      */
     private BotLoggingChannel(Guild guild) {
         this.guild = guild;
-        loggingChannel = ConfigDatabase.getLoggingChannel(guild);
+        loggingChannel = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannel(guild);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class BotLoggingChannel {
      * Refreshes the logging channel - internal use
      */
     public final void refresh() {
-        loggingChannel = ConfigDatabase.getLoggingChannel(guild);
+        loggingChannel = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannel(guild);
     }
 
     /**
