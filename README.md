@@ -39,3 +39,5 @@ mvn clean verify exec:java
 ```
 
 ## Found a bug/issue
+
+<img width="300" src="https://grayingout.repl.co/static/donttouchmygarbage.png" />
