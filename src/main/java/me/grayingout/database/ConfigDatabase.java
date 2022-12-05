@@ -1,4 +1,4 @@
-package me.grayingout.database.guildconfig;
+package me.grayingout.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

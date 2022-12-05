@@ -1,4 +1,4 @@
-package me.grayingout.database.warnings;
+package me.grayingout.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,6 +11,8 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.grayingout.database.objects.MemberWarning;
+import me.grayingout.database.objects.MemberWarningsListMessage;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 

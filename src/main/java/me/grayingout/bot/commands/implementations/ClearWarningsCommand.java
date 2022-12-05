@@ -1,7 +1,7 @@
 package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.warnings.WarningsDatabase;
+import me.grayingout.database.WarningsDatabase;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

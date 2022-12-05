@@ -1,7 +1,7 @@
 package me.grayingout.bot.events.interactions;
 
-import me.grayingout.database.warnings.MemberWarningsListMessage;
-import me.grayingout.database.warnings.WarningsDatabase;
+import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.objects.MemberWarningsListMessage;
 import me.grayingout.util.Warnings;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

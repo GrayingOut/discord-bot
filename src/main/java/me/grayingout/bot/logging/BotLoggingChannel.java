@@ -3,7 +3,7 @@ package me.grayingout.bot.logging;
 import java.util.HashMap;
 
 import me.grayingout.bot.events.MessageCache;
-import me.grayingout.database.guildconfig.ConfigDatabase;
+import me.grayingout.database.ConfigDatabase;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;

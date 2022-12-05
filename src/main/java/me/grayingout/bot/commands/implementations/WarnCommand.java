@@ -1,8 +1,8 @@
 package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.warnings.MemberWarning;
-import me.grayingout.database.warnings.WarningsDatabase;
+import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.objects.MemberWarning;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;

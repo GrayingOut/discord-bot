@@ -2,8 +2,8 @@ package me.grayingout;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import me.grayingout.bot.Bot;
-import me.grayingout.database.guildconfig.ConfigDatabase;
-import me.grayingout.database.warnings.WarningsDatabase;
+import me.grayingout.database.WarningsDatabase;
+import me.grayingout.database.ConfigDatabase;
 
 /**
  * The main class

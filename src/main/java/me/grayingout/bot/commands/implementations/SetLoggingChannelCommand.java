@@ -2,7 +2,7 @@ package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.logging.BotLoggingChannel;
-import me.grayingout.database.guildconfig.ConfigDatabase;
+import me.grayingout.database.ConfigDatabase;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.Channel;
