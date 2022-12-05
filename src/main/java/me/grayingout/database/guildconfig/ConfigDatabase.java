@@ -41,7 +41,7 @@ public final class ConfigDatabase {
 
         /* Initialise table */
         try (Statement statement = dbConnection.createStatement()) {
-            /* Creates the table that stores member warnings */
+            /* Creates the table that stores guild configurations */
             statement.execute(
                   "CREATE TABLE IF NOT EXISTS GuildConfiguration ("
                 + "  guild_id INTEGER NOT NULL PRIMARY KEY,"
