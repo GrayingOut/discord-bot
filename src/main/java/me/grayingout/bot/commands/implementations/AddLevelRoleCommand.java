@@ -48,6 +48,14 @@ public final class AddLevelRoleCommand extends BotCommand {
 
         Role role = event.getOption("role").getAsRole();
 
+        /* Cannot add @everyone role */
+        if (role.getIdLong() == role.getGuild().getIdLong()) {
+            event.getHook().sendMessageEmbeds(
+                EmbedFactory.createWarningEmbed("Invalid Argument", "`role` cannot be " + role.getAsMention())
+            ).queue();
+            return;
+        }
+
         /* Update the level */
         DatabaseAccessorManager.getLevellingDatabaseAccessor().addGuildLevelRole(role, level);
         
