@@ -120,7 +120,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
             @Override
             public Void execute(Connection connection) throws SQLException {
                 PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM GuildMemberRole WHERE role_id == ?"
+                    "DELETE FROM GuildLevelRole WHERE role_id == ?"
                 );
 
                 statement.setLong(1, roleId);
