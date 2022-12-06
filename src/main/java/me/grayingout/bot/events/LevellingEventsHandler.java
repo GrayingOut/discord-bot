@@ -1,6 +1,7 @@
 package me.grayingout.bot.events;
 
 import me.grayingout.database.accessor.DatabaseAccessorManager;
+import me.grayingout.util.Levelling;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -36,6 +37,9 @@ public class LevellingEventsHandler extends ListenerAdapter {
             event.getChannel().sendMessage(
                 ":confetti_ball: Congratulations " + event.getMember().getAsMention() + ". You advanced to level " + newLevel + "!"
             ).queue();
+
+            /* Update their roles */
+            Levelling.updateMemberLevelRoles(event.getMember());
         }
     }
 }

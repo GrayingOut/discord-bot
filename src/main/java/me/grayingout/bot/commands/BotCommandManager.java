@@ -1,10 +1,13 @@
 package me.grayingout.bot.commands;
 
+import me.grayingout.bot.commands.implementations.AddLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.ClearWarningsCommand;
+import me.grayingout.bot.commands.implementations.GetLevelRolesCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.LevelCommand;
 import me.grayingout.bot.commands.implementations.LevelTopCommand;
+import me.grayingout.bot.commands.implementations.RemoveLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.SetLevelCommand;
@@ -76,4 +79,19 @@ public final class BotCommandManager {
      * The {@code /level-top} command
      */
     public static final LevelTopCommand LEVEL_TOP_COMMAND = new LevelTopCommand();
+
+    /**
+     * The {@code /add-level-role <role:role> <level:int>} command
+     */
+    public static final AddLevelRoleCommand ADD_LEVEL_ROLE_COMMAND = new AddLevelRoleCommand();
+
+    /**
+     * The {@code /get-level-roles} command
+     */
+    public static final GetLevelRolesCommand GET_LEVEL_ROLES_COMMAND = new GetLevelRolesCommand();
+
+    /**
+     * The {@code /remove-level-role} command
+     */
+    public static final RemoveLevelRoleCommand REMOVE_LEVEL_ROLE_COMMAND = new RemoveLevelRoleCommand();
 }

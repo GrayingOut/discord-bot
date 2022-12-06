@@ -144,7 +144,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
 
                 insertStatement.setLong(1, guild.getIdLong());
 
-                insertStatement.execute();
+                insertStatement.executeUpdate();
 
                 return null;
             }

@@ -48,11 +48,16 @@ public class SetLevelCommand extends BotCommand {
 
         Member member = event.getOption("member").getAsMember();
 
+        /* Set the member's new level */
         DatabaseAccessorManager.getLevellingDatabaseAccessor()
             .setGuildMemberLevelExperience(member, Levelling.getExperienceForLevel(level));
+        
+        /* Update member's level roles */
+        Levelling.updateMemberLevelRoles(member);
 
+        /* Send response message */
         event.getHook().sendMessageEmbeds(
-            EmbedFactory.createSuccessEmbed("Updated Members Level", "The members level has been set to `" + level + "`")
+            EmbedFactory.createSuccessEmbed("Updated Members Level", "The member's level has been set to `" + level + "`")
         ).queue();
 	}
 }
