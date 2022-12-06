@@ -2,6 +2,7 @@ package me.grayingout;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import me.grayingout.bot.Bot;
+import me.grayingout.database.accessor.DatabaseAccessorManager;
 
 /**
  * The main class
@@ -35,6 +36,8 @@ public final class App {
         }
 
         System.out.println("Starting bot with token: " + token);
+
+        DatabaseAccessorManager.initDatabaseAccessors();
 
         /* Create a new bot */
         bot = new Bot(token);

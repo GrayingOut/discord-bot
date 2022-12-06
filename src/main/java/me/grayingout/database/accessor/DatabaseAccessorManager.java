@@ -21,6 +21,15 @@ public final class DatabaseAccessorManager {
     private static LevellingDatabaseAccessor levellingDatabaseAccessor;
 
     /**
+     * Initialises all {@code DatabaseAccessor}s
+     */
+    public static final void initDatabaseAccessors() {
+        warningsDatabaseAccessor = new WarningsDatabaseAccessor();
+        configurationDatabaseAccessor = new ConfigurationDatabaseAccessor();
+        levellingDatabaseAccessor = new LevellingDatabaseAccessor();
+    }
+
+    /**
      * Gets the {@code WarningsDatabaseAccessor} singleton
      * 
      * @return The singleton

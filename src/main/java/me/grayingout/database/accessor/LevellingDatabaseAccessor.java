@@ -52,7 +52,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                     "CREATE TABLE IF NOT EXISTS GuildLevelRole ("
                   + "  guild_id INTEGER NOT NULL,"
                   + "  role_id INTEGER NOT NULL PRIMARY KEY,"
-                  + "  level_required INTEGER NOT NULL DEFAULT 0"
+                  + "  level_required INTEGER NOT NULL"
                   + ")");
 
                 return null;
