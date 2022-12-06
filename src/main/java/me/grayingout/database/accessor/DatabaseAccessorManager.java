@@ -16,6 +16,11 @@ public final class DatabaseAccessorManager {
     private static ConfigurationDatabaseAccessor configurationDatabaseAccessor;
 
     /**
+     * The {@code LevellingDatabaseAccessor} singleton
+     */
+    private static LevellingDatabaseAccessor levellingDatabaseAccessor;
+
+    /**
      * Gets the {@code WarningsDatabaseAccessor} singleton
      * 
      * @return The singleton
@@ -39,5 +44,18 @@ public final class DatabaseAccessorManager {
         }
 
         return configurationDatabaseAccessor;
+    }
+    
+    /**
+     * Gets the {@code WarningsDatabaseAccessor} singleton
+     * 
+     * @return The singleton
+     */
+    public static final LevellingDatabaseAccessor getLevellingDatabaseAccessor() {
+        if (levellingDatabaseAccessor == null) {
+            levellingDatabaseAccessor = new LevellingDatabaseAccessor();
+        }
+
+        return levellingDatabaseAccessor;
     }
 }

@@ -3,8 +3,10 @@ package me.grayingout.bot.commands;
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.ClearWarningsCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
+import me.grayingout.bot.commands.implementations.LevelCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
+import me.grayingout.bot.commands.implementations.SetLevelCommand;
 import me.grayingout.bot.commands.implementations.SetLoggingChannelCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarnCommand;
@@ -58,4 +60,14 @@ public final class BotCommandManager {
      * The {@code /set-logging-channel <channel:channel>} slash command
      */
     public static final SetLoggingChannelCommand SET_LOGGING_CHANNEL_COMMAND = new SetLoggingChannelCommand();
+
+    /**
+     * The {@code /level [member:user]} slash command
+     */
+    public static final LevelCommand LEVEL_COMMAND = new LevelCommand();
+
+    /**
+     * The {@code /set-level <member:user> <level:int>} command
+     */
+    public static final SetLevelCommand SET_LEVEL_COMMAND = new SetLevelCommand();
 }

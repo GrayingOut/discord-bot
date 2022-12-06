@@ -3,6 +3,7 @@ package me.grayingout.bot;
 import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.BotCommandManager;
+import me.grayingout.bot.events.LevellingEventsHandler;
 import me.grayingout.bot.events.MessageCache;
 import me.grayingout.bot.events.interactions.WarningsListInteractionHandler;
 import me.grayingout.bot.logging.DeletedMessageLogger;
@@ -35,6 +36,7 @@ public final class Bot extends ListenerAdapter {
                 this,
                 new WarningsListInteractionHandler(),
                 new DeletedMessageLogger(),
+                new LevellingEventsHandler(),
                 MessageCache.getInstance()
             )
             .enableIntents(GatewayIntent.MESSAGE_CONTENT)
@@ -60,7 +62,9 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.CLEAR_WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData(),
-                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.getCommandData()
+                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.getCommandData(),
+                BotCommandManager.LEVEL_COMMAND.getCommandData(),
+                BotCommandManager.SET_LEVEL_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -122,6 +126,12 @@ public final class Bot extends ListenerAdapter {
                 break;
             case "set-logging-channel":
                 BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.execute(event);
+                break;
+            case "level":
+                BotCommandManager.LEVEL_COMMAND.execute(event);
+                break;
+            case "set-level":
+                BotCommandManager.SET_LEVEL_COMMAND.execute(event);
                 break;
             default:
                 throw new RuntimeException("Unhandled slash command: " + event.getName());

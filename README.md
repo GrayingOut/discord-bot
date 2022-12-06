@@ -9,6 +9,12 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Message cache
 - Slash command support
 - Hello command
+- Simple levelling system (guild specific)
+    - 1xp per message (ignores non-guild messages and bot messages)
+    - View a member's level
+    - Reset a member's level
+    - Set a member's level
+    - Level advancement message
 - Warning system (guild specific)
     - Warn member
     - Remove warning
