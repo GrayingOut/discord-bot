@@ -1,5 +1,6 @@
 package me.grayingout.bot.commands;
 
+import me.grayingout.bot.commands.implementations.AddLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.ClearWarningsCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
@@ -76,4 +77,9 @@ public final class BotCommandManager {
      * The {@code /level-top} command
      */
     public static final LevelTopCommand LEVEL_TOP_COMMAND = new LevelTopCommand();
+
+    /**
+     * The {@code /add-level-role <role:role> <level:int>} command
+     */
+    public static final AddLevelRoleCommand ADD_LEVEL_ROLE_COMMAND = new AddLevelRoleCommand();
 }
