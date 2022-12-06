@@ -10,7 +10,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Message cache
 - Slash command support
 - Hello command
-- Levelling system
+- Levelling system w/ role rewards
 - Warning system
 - Deleted message logging
 - Logging channel
@@ -43,14 +43,7 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
 
 ## Working On
-
-- Levelling system
-  - [x] View level
-  - [x] Set member level
-  - [x] Reset member level
-  - [x] Level advancement message
-  - [x] Guild levels top (top 5 levels)
-  - [x] Role level rewards
+*nothing*
 
 ## Future Features (maybe)
 
