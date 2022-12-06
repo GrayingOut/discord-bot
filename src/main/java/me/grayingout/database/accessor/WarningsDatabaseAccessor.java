@@ -31,9 +31,6 @@ public final class WarningsDatabaseAccessor extends DatabaseAccessor {
         super("warnings.db");
     }
 
-    /**
-     * Connect to the database
-     */
     @Override
     public final void init() {
         queueQuery(new DatabaseQuery<Void>() {

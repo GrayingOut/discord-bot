@@ -23,6 +23,9 @@ import net.dv8tion.jda.api.entities.Member;
  */
 public final class LevellingDatabaseAccessor extends DatabaseAccessor {
 
+    /**
+     * Creates a new {@code LevellingDatabaseAccessor}
+     */
     public LevellingDatabaseAccessor() {
         super("levelling.db");
     }
