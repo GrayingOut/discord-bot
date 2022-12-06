@@ -15,6 +15,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
     - Reset a member's level
     - Set a member's level
     - Level advancement message
+    - View guild top
 - Warning system (guild specific)
     - Warn member
     - Remove warning
