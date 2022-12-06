@@ -34,9 +34,7 @@ public class SlowmodeCommand extends BotCommand {
         Integer seconds = SlashCommands.safelyGetIntOption(event, "seconds");
         if (seconds == null) {
             /* Invalid integer */
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Invalid Argument", "`seconds` is not a valid integer")
-            ).queue();
+            event.getHook().sendMessageEmbeds(EmbedFactory.createInvalidIntegerOptionEmbed("seconds")).queue();
             return;
         }
 

@@ -22,6 +22,16 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 public final class EmbedFactory {
 
     /**
+     * An embed for when an integer option is not valid
+     * 
+     * @param optionName The name of the option
+     * @return The build embed
+     */
+    public static final MessageEmbed createInvalidIntegerOptionEmbed(String optionName) {
+        return EmbedFactory.createWarningEmbed("Invalid Argument", "`" + optionName + "` is not a valid integer");
+    }
+
+    /**
      * An embed for logging a bulk delete command usage
      * 
      * @param moderator The user that used the command

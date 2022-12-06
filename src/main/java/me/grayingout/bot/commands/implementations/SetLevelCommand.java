@@ -34,9 +34,7 @@ public class SetLevelCommand extends BotCommand {
         Integer level = SlashCommands.safelyGetIntOption(event, "level");
         if (level == null) {
             /* Invalid integer */
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Invalid Argument", "`level` is not a valid integer")
-            ).queue();
+            event.getHook().sendMessageEmbeds(EmbedFactory.createInvalidIntegerOptionEmbed("level")).queue();
             return;
         }
 

@@ -36,9 +36,7 @@ public class BulkDeleteCommand extends BotCommand {
 
         Integer count = SlashCommands.safelyGetIntOption(event, "count");
         if (count == null) {
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Invalid Argument", "`count` is not a valid integer")
-            ).queue();
+            event.getHook().sendMessageEmbeds(EmbedFactory.createInvalidIntegerOptionEmbed("count")).queue();
             return;
         }
 

@@ -37,9 +37,7 @@ public class RemoveWarningCommand extends BotCommand {
         Integer id = SlashCommands.safelyGetIntOption(event, "id");
         if (id == null) {
             /* Invalid integer */
-            event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Invalid Argument", "`id` is not a valid integer")
-            ).queue();
+            event.getHook().sendMessageEmbeds(EmbedFactory.createInvalidIntegerOptionEmbed("id")).queue();
             return;
         }
         
