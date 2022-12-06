@@ -4,9 +4,9 @@ import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.database.objects.MemberWarning;
 import me.grayingout.util.EmbedFactory;
+import me.grayingout.util.Warnings;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -53,22 +53,12 @@ public class WarnCommand extends BotCommand {
         
         /* Send response */
         if (warning != null) {
-            Field[] fields = {
-                new Field("Member", String.format(
-                    "%s (%s)",
-                    member.getAsMention(),
-                    member.getIdLong()), false),
-                new Field("Moderator", String.format(
-                    "%s (%s)",
-                    moderator.getAsMention(),
-                    moderator.getIdLong()), false),
-                new Field("Reason", reason, false),
-                new Field("Warning Id", Integer.toString(warning.getWarningId()), false)
-            };
+            /* Send DM */
+            member.getUser().openPrivateChannel().complete().sendMessageEmbeds(Warnings.createDMWarningEmbed(member, moderator, reason)).queue();
 
             /* Send embed */
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createSuccessEmbed("Member Warned", member.getAsMention() + " has been warned", fields)
+                Warnings.createWarningSuccessEmbed(member, moderator, reason, warning.getWarningId())
             ).queue();
             return;
         }

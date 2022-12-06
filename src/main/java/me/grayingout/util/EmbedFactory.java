@@ -127,6 +127,30 @@ public final class EmbedFactory {
 
     /**
      * An embed used when the bot cannot complete the operation
+     * but no error has been thrown with the option for fields
+     * 
+     * @param title   The title of the warning
+     * @param message The message shown to the user
+     * @param fields  The embed fields to add
+     * @return The built embed
+     */
+    public static final MessageEmbed createWarningEmbed(String title, String message, Field... fields) {
+        EmbedBuilder builder = new EmbedBuilder()
+            .setColor(Color.ORANGE)
+            .setTitle("**:warning: " + title + "**")
+            .setDescription(message)
+            .setTimestamp(LocalDateTime.now());
+        
+        /* Add fields */
+        for (Field field : fields) {
+            builder.addField(field);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * An embed used when the bot cannot complete the operation
      * but no error has been thrown
      * 
      * @param title   The title of the warning
@@ -134,14 +158,7 @@ public final class EmbedFactory {
      * @return The built embed
      */
     public static final MessageEmbed createWarningEmbed(String title, String message) {
-        MessageEmbed embed = new EmbedBuilder()
-            .setColor(Color.ORANGE)
-            .setTitle("**:warning: " + title + "**")
-            .setDescription(message)
-            .setTimestamp(LocalDateTime.now())
-            .build();
-        
-        return embed;
+        return createSuccessEmbed(title, message, new Field[] {});
     }
 
     /**

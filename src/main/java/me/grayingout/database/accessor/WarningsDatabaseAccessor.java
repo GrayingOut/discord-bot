@@ -270,12 +270,11 @@ public final class WarningsDatabaseAccessor extends DatabaseAccessor {
 
     /**
      * Puts the data associated with a member warnings list message
-     * into the database and returns if the operation was successful
+     * into the database
      * 
      * @param message The warnings list message
      * @param member  The member the warnings belong to
      * @param page    The current page
-     * @return If the operation was successful
      */
     public final void putMemberWarningsListMessage(Message message, Member member, int page) {
         queueQuery(new DatabaseQuery<Void>() {
@@ -348,7 +347,6 @@ public final class WarningsDatabaseAccessor extends DatabaseAccessor {
      * 
      * @param message The message
      * @param page    The new page
-     * @return If the operation was successful
      */
     public final void updateMemberWarningsListMessagePage(Message message, int page) {
         queueQuery(new DatabaseQuery<Void>() {
