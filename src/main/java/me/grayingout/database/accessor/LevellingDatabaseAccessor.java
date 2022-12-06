@@ -252,7 +252,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                     insertStatement.setLong(2, member.getIdLong());
                     insertStatement.setInt(3, experience);
     
-                    insertStatement.execute();
+                    insertStatement.executeUpdate();
 
                     return null;
                 }
@@ -266,7 +266,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                 updateStatement.setLong(2, member.getGuild().getIdLong());
                 updateStatement.setLong(3, member.getIdLong());
 
-                updateStatement.execute();
+                updateStatement.executeUpdate();
 
 				return null;
 			}
@@ -321,7 +321,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                     insertStatement.setLong(2, member.getIdLong());
                     insertStatement.setInt(3, experience);
 
-                    insertStatement.execute();
+                    insertStatement.executeUpdate();
 
                     /* Check if user has a new level */
                     if (Levelling.getLevelFromExperience(experience) != 0) {
@@ -341,7 +341,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                 updateStatement.setLong(2, member.getGuild().getIdLong());
                 updateStatement.setLong(3, member.getIdLong());
 
-                updateStatement.execute();
+                updateStatement.executeUpdate();
 
                 /* Check if user has a new level */
                 if (Levelling.getLevelFromExperience(currentExperience) != Levelling.getLevelFromExperience(currentExperience + experience)) {
