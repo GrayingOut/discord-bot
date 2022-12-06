@@ -158,7 +158,7 @@ public final class EmbedFactory {
      * @return The built embed
      */
     public static final MessageEmbed createWarningEmbed(String title, String message) {
-        return createSuccessEmbed(title, message, new Field[] {});
+        return createWarningEmbed(title, message, new Field[] {});
     }
 
     /**
