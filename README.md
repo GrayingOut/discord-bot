@@ -32,16 +32,24 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Persistence with sqlite
 
 ## Working On
-- Levelling System
+- Levelling system
+    - [x] View level
+    - [x] Set member level
+    - [x] Reset member level
+    - [x] Level advancement message
+    - [ ] Guild levels top (top 10 levels)
+    - [ ] Role level rewards
 
 ## Future Features (maybe)
+- [ ] Welcome message (which allows formatting)
 - [ ] Saving the message cache to a database
 - [ ] Use one database file (why i haven't already is beyond me)
 - [ ] External config file (something like `bot.config.json`)
-- [x] Levelling system
 - [ ] Polls
 - [ ] Giveaways
 - [ ] Role messages - messages that give you roles
+- [ ] More logging options
+- [ ] More moderation tools
 
 ## Running yourself
 
