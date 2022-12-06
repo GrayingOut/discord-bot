@@ -37,7 +37,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
     - [x] Set member level
     - [x] Reset member level
     - [x] Level advancement message
-    - [ ] Guild levels top (top 10 levels)
+    - [x] Guild levels top (top 5 levels)
     - [ ] Role level rewards
 
 ## Future Features (maybe)
