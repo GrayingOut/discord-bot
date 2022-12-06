@@ -48,6 +48,14 @@ public final class AddLevelRoleCommand extends BotCommand {
 
         Role role = event.getOption("role").getAsRole();
 
+        /* Cannot add role higher than self */
+        if (role.getPosition() > event.getGuild().getBotRole().getPosition()) {
+            event.getHook().sendMessageEmbeds(
+                EmbedFactory.createWarningEmbed("Insufficient Permission", role.getAsMention() + " is higher in the role hierarchy than me")
+            ).queue();
+            return;
+        }
+
         /* Cannot add @everyone role */
         if (role.getIdLong() == role.getGuild().getIdLong()) {
             event.getHook().sendMessageEmbeds(
