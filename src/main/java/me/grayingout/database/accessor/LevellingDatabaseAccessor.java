@@ -67,7 +67,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                 if (!set.next()) {
                     /* Insert new row */
                     PreparedStatement insertStatement = connection.prepareStatement(
-                        "INSERT INTO GuildMemberLevelExperience (guild_id, level_id, experience) VALUES (?, ?, ?)"
+                        "INSERT INTO GuildMemberLevelExperience (guild_id, user_id, level_experience) VALUES (?, ?, ?)"
                     );
     
                     insertStatement.setLong(1, member.getGuild().getIdLong());
