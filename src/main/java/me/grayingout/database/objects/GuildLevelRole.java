@@ -1,5 +1,7 @@
 package me.grayingout.database.objects;
 
+import java.util.Comparator;
+
 import net.dv8tion.jda.api.entities.Role;
 
 /**
@@ -42,5 +44,23 @@ public final class GuildLevelRole {
      */
     public final int getRequiredLevel() {
         return this.level;
+    }
+
+    /**
+     * A comparator class for {@code GuildLevelRole}s
+     */
+    public static final class GuildLevelRoleComparator implements Comparator<GuildLevelRole> {
+        @Override
+        public int compare(GuildLevelRole o1, GuildLevelRole o2) {
+            if (o1.getRequiredLevel() < o2.getRequiredLevel()) {
+                return -1;
+            }
+
+            if (o1.getRequiredLevel() > o2.getRequiredLevel()) {
+                return 1;
+            }
+
+            return 0;
+        }
     }
 }
