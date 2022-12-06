@@ -4,6 +4,7 @@ import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.Levelling;
+import me.grayingout.util.SlashCommands;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -30,13 +31,11 @@ public class SetLevelCommand extends BotCommand {
 	public void execute(SlashCommandInteractionEvent event) {
 		event.deferReply().queue();
 
-        int level = -1;
-        try {
-            level = event.getOption("level").getAsInt();
-        } catch (ArithmeticException e) {
+        Integer level = SlashCommands.safelyGetIntOption(event, "level");
+        if (level == null) {
             /* Invalid integer */
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createExceptionEmbed(e, "The provided `level` cannot be processed by the application")
+                EmbedFactory.createWarningEmbed("Invalid Argument", "`level` is not a valid integer")
             ).queue();
             return;
         }

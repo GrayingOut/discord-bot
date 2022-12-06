@@ -2,6 +2,7 @@ package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
+import me.grayingout.util.SlashCommands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -30,13 +31,11 @@ public class SlowmodeCommand extends BotCommand {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
-        int seconds = -1;
-        try {
-            seconds = event.getOption("seconds").getAsInt();
-        } catch (ArithmeticException e) {
+        Integer seconds = SlashCommands.safelyGetIntOption(event, "seconds");
+        if (seconds == null) {
             /* Invalid integer */
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createExceptionEmbed(e, "The provided `seconds` cannot be processed by the application")
+                EmbedFactory.createWarningEmbed("Invalid Argument", "`seconds` is not a valid integer")
             ).queue();
             return;
         }

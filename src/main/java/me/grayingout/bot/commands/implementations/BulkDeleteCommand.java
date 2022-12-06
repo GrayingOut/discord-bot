@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
+import me.grayingout.util.SlashCommands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
@@ -33,13 +34,10 @@ public class BulkDeleteCommand extends BotCommand {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
-        int count = -1;
-        try {
-            count = event.getOption("count").getAsInt();
-        } catch (ArithmeticException e) {
-            /* Invalid integer */
+        Integer count = SlashCommands.safelyGetIntOption(event, "count");
+        if (count == null) {
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createExceptionEmbed(e, "The provided `number` cannot be processed by the application")
+                EmbedFactory.createWarningEmbed("Invalid Argument", "`count` is not a valid integer")
             ).queue();
             return;
         }
@@ -47,7 +45,7 @@ public class BulkDeleteCommand extends BotCommand {
         /* Check if count is valid */
         if (count < 2 || count > 100) {
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createWarningEmbed("Invalid Argument", "`number` must be between 2 and 100")
+                EmbedFactory.createWarningEmbed("Invalid Argument", "`count` must be between 2 and 100")
             ).queue();
             return;
         }

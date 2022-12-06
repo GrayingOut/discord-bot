@@ -4,6 +4,7 @@ import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.database.objects.MemberWarning;
 import me.grayingout.util.EmbedFactory;
+import me.grayingout.util.SlashCommands;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -33,13 +34,11 @@ public class RemoveWarningCommand extends BotCommand {
 
         Member member = event.getOption("member").getAsMember();
 
-        int id = -1;
-        try {
-            id = event.getOption("id").getAsInt();
-        } catch (ArithmeticException e) {
+        Integer id = SlashCommands.safelyGetIntOption(event, "id");
+        if (id == null) {
             /* Invalid integer */
             event.getHook().sendMessageEmbeds(
-                EmbedFactory.createExceptionEmbed(e, "The provided `id` cannot be processed by the application")
+                EmbedFactory.createWarningEmbed("Invalid Argument", "`id` is not a valid integer")
             ).queue();
             return;
         }
