@@ -50,14 +50,31 @@ public final class GuildLevelRole {
      * A comparator class for {@code GuildLevelRole}s
      */
     public static final class GuildLevelRoleComparator implements Comparator<GuildLevelRole> {
+
+        /**
+         * If it should sort in ascending order
+         */
+        private final boolean ascendingOrder;
+
+        /**
+         * Creates a new {@code GuildLevelRoleComparator} that either sorts
+         * in ascending order, if {@code ascendingOrder} is true, else descending
+         * order
+         * 
+         * @param ascendingOrder If it should sort in ascending order
+         */
+        public GuildLevelRoleComparator(boolean ascendingOrder) {
+            this.ascendingOrder = ascendingOrder;
+        }
+
         @Override
         public int compare(GuildLevelRole o1, GuildLevelRole o2) {
             if (o1.getRequiredLevel() < o2.getRequiredLevel()) {
-                return -1;
+                return ascendingOrder ? -1 : 1;
             }
 
             if (o1.getRequiredLevel() > o2.getRequiredLevel()) {
-                return 1;
+                return ascendingOrder ? 1 : -1;
             }
 
             return 0;
