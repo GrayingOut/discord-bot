@@ -67,7 +67,8 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.SET_LEVEL_COMMAND.getCommandData(),
                 BotCommandManager.LEVEL_TOP_COMMAND.getCommandData(),
                 BotCommandManager.ADD_LEVEL_ROLE_COMMAND.getCommandData(),
-                BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData()
+                BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData(),
+                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -144,6 +145,9 @@ public final class Bot extends ListenerAdapter {
                 break;
             case "get-level-roles":
                 BotCommandManager.GET_LEVEL_ROLES_COMMAND.execute(event);
+                break;
+            case "remove-level-role":
+                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.execute(event);
                 break;
             default:
                 throw new RuntimeException("Unhandled slash command: " + event.getName());

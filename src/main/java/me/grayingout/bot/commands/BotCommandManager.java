@@ -7,6 +7,7 @@ import me.grayingout.bot.commands.implementations.GetLevelRolesCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.LevelCommand;
 import me.grayingout.bot.commands.implementations.LevelTopCommand;
+import me.grayingout.bot.commands.implementations.RemoveLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.SetLevelCommand;
@@ -88,4 +89,9 @@ public final class BotCommandManager {
      * The {@code /get-level-roles} command
      */
     public static final GetLevelRolesCommand GET_LEVEL_ROLES_COMMAND = new GetLevelRolesCommand();
+
+    /**
+     * The {@code /remove-level-role} command
+     */
+    public static final RemoveLevelRoleCommand REMOVE_LEVEL_ROLE_COMMAND = new RemoveLevelRoleCommand();
 }
