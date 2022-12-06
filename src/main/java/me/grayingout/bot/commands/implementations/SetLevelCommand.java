@@ -49,7 +49,7 @@ public class SetLevelCommand extends BotCommand {
             return;
         }
 
-        Member member = event.getMember();
+        Member member = event.getOption("member").getAsMember();
 
         DatabaseAccessorManager.getLevellingDatabaseAccessor()
             .setGuildMemberLevelExperience(member, Levelling.getExperienceForLevel(level));
