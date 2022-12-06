@@ -26,7 +26,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Persistence with sqlite
 
 ## Working On
-*nothing*
+- Levelling System
 
 ## Future Features (maybe)
 - [ ] Saving the message cache to a database
