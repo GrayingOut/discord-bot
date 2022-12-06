@@ -82,7 +82,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                 if (set.next()) {
                     /* Update the level required on the entry */
                     PreparedStatement updateStatement = connection.prepareStatement(
-                        "UPDATE GuildMemberRole SET level_required = ? WHERE role_id == ?"
+                        "UPDATE GuildLevelRole SET level_required = ? WHERE role_id == ?"
                     );
 
                     updateStatement.setInt(1, levelRequired);
