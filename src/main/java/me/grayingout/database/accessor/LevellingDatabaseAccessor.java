@@ -11,15 +11,17 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import me.grayingout.database.objects.GuildLevelRole;
 import me.grayingout.database.objects.GuildMemberLevelExperience;
 import me.grayingout.database.query.DatabaseQuery;
 import me.grayingout.util.Levelling;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
 /**
- * Class for accessing the the levelling data from
- * the levelling database
+ * A {@code DatabaseAccessor} for accessing and modifying tables
+ * within the levelling database
  */
 public final class LevellingDatabaseAccessor extends DatabaseAccessor {
 
@@ -44,10 +46,137 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                   + "  user_id INTEGER NOT NULL,"
                   + "  level_experience INTEGER NOT NULL DEFAULT 0"
                   + ")");
+                
+                /* Creates the table that stores guild level roles */
+                statement.execute(
+                    "CREATE TABLE IF NOT EXISTS GuildLevelRole ("
+                  + "  guild_id INTEGER NOT NULL,"
+                  + "  role_id INTEGER NOT NULL PRIMARY KEY,"
+                  + "  level_required INTEGER NOT NULL DEFAULT 0"
+                  + ")");
 
                 return null;
             }  
         });
+    }
+
+    /**
+     * Adds a new role as a level role to the level roles database
+     * table, or updates it if it is already present
+     * 
+     * @param role          The role to add
+     * @param levelRequired The level required
+     */
+    public final void addGuildLevelRole(Role role, int levelRequired) {
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                /* First check if the role is already in the table */
+                PreparedStatement selectStatement = connection.prepareStatement(
+                    "SELECT * FROM GuildLevelRole WHERE role_id == ?"
+                );
+
+                selectStatement.setLong(1, role.getIdLong());
+
+                ResultSet set = selectStatement.executeQuery();
+                if (set.next()) {
+                    /* Update the level required on the entry */
+                    PreparedStatement updateStatement = connection.prepareStatement(
+                        "UPDATE GuildMemberRole SET level_required = ? WHERE role_id == ?"
+                    );
+
+                    updateStatement.setInt(1, levelRequired);
+                    updateStatement.setLong(2, role.getIdLong());
+
+                    updateStatement.executeUpdate();
+
+                    return null;
+                }
+
+                /* Insert new entry */
+                PreparedStatement insertStatement = connection.prepareStatement(
+                    "INSERT INTO GuildLevelRole (guild_id, role_id, level_required) VALUES (?, ?, ?)"
+                );
+
+                insertStatement.setLong(1, role.getGuild().getIdLong());
+                insertStatement.setLong(2, role.getIdLong());
+                insertStatement.setInt(3, levelRequired);
+
+                insertStatement.executeUpdate();
+                
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Deletes a role from the guild level roles database table
+     * by its id
+     * 
+     * @param role The role id to remove
+     */
+    public final void deleteGuildLevelRole(long roleId) {
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM GuildMemberRole WHERE role_id == ?"
+                );
+
+                statement.setLong(1, roleId);
+
+                statement.executeUpdate();
+
+                return null;
+            } 
+        });
+    }
+
+    /**
+     * Gets all the level roles for a guild
+     * 
+     * @param guild The guild
+     * @return The list of level roles
+     */
+    @SuppressWarnings("unchecked")
+    public final List<GuildLevelRole> getGuildLevelRoles(Guild guild) {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<List<GuildLevelRole>>() {
+            @Override
+            public List<GuildLevelRole> execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM GuildLevelRole WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                ResultSet set = statement.executeQuery();
+
+                List<GuildLevelRole> guildLevelRoles = new ArrayList<>();
+
+                /* Add all level roles */
+                while (set.next()) {
+                    /* Check role exists still */
+                    if (guild.getRoleById(set.getLong("role_id")) == null) {
+                        deleteGuildLevelRole(set.getLong("role_id"));
+                        continue;
+                    }
+
+                    guildLevelRoles.add(new GuildLevelRole(
+                        guild.getRoleById(set.getLong("role_id")),
+                        set.getInt("level_required")
+                    ));
+                }
+
+                return guildLevelRoles;
+            }
+        });
+
+        try {
+            return (List<GuildLevelRole>) future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return Arrays.asList();
+        }
     }
 
     /**
