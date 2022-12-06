@@ -1,12 +1,18 @@
 package me.grayingout.database.objects;
 
 import me.grayingout.util.Levelling;
+import net.dv8tion.jda.api.entities.Member;
 
 /**
  * Holds the data and helper methods for data from
  * the levelling database
  */
 public final class GuildMemberLevelExperience {
+
+    /**
+     * The member the experience belongs to
+     */
+    private final Member member;
 
     /**
      * The experience of the member
@@ -39,12 +45,23 @@ public final class GuildMemberLevelExperience {
      * 
      * @param experience The experience of the member
      */
-    public GuildMemberLevelExperience(int experience) {
+    public GuildMemberLevelExperience(Member member, int experience) {
+        this.member = member;
         this.experience = experience;
         this.level = Levelling.getLevelFromExperience(experience);
         this.currentLevelExperience = Levelling.getExperienceForLevel(this.level);
         this.nextLevelExperience = Levelling.getExperienceForLevel(this.level + 1);
         this.progressToNextLevel = this.experience/(this.nextLevelExperience * 1.0);
+    }
+
+    /**
+     * Gets the member this experience object
+     * belongs to
+     * 
+     * @return The member
+     */
+    public final Member getMember() {
+        return this.member;
     }
 
     /**

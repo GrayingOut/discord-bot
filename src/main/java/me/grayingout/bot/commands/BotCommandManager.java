@@ -4,6 +4,7 @@ import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.ClearWarningsCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.LevelCommand;
+import me.grayingout.bot.commands.implementations.LevelTopCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.SetLevelCommand;
@@ -70,4 +71,9 @@ public final class BotCommandManager {
      * The {@code /set-level <member:user> <level:int>} command
      */
     public static final SetLevelCommand SET_LEVEL_COMMAND = new SetLevelCommand();
+
+    /**
+     * The {@code /level-top} command
+     */
+    public static final LevelTopCommand LEVEL_TOP_COMMAND = new LevelTopCommand();
 }

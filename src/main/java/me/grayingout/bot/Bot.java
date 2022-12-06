@@ -64,7 +64,8 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData(),
                 BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.getCommandData(),
                 BotCommandManager.LEVEL_COMMAND.getCommandData(),
-                BotCommandManager.SET_LEVEL_COMMAND.getCommandData()
+                BotCommandManager.SET_LEVEL_COMMAND.getCommandData(),
+                BotCommandManager.LEVEL_TOP_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -132,6 +133,9 @@ public final class Bot extends ListenerAdapter {
                 break;
             case "set-level":
                 BotCommandManager.SET_LEVEL_COMMAND.execute(event);
+                break;
+            case "level-top":
+                BotCommandManager.LEVEL_TOP_COMMAND.execute(event);
                 break;
             default:
                 throw new RuntimeException("Unhandled slash command: " + event.getName());

@@ -5,12 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import me.grayingout.database.objects.GuildMemberLevelExperience;
 import me.grayingout.database.query.DatabaseQuery;
 import me.grayingout.util.Levelling;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
 /**
@@ -44,12 +48,54 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
     }
 
     /**
+     * Gets the top 5 member experience levels in a guild
+     * 
+     * @return The top members
+     */
+    @SuppressWarnings("unchecked")
+    public final List<GuildMemberLevelExperience> getTopGuildMembers(Guild guild) {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<List<GuildMemberLevelExperience>>() {
+            @Override
+            public List<GuildMemberLevelExperience> execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT level_experience, user_id FROM GuildMemberLevelExperience WHERE guild_id == ? AND level_experience > 0 ORDER BY level_experience DESC LIMIT 5"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                ResultSet set = statement.executeQuery();
+
+                List<GuildMemberLevelExperience> guildMemberLevelExperiences = new ArrayList<>();
+
+                /* Add all guild member experiences */
+                while (set.next()) {
+                    guildMemberLevelExperiences.add(
+                        new GuildMemberLevelExperience(
+                            guild.retrieveMemberById(set.getLong("user_id")).complete(),
+                            set.getInt("level_experience")
+                        )
+                    );
+                }
+                
+                return guildMemberLevelExperiences;
+            }
+        });
+
+        try {
+            return (List<GuildMemberLevelExperience>) future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return Arrays.asList();
+        }
+    }
+
+    /**
      * Sets the level experience for a guild member 
      * 
      * @param member     The member to set the level experience of
      * @param experience The experience to set it to
      */
-    public void setGuildMemberLevelExperience(Member member, int experience) {
+    public final void setGuildMemberLevelExperience(Member member, int experience) {
         queueQuery(new DatabaseQuery<Void>() {
 			@Override
 			public Void execute(Connection connection) throws SQLException {
@@ -209,10 +255,10 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
         });
 
         try {
-            return new GuildMemberLevelExperience((int) future.get());
+            return new GuildMemberLevelExperience(member, (int) future.get());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            return new GuildMemberLevelExperience(-1);
+            return new GuildMemberLevelExperience(member, -1);
         }
     }
 }
