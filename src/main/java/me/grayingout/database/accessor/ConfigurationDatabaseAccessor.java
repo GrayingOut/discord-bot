@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 
 import me.grayingout.database.objects.GuildWelcomeMessage;
 import me.grayingout.database.query.DatabaseQuery;
+import me.grayingout.util.WelcomeMessage;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
@@ -39,7 +40,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
                   + "  guild_id INTEGER NOT NULL PRIMARY KEY,"
                   + "  logging_channel_id INTEGER DEFAULT -1,"
                   + "  welcome_channel_id INTEGER DEFAULT -1,"
-                  + "  welcome_message TEXT DEFAULT \":wave: Welcome {user.mention} to {guild.name}. Enjoy your stay!\""
+                  + "  welcome_message TEXT"
                   + ")");
                 
                 return null;
@@ -61,9 +62,15 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
 
                 statement.setLong(1, guild.getIdLong());
 
+                /* No configuration in table */
                 ResultSet set = statement.executeQuery();
                 if (!set.next()) {
-                    return ":wave: Welcome {user.mention} to {guild.name}. Enjoy your stay!";
+                    return WelcomeMessage.getDefaultWelcomeMessage();
+                }
+
+                /* No custom message */
+                if (set.getString("welcome_message") == null) {
+                    return WelcomeMessage.getDefaultWelcomeMessage();
                 }
 
                 return set.getString("welcome_message");

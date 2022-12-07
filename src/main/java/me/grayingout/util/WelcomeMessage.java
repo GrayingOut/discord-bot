@@ -23,4 +23,14 @@ public final class WelcomeMessage {
             .replaceAll("\\{user\\.name\\}", member.getUser().getName())
             .replaceAll("\\{guild\\.name\\}", welcomeMessage.getGuild().getName());
     }
+
+    /**
+     * Gets the default welcome message for when none
+     * is set
+     * 
+     * @return The message
+     */
+    public static final String getDefaultWelcomeMessage() {
+        return ":wave: Welcome {user.mention} to {guild.name}. Enjoy your stay!";
+    }
 }
