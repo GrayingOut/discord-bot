@@ -38,7 +38,6 @@ public final class GuildAudioPlayerManager {
         audioPlayerManager = new DefaultAudioPlayerManager();
 
         AudioSourceManagers.registerRemoteSources(audioPlayerManager);
-        AudioSourceManagers.registerLocalSource(audioPlayerManager);
     }
 
     /**
@@ -97,6 +96,9 @@ public final class GuildAudioPlayerManager {
 
             @Override
             public void noMatches() {
+                channel.sendMessage(
+                    "No match found"
+                ).queue();
             }
 
             @Override
