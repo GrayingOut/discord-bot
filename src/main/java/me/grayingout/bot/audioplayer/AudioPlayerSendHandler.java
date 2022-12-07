@@ -30,7 +30,7 @@ public final class AudioPlayerSendHandler implements AudioSendHandler {
 
     public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
-        audioBuffer = ByteBuffer.allocate(1024);
+        audioBuffer = ByteBuffer.allocate(4096);
 
         audioFrame = new MutableAudioFrame();
         audioFrame.setBuffer(audioBuffer);
@@ -43,9 +43,9 @@ public final class AudioPlayerSendHandler implements AudioSendHandler {
 
     @Override
     public ByteBuffer provide20MsAudio() {
-        Buffer tmp = ((Buffer) audioBuffer).flip();
+        ((Buffer) audioBuffer).flip();
 
-        return (ByteBuffer) tmp;
+        return (ByteBuffer) audioBuffer;
     }
     
     @Override

@@ -4,6 +4,7 @@ import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -22,6 +23,14 @@ public final class PlayAudioCommand extends BotCommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
+
+        /* Command can only be used in a VC chat */
+        if (!event.getChannelType().equals(ChannelType.VOICE)) {
+            event.getHook().sendMessageEmbeds(
+                EmbedFactory.createWarningEmbed("Invalid Channel", "This command can only be used in a voice channel chat")
+            ).queue();
+            return;
+        }
         
         /* Check user is in channel */
         GuildVoiceState memberVoiceState = event.getMember().getVoiceState();
@@ -32,7 +41,7 @@ public final class PlayAudioCommand extends BotCommand {
             return;
         }
 
-        /* Join channel if not in one */
+        /* Join the channel if not in one */
         GuildVoiceState selfVoiceState = event.getGuild().getSelfMember().getVoiceState();
         if (selfVoiceState.getChannel() == null) {
             event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
