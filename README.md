@@ -57,6 +57,7 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 - Role messages - messages that give you roles
 - More logging options
 - More moderation tools
+- [Playing audio](https://github.com/GrayingOut/discord-bot/tree/audio-player) - currently doesn't work
 
 ## Running yourself
 
