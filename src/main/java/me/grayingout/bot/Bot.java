@@ -43,7 +43,8 @@ public final class Bot extends ListenerAdapter {
             )
             .enableIntents(
                 GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.GUILD_MEMBERS
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_VOICE_STATES
             )
             .setEventPassthrough(true)
             .setActivity(Activity.competing("World Domination"))
@@ -74,7 +75,8 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.ADD_LEVEL_ROLE_COMMAND.getCommandData(),
                 BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData(),
                 BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData(),
-                BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData()
+                BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData(),
+                BotCommandManager.PLAY_AUDIO_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -157,6 +159,9 @@ public final class Bot extends ListenerAdapter {
                 break;
             case "welcome-message":
                 BotCommandManager.WELCOME_MESSAGE_COMMAND.execute(event);
+                break;
+            case "play":
+                BotCommandManager.PLAY_AUDIO_COMMAND.execute(event);
                 break;
             default:
                 throw new RuntimeException("Unhandled slash command: " + event.getName());

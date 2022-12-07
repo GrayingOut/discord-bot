@@ -7,6 +7,7 @@ import me.grayingout.bot.commands.implementations.GetLevelRolesCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.LevelCommand;
 import me.grayingout.bot.commands.implementations.LevelTopCommand;
+import me.grayingout.bot.commands.implementations.PlayAudioCommand;
 import me.grayingout.bot.commands.implementations.RemoveLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
@@ -100,4 +101,9 @@ public final class BotCommandManager {
      * The {@code /welcome-message (set-channel <channel:channel> | remove-channel | set-message <message:string>)} command
      */
     public static final WelcomeMessageCommand WELCOME_MESSAGE_COMMAND = new WelcomeMessageCommand();
+
+    /**
+     * The {@code /play <url:string>} command
+     */
+    public static final PlayAudioCommand PLAY_AUDIO_COMMAND = new PlayAudioCommand();
 }
