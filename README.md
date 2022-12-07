@@ -16,6 +16,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Logging channel
 - Bulk deletion
 - Slowmode
+- Welcome message w/ templating
 - Rules command (used to print a pretty embed) - edit code to customise
 - Persistence with sqlite
 
@@ -41,10 +42,13 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
 |`/set-logging-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
+|`/welcome-message set-channel <channel>`| Set the welcome message channel | `MANAGE_SERVER` |
+|`/welcome-message remove-channel`| Remove the welcome message channel | `MANAGE_SERVER` |
+|`/welcome-message set-message <message>`| Set the welcome message | `MANAGE_SERVER` |
+|`/welcome-message show-config`| Show the current welcome message config | `MANAGE_SERVER` |
 
 ## Future Features (maybe)
 
-- Welcome message (which allows formatting)
 - Saving the message cache to a database
 - Use one database file (why i haven't already is beyond me)
 - External config file (something like `bot.config.json`)
