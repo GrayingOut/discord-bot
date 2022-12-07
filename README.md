@@ -42,20 +42,17 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/set-logging-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
 
-## Working On
-*nothing*
-
 ## Future Features (maybe)
 
-- [ ] Welcome message (which allows formatting)
-- [ ] Saving the message cache to a database
-- [ ] Use one database file (why i haven't already is beyond me)
-- [ ] External config file (something like `bot.config.json`)
-- [ ] Polls
-- [ ] Giveaways
-- [ ] Role messages - messages that give you roles
-- [ ] More logging options
-- [ ] More moderation tools
+- Welcome message (which allows formatting)
+- Saving the message cache to a database
+- Use one database file (why i haven't already is beyond me)
+- External config file (something like `bot.config.json`)
+- Polls
+- Giveaways
+- Role messages - messages that give you roles
+- More logging options
+- More moderation tools
 
 ## Running yourself
 
