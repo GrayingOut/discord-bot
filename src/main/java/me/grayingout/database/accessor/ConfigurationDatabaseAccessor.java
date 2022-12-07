@@ -270,6 +270,38 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
     }
 
     /**
+     * Remove a logging channel from a guild
+     * 
+     * @param guild The guild
+     */
+    public final void removeLoggingChannel(Guild guild) {
+        /* Make sure the guild has a config row */
+        createDefaultGuildConfig(guild);
+
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET logging_channel_id = ? WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, -1);
+                statement.setLong(2, guild.getIdLong());
+
+                statement.executeUpdate();
+
+                return null;
+            }
+        });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the logging channel singleton */
+        GuildLoggingChannel.refreshLoggingChannel(guild);
+    }
+
+    /**
      * Checks if the guild has a config in the database, if
      * not it creates a default config
      */
