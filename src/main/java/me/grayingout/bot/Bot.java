@@ -67,7 +67,7 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.CLEAR_WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData(),
-                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.getCommandData(),
+                BotCommandManager.LOGGING_COMMAND.getCommandData(),
                 BotCommandManager.LEVEL_COMMAND.getCommandData(),
                 BotCommandManager.SET_LEVEL_COMMAND.getCommandData(),
                 BotCommandManager.LEVEL_TOP_COMMAND.getCommandData(),
@@ -134,8 +134,8 @@ public final class Bot extends ListenerAdapter {
                 /* Delete a specific warning from a member */
                 BotCommandManager.REMOVE_WARNING_COMMAND.execute(event);
                 break;
-            case "set-logging-channel":
-                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.execute(event);
+            case "logging":
+                BotCommandManager.LOGGING_COMMAND.execute(event);
                 break;
             case "level":
                 BotCommandManager.LEVEL_COMMAND.execute(event);

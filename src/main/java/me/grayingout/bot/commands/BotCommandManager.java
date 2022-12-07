@@ -11,7 +11,7 @@ import me.grayingout.bot.commands.implementations.RemoveLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.RemoveWarningCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.SetLevelCommand;
-import me.grayingout.bot.commands.implementations.SetLoggingChannelCommand;
+import me.grayingout.bot.commands.implementations.LoggingCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarnCommand;
 import me.grayingout.bot.commands.implementations.WarningsCommand;
@@ -64,7 +64,7 @@ public final class BotCommandManager {
     /**
      * The {@code /set-logging-channel <channel:channel>} slash command
      */
-    public static final SetLoggingChannelCommand SET_LOGGING_CHANNEL_COMMAND = new SetLoggingChannelCommand();
+    public static final LoggingCommand LOGGING_COMMAND = new LoggingCommand();
 
     /**
      * The {@code /level [member:user]} slash command
