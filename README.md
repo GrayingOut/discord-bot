@@ -40,7 +40,8 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/set-level <member> <level>`| Set a member's level | `ADMINISTRATOR` |
 |`/reset-level <member>`| Reset a member's level | `ADMINISTRATOR` |
 |`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
-|`/set-logging-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
+|`/logging set-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
+|`/logging remove-channel <channel>`| Remove the bot logging channel | `MANAGE_SERVER` |
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
 |`/welcome-message set-channel <channel>`| Set the welcome message channel | `MANAGE_SERVER` |
 |`/welcome-message remove-channel`| Remove the welcome message channel | `MANAGE_SERVER` |
