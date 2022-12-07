@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import me.grayingout.database.objects.GuildLoggingChannel;
 import me.grayingout.database.objects.GuildWelcomeMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import me.grayingout.util.WelcomeMessage;
@@ -242,16 +243,6 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
     }
 
     /**
-     * Gets the logging channel of a specific guild
-     * 
-     * @param guild The guild
-     * @return The channel, or {@code null} if not channel exists
-     */
-    public final GuildMessageChannel getLoggingChannel(Guild guild) {
-        return guild.getChannelById(GuildMessageChannel.class, getLoggingChannelId(guild));
-    }
-
-    /**
      * Updates the logging channel id of the specific guild
      * 
      * @param guild   The guild
@@ -276,6 +267,9 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
                 return null;
             }
             
+        }).thenAccept(o -> {
+            /* Update the singleton */
+            GuildLoggingChannel.refreshLoggingChannel(guild);
         });
     }
 

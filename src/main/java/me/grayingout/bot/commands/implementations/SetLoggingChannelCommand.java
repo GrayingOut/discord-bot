@@ -1,7 +1,6 @@
 package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.bot.logging.BotLoggingChannel;
 import me.grayingout.database.accessor.DatabaseAccessorManager;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
@@ -43,9 +42,6 @@ public final class SetLoggingChannelCommand extends BotCommand {
         /* Update the logging channel */
         DatabaseAccessorManager.getConfigurationDatabaseAccessor()
             .updateLoggingChannelId(event.getGuild(), (GuildMessageChannel) channel);
-
-        /* Update the logging channel */
-        BotLoggingChannel.refreshLoggingChannel(event.getGuild());
 
         /* Success */
         event.getHook().sendMessageEmbeds(
