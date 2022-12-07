@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import me.grayingout.database.objects.GuildWelcomeMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
@@ -36,11 +37,166 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
                 statement.execute(
                     "CREATE TABLE IF NOT EXISTS GuildConfiguration ("
                   + "  guild_id INTEGER NOT NULL PRIMARY KEY,"
-                  + "  logging_channel_id INTEGER DEFAULT -1"
+                  + "  logging_channel_id INTEGER DEFAULT -1,"
+                  + "  welcome_channel_id INTEGER DEFAULT -1,"
+                  + "  welcome_message TEXT DEFAULT \":wave: Welcome {user.mention} to {guild.name}. Enjoy your stay!\""
                   + ")");
                 
                 return null;
             }
+        });
+    }
+    /**
+     * Gets the welcome message used for a specific guild
+     * 
+     * @param guild   The guild
+     */
+    public final String getWelcomeMessage(Guild guild) {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<String>() {
+            @Override
+            public String execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT welcome_message FROM GuildConfiguration WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                ResultSet set = statement.executeQuery();
+                if (!set.next()) {
+                    return ":wave: Welcome {user.mention} to {guild.name}. Enjoy your stay!";
+                }
+
+                return set.getString("welcome_message");
+            }
+        });
+
+        try {
+            return (String) future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * Sets the welcome message used for a specific guild
+     * 
+     * @param guild   The guild
+     * @param message The welcome message
+     */
+    public final void setWelcomeMessage(Guild guild, String message) {
+        /* Make sure the guild has a config */
+        createDefaultGuildConfig(guild);
+        
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET welcome_message = ? WHERE guild_id == ?"
+                );
+
+                statement.setString(1, message);
+                statement.setLong(2, guild.getIdLong());
+
+                statement.executeUpdate();
+
+                return null;
+            }
+        }).thenAccept(o -> {
+            /* Refresh the singleton */
+            GuildWelcomeMessage.refreshWelcomeMessage(guild);
+        });
+    }
+
+    /**
+     * Gets the channel id of the channel that welcome
+     * messages are sent in for a specific guild
+     * 
+     * @param guild The guild
+     * @return The channel id
+     */
+    public final long getWelcomeChannelId(Guild guild) {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Long>() {
+            @Override
+            public Long execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT welcome_channel_id FROM GuildConfiguration WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                ResultSet set = statement.executeQuery();
+                if (!set.next()) {
+                    return -1L;
+                }
+
+                return set.getLong("welcome_channel_id");
+            }
+        });
+
+        try {
+            return (long) future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return -1L;
+        }
+    }
+
+    /**
+     * Updates the welcome channel id for a specific guild
+     * 
+     * @param guild   The guild
+     * @param channel The new welcome channel
+     */
+    public final void updateWelcomeChannelId(Guild guild, GuildMessageChannel channel) {
+        /* Make sure the guild has a config row */
+        createDefaultGuildConfig(guild);
+
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET welcome_channel_id = ? WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, channel.getIdLong());
+                statement.setLong(2, guild.getIdLong());
+    
+                statement.executeUpdate();
+
+                return null;
+            }
+        }).thenAccept(o -> {
+            /* Refresh the singleton */
+            GuildWelcomeMessage.refreshWelcomeMessage(guild);
+        });
+    }
+
+    /**
+     * Removes the welcome channel for a specific guild
+     * 
+     * @param guild   The guild
+     */
+    public final void removeWelcomeChannelId(Guild guild) {
+        /* Make sure the guild has a config row */
+        createDefaultGuildConfig(guild);
+
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET welcome_channel_id = -1 WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+    
+                statement.executeUpdate();
+
+                return null;
+            }
+        }).thenAccept(o -> {
+            /* Refresh the singleton */
+            GuildWelcomeMessage.refreshWelcomeMessage(guild);
         });
     }
 

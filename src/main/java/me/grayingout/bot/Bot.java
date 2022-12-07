@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import me.grayingout.bot.commands.BotCommandManager;
 import me.grayingout.bot.events.LevellingEventsHandler;
 import me.grayingout.bot.events.MessageCache;
+import me.grayingout.bot.events.WelcomeMessageListeners;
 import me.grayingout.bot.events.interactions.WarningsListInteractionHandler;
 import me.grayingout.bot.logging.DeletedMessageLogger;
 import net.dv8tion.jda.api.JDA;
@@ -37,9 +38,13 @@ public final class Bot extends ListenerAdapter {
                 new WarningsListInteractionHandler(),
                 new DeletedMessageLogger(),
                 new LevellingEventsHandler(),
+                new WelcomeMessageListeners(),
                 MessageCache.getInstance()
             )
-            .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+            .enableIntents(
+                GatewayIntent.MESSAGE_CONTENT,
+                GatewayIntent.GUILD_MEMBERS
+            )
             .setEventPassthrough(true)
             .setActivity(Activity.competing("World Domination"))
             .build();
@@ -68,7 +73,8 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.LEVEL_TOP_COMMAND.getCommandData(),
                 BotCommandManager.ADD_LEVEL_ROLE_COMMAND.getCommandData(),
                 BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData(),
-                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData()
+                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData(),
+                BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -148,6 +154,9 @@ public final class Bot extends ListenerAdapter {
                 break;
             case "remove-level-role":
                 BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.execute(event);
+                break;
+            case "welcome-message":
+                BotCommandManager.WELCOME_MESSAGE_COMMAND.execute(event);
                 break;
             default:
                 throw new RuntimeException("Unhandled slash command: " + event.getName());

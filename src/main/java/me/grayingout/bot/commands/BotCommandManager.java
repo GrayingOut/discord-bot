@@ -15,6 +15,7 @@ import me.grayingout.bot.commands.implementations.SetLoggingChannelCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarnCommand;
 import me.grayingout.bot.commands.implementations.WarningsCommand;
+import me.grayingout.bot.commands.implementations.WelcomeMessageCommand;
 
 /**
  * Stores references to all bot commands
@@ -94,4 +95,9 @@ public final class BotCommandManager {
      * The {@code /remove-level-role} command
      */
     public static final RemoveLevelRoleCommand REMOVE_LEVEL_ROLE_COMMAND = new RemoveLevelRoleCommand();
+
+    /**
+     * The {@code /welcome-message (set-channel <channel:channel> | remove-channel | set-message <message:string>)} command
+     */
+    public static final WelcomeMessageCommand WELCOME_MESSAGE_COMMAND = new WelcomeMessageCommand();
 }
