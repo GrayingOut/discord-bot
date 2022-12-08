@@ -30,10 +30,10 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/remove-level-role <role>` | Removes a role from any reward level | `MANAGE_ROLES` |
 |`/get-level-roles`| Gets a list of reward roles |  |
 |`/bulk-delete <count>`| Purges an amount of messages | `MESSAGE_MANAGE` |
-|`/clear-warnings <member>`| Clears a members warnings | `ADMINISTRATOR` |
-|`/remove-warning <member> <warning_id>`| Removes a specific warning from a member | `ADMINISTRATOR` |
-|`/warn <member> [reason]`| Warns a member with an optional reason | `MODERATE_MEMBERS` |
-|`/warnings <member>`| View the warnings of a member | `MODERATE_MEMBERS` |
+|`/warnings add <member> [reason]`| Give a member a warning | `MODERATE_MEMBERS` |
+|`/warnings remove <member> <id>`| Remove a warning from a member | `MODERATE_MEMBERS` |
+|`/warnings list <member>`| View the warnings of a member | `MODERATE_MEMBERS` |
+|`/warnings clear <member>`| Clear a member's warnings | `MODERATE_MEMBERS` |
 |`/hello [member]`| Say hello to the bot | |
 |`/level [member]`| Get your own or another member's level | |
 |`/level-top`| View the top 5 levels | |
