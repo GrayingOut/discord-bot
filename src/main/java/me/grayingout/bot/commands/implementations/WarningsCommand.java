@@ -92,7 +92,7 @@ public final class WarningsCommand extends BotCommand {
                 /* Check for additional permissions */
                 if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
                     event.getHook().sendMessageEmbeds(
-                        EmbedFactory.createWarningEmbed("Insufficient Permission", "This subcommand requires the `ADMINISTRATOR` permission.")
+                        EmbedFactory.createErrorEmbed("Insufficient Permission", "This subcommand requires the `ADMINISTRATOR` permission.")
                     ).queue();
                     break;
                 }
@@ -135,7 +135,7 @@ public final class WarningsCommand extends BotCommand {
                 /* Check for additional permission */
                 if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
                     event.getHook().sendMessageEmbeds(
-                        EmbedFactory.createWarningEmbed("Insufficient Permission", "This subcommand requires the `ADMINISTRATOR` permission.")
+                        EmbedFactory.createErrorEmbed("Insufficient Permission", "This subcommand requires the `ADMINISTRATOR` permission.")
                     ).queue();
                     break;
                 }
