@@ -29,24 +29,23 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/add-level-role <role> <level>`| Adds a role as a reward for a level | `MANAGE_ROLES` |
 |`/remove-level-role <role>` | Removes a role from any reward level | `MANAGE_ROLES` |
 |`/get-level-roles`| Gets a list of reward roles |  |
-|`/bulk-delete <count>`| Purges an amount of messages | `MESSAGE_MANAGE` |
+|`/levels get [member]`| Get your own or another member's level | |
+|`/levels top`| View the top 5 levels | |
+|`/levels set <member> <level>`| Set a member's level | `ADMINISTRATOR` |
 |`/warnings add <member> [reason]`| Give a member a warning | `MODERATE_MEMBERS` |
 |`/warnings remove <member> <id>`| Remove a warning from a member | `MODERATE_MEMBERS` |
 |`/warnings list <member>`| View the warnings of a member | `MODERATE_MEMBERS` |
 |`/warnings clear <member>`| Clear a member's warnings | `MODERATE_MEMBERS` |
-|`/hello [member]`| Say hello to the bot | |
-|`/levels get [member]`| Get your own or another member's level | |
-|`/levels top`| View the top 5 levels | |
-|`/levels set <member> <level>`| Set a member's level | `ADMINISTRATOR` |
-|`/reset-level <member>`| Reset a member's level | `ADMINISTRATOR` |
-|`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
 |`/logging set-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
 |`/logging remove-channel <channel>`| Remove the bot logging channel | `MANAGE_SERVER` |
-|`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
 |`/welcome-message set-channel <channel>`| Set the welcome message channel | `MANAGE_SERVER` |
 |`/welcome-message remove-channel`| Remove the welcome message channel | `MANAGE_SERVER` |
 |`/welcome-message set-message <message>`| Set the welcome message | `MANAGE_SERVER` |
 |`/welcome-message show-config`| Show the current welcome message config | `MANAGE_SERVER` |
+|`/bulk-delete <count>`| Purges an amount of messages | `MESSAGE_MANAGE` |
+|`/hello [member]`| Say hello to the bot | |
+|`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
+|`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
 
 ## Future Features (maybe)
 
