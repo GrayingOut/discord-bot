@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import me.grayingout.database.accessor.DatabaseAccessorManager;
-import me.grayingout.database.objects.MemberWarning;
-import me.grayingout.database.objects.MemberWarningsListMessage;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
+import me.grayingout.database.entities.MemberWarning;
+import me.grayingout.database.entities.MemberWarningsListMessage;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;

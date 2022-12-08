@@ -1,4 +1,4 @@
-package me.grayingout.database.accessor;
+package me.grayingout.database.accessors;
 
 /**
  * Handles the {@code DatabaseAccessor} singletons

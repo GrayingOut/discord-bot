@@ -1,4 +1,4 @@
-package me.grayingout.database.objects;
+package me.grayingout.database.entities;
 
 import java.time.LocalDateTime;
 

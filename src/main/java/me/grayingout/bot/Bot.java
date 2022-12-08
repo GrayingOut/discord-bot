@@ -2,12 +2,12 @@ package me.grayingout.bot;
 
 import java.util.stream.Collectors;
 
+import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.commands.BotCommandManager;
-import me.grayingout.bot.events.LevellingEventsHandler;
-import me.grayingout.bot.events.MessageCache;
-import me.grayingout.bot.events.WelcomeMessageListeners;
-import me.grayingout.bot.events.interactions.WarningsListInteractionHandler;
-import me.grayingout.bot.logging.DeletedMessageLogger;
+import me.grayingout.bot.listeners.LevellingListeners;
+import me.grayingout.bot.listeners.LoggingListeners;
+import me.grayingout.bot.listeners.WelcomeMessageListeners;
+import me.grayingout.bot.listeners.interactions.WarningsListInteractionListeners;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -35,9 +35,9 @@ public final class Bot extends ListenerAdapter {
         jda = JDABuilder.createDefault(token)
             .addEventListeners(
                 this,
-                new WarningsListInteractionHandler(),
-                new DeletedMessageLogger(),
-                new LevellingEventsHandler(),
+                new WarningsListInteractionListeners(),
+                new LoggingListeners(),
+                new LevellingListeners(),
                 new WelcomeMessageListeners(),
                 MessageCache.getInstance()
             )
@@ -57,20 +57,8 @@ public final class Bot extends ListenerAdapter {
             e.printStackTrace();
         }
 
-        /* Update the global commands */
-        jda.updateCommands()
-            .addCommands(
-                BotCommandManager.HELLO_COMMAND.getCommandData(),
-                BotCommandManager.RULES_COMMAND.getCommandData(),
-                BotCommandManager.BULK_DELETE_COMMAND.getCommandData(),
-                BotCommandManager.SLOWMODE_COMMAND.getCommandData(),
-                BotCommandManager.WARNINGS_COMMAND.getCommandData(),
-                BotCommandManager.PLAY_AUDIO_COMMAND.getCommandData(),
-                BotCommandManager.LOGGING_COMMAND.getCommandData(),
-                BotCommandManager.LEVELS_COMMAND.getCommandData(),
-                BotCommandManager.LEVEL_ROLES_COMMAND.getCommandData(),
-                BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData()
-            ).queue();
+        /* Update the bot commands */
+        BotCommandManager.updateJDACommands(jda);
     }
 
     /**
@@ -95,45 +83,12 @@ public final class Bot extends ListenerAdapter {
             event.getOptions().stream().map(o -> o.getName() + "=" + event.getOption(o.getName()).getAsString()).collect(Collectors.joining(" "))
         );
 
-        /* Check which slash command has been used */
-        switch (event.getName()) {
-            case "hello":
-                /* Say hello to the bot */
-                BotCommandManager.HELLO_COMMAND.execute(event);
-                break;
-            case "rules":
-                /* Send the rules embed to a channel */
-                BotCommandManager.RULES_COMMAND.execute(event);
-                break;
-            case "bulk-delete":
-                /* Delete multiple messages at once */
-                BotCommandManager.BULK_DELETE_COMMAND.execute(event);
-                break;
-            case "slowmode":
-                /* Change the slowmode of a channel */
-                BotCommandManager.SLOWMODE_COMMAND.execute(event);
-                break;
-            case "warnings":
-                /* Warn a member */
-                BotCommandManager.WARNINGS_COMMAND.execute(event);
-                break;
-            case "logging":
-                BotCommandManager.LOGGING_COMMAND.execute(event);
-                break;
-            case "levels":
-                BotCommandManager.LEVELS_COMMAND.execute(event);
-                break;
-            case "level-roles":
-                BotCommandManager.LEVEL_ROLES_COMMAND.execute(event);
-                break;
-            case "welcome-message":
-                BotCommandManager.WELCOME_MESSAGE_COMMAND.execute(event);
-                break;
-            case "play":
-                BotCommandManager.PLAY_AUDIO_COMMAND.execute(event);
-                break;
-            default:
-                throw new RuntimeException("Unhandled slash command: " + event.getName());
+        /* Get the command */
+        BotCommand command = BotCommandManager.getBotCommand(event.getName());
+        if (command != null) {
+            command.execute(event);
+            return;
         }
+        throw new RuntimeException("Unhandled bot command: " + event.getName());
     }
 }

@@ -1,8 +1,8 @@
 package me.grayingout.bot.commands.implementations;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.accessor.DatabaseAccessorManager;
-import me.grayingout.database.objects.GuildWelcomeMessage;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
+import me.grayingout.database.entities.GuildWelcomeMessage;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;

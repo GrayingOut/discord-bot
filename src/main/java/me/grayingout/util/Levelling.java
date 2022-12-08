@@ -2,8 +2,8 @@ package me.grayingout.util;
 
 import java.util.List;
 
-import me.grayingout.database.accessor.DatabaseAccessorManager;
-import me.grayingout.database.objects.GuildLevelRole;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
+import me.grayingout.database.entities.GuildLevelRole;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
