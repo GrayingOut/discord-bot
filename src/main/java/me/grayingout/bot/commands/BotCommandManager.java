@@ -4,12 +4,10 @@ import me.grayingout.bot.commands.implementations.AddLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.GetLevelRolesCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
-import me.grayingout.bot.commands.implementations.LevelCommand;
-import me.grayingout.bot.commands.implementations.LevelTopCommand;
+import me.grayingout.bot.commands.implementations.LevelsCommand;
 import me.grayingout.bot.commands.implementations.LoggingCommand;
 import me.grayingout.bot.commands.implementations.RemoveLevelRoleCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
-import me.grayingout.bot.commands.implementations.SetLevelCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarningsCommand;
 import me.grayingout.bot.commands.implementations.WelcomeMessageCommand;
@@ -51,17 +49,7 @@ public final class BotCommandManager {
     /**
      * The {@code /level [member:user]} slash command
      */
-    public static final LevelCommand LEVEL_COMMAND = new LevelCommand();
-
-    /**
-     * The {@code /set-level <member:user> <level:int>} command
-     */
-    public static final SetLevelCommand SET_LEVEL_COMMAND = new SetLevelCommand();
-
-    /**
-     * The {@code /level-top} command
-     */
-    public static final LevelTopCommand LEVEL_TOP_COMMAND = new LevelTopCommand();
+    public static final LevelsCommand LEVELS_COMMAND = new LevelsCommand();
 
     /**
      * The {@code /add-level-role <role:role> <level:int>} command

@@ -65,9 +65,7 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.SLOWMODE_COMMAND.getCommandData(),
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.LOGGING_COMMAND.getCommandData(),
-                BotCommandManager.LEVEL_COMMAND.getCommandData(),
-                BotCommandManager.SET_LEVEL_COMMAND.getCommandData(),
-                BotCommandManager.LEVEL_TOP_COMMAND.getCommandData(),
+                BotCommandManager.LEVELS_COMMAND.getCommandData(),
                 BotCommandManager.ADD_LEVEL_ROLE_COMMAND.getCommandData(),
                 BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData(),
                 BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData(),
@@ -122,14 +120,8 @@ public final class Bot extends ListenerAdapter {
             case "logging":
                 BotCommandManager.LOGGING_COMMAND.execute(event);
                 break;
-            case "level":
-                BotCommandManager.LEVEL_COMMAND.execute(event);
-                break;
-            case "set-level":
-                BotCommandManager.SET_LEVEL_COMMAND.execute(event);
-                break;
-            case "level-top":
-                BotCommandManager.LEVEL_TOP_COMMAND.execute(event);
+            case "levels":
+                BotCommandManager.LEVELS_COMMAND.execute(event);
                 break;
             case "add-level-role":
                 BotCommandManager.ADD_LEVEL_ROLE_COMMAND.execute(event);
