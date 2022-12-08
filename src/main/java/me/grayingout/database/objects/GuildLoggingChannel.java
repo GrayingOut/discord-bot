@@ -1,4 +1,4 @@
-package me.grayingout.bot.logging;
+package me.grayingout.database.objects;
 
 import java.util.HashMap;
 
@@ -14,13 +14,13 @@ import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
  * A class used to log different bot actions to a guild's
  * logging channel
  */
-public final class BotLoggingChannel {
+public final class GuildLoggingChannel {
 
     /**
-     * Holds a cache of the {@code BotLoggingChannel} for a
+     * Holds a cache of the {@code GuildLoggingChannel} for a
      * guild
      */
-    private static final HashMap<Long, BotLoggingChannel> botLoggingChannels = new HashMap<>();
+    private static final HashMap<Long, GuildLoggingChannel> guildLoggingChannels = new HashMap<>();
 
     /**
      * The guild the logging channel belongs to
@@ -28,51 +28,63 @@ public final class BotLoggingChannel {
     private final Guild guild;
 
     /**
-     * The logging channel
+     * The id of the logging channel
      */
-    private GuildMessageChannel loggingChannel;
+    private long channelId;
 
     /**
-     * Creates a new {@code BotLoggingChannel} for the
-     * specific guild
+     * The logging channel
      */
-    private BotLoggingChannel(Guild guild) {
+    private GuildMessageChannel channel;
+
+    /**
+     * Creates a new {@code GuildLoggingChannel} for the
+     * specific guild
+     * 
+     * @param guild     The guild
+     * @param channelId The logging channel id
+     */
+    private GuildLoggingChannel(Guild guild, long channelId) {
         this.guild = guild;
-        loggingChannel = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannel(guild);
+        this.channelId = channelId;
+        channel = guild.getChannelById(GuildMessageChannel.class, channelId);
     }
 
     /**
-     * Gets the {@code BotLoggingChannel} for a guild
+     * Gets the {@code GuildLoggingChannel} for a guild
      * 
      * @param guild The guild
      * @return The bot logging channel
      */
-    public static final BotLoggingChannel getGuildBotLoggingChannel(Guild guild) {
+    public static final GuildLoggingChannel getGuildLoggingChannel(Guild guild) {
         /* Check if already created a bot logging channel */
-        if (botLoggingChannels.get(guild.getIdLong()) != null) {
-            return botLoggingChannels.get(guild.getIdLong());
+        if (guildLoggingChannels.get(guild.getIdLong()) != null) {
+            return guildLoggingChannels.get(guild.getIdLong());
         }
 
-        botLoggingChannels.put(guild.getIdLong(), new BotLoggingChannel(guild));
+        guildLoggingChannels.put(guild.getIdLong(), new GuildLoggingChannel(
+            guild,
+            DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannelId(guild)
+        ));
 
-        return botLoggingChannels.get(guild.getIdLong());
+        return guildLoggingChannels.get(guild.getIdLong());
     }
 
     /**
      * Refreshes the logging channel of a guild
      */
     public static final void refreshLoggingChannel(Guild guild) {
-        if (botLoggingChannels.get(guild.getIdLong()) != null) {
-            botLoggingChannels.get(guild.getIdLong()).refresh();
+        if (guildLoggingChannels.get(guild.getIdLong()) != null) {
+            guildLoggingChannels.get(guild.getIdLong()).refresh();
         }
     }
-
 
     /**
      * Refreshes the logging channel - internal use
      */
     public final void refresh() {
-        loggingChannel = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannel(guild);
+        channelId = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannelId(guild);
+        channel = guild.getChannelById(GuildMessageChannel.class, channelId);
     }
 
     /**
@@ -81,12 +93,12 @@ public final class BotLoggingChannel {
      * @param event          The deletion event
      */
     public final void logDeletedMessage(MessageDeleteEvent event) {
-        if (loggingChannel == null) {
+        if (channel == null) {
             return;
         }
 
         /* Ignore messages deleted in logging channel */
-        if (loggingChannel.getIdLong() == event.getChannel().getIdLong()) {
+        if (channel.getIdLong() == event.getChannel().getIdLong()) {
             return;
         }
 
@@ -95,12 +107,12 @@ public final class BotLoggingChannel {
             Message message = MessageCache.getInstance().getMessageByIdLong(event.getMessageIdLong());
 
             /* Log known message */
-            loggingChannel.sendMessageEmbeds(EmbedFactory.createDeletedMessageLogEmbed(message)).queue();
+            channel.sendMessageEmbeds(EmbedFactory.createDeletedMessageLogEmbed(message)).queue();
             return;
         }
 
         /* Log unknown message */
-        loggingChannel.sendMessageEmbeds(EmbedFactory.createUnknownDeletedMessageLogEmbed(
+        channel.sendMessageEmbeds(EmbedFactory.createUnknownDeletedMessageLogEmbed(
             event.getChannel(),
             event.getMessageIdLong()
         )).queue();

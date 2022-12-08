@@ -6,10 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import me.grayingout.database.objects.GuildLevelRole;
 import me.grayingout.database.objects.GuildMemberLevelExperience;
@@ -171,12 +169,8 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
             }
         });
 
-        try {
-            return (List<GuildLevelRole>) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return Arrays.asList();
-        }
+        /* Wait for query to finish and return level roles */
+        return (List<GuildLevelRole>) future.join();
     }
 
     /**
@@ -213,12 +207,8 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
             }
         });
 
-        try {
-            return (List<GuildMemberLevelExperience>) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return Arrays.asList();
-        }
+        /* Wait for query to finish and return top members */
+        return (List<GuildMemberLevelExperience>) future.join();
     }
 
     /**
@@ -228,7 +218,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
      * @param experience The experience to set it to
      */
     public final void setGuildMemberLevelExperience(Member member, int experience) {
-        queueQuery(new DatabaseQuery<Void>() {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
 			@Override
 			public Void execute(Connection connection) throws SQLException {
                 /* Check to see if they have an entry in the database */
@@ -271,6 +261,12 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
 				return null;
 			}
         });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the member's level roles */
+        Levelling.updateMemberLevelRoles(member);
     }
 
     /**
@@ -312,7 +308,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
 
                 /* User has no entry in the database */
                 if (!set.next()) {
-                    /* Insert 'experience' into the database */
+                    /* Insert experience into the database */
                     PreparedStatement insertStatement = connection.prepareStatement(
                         "INSERT INTO GuildMemberLevelExperience (guild_id, user_id, level_experience) VALUES (?, ?, ?)"
                     );
@@ -323,16 +319,18 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
 
                     insertStatement.executeUpdate();
 
-                    /* Check if user has a new level */
+                    /* Return member's new level if they have a new level */
                     if (Levelling.getLevelFromExperience(experience) != 0) {
                         return Levelling.getLevelFromExperience(experience);
                     }
                     return -1;
                 }
 
+                /* Get the member's current experience and level */
                 int currentExperience = set.getInt("level_experience");
+                int currentLevel = Levelling.getLevelFromExperience(currentExperience);
 
-                /* Add 'experience' to current experience */
+                /* Add experience to current experience */
                 PreparedStatement updateStatement = connection.prepareStatement(
                     "UPDATE GuildMemberLevelExperience SET level_experience = ? WHERE guild_id == ? AND user_id == ?"
                 );
@@ -342,21 +340,18 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
                 updateStatement.setLong(3, member.getIdLong());
 
                 updateStatement.executeUpdate();
-
-                /* Check if user has a new level */
-                if (Levelling.getLevelFromExperience(currentExperience) != Levelling.getLevelFromExperience(currentExperience + experience)) {
-                    return Levelling.getLevelFromExperience(currentExperience + experience);
+                
+                /* Return member's new level if they have a new level */
+                int newLevel = Levelling.getLevelFromExperience(currentExperience + experience);
+                if (currentLevel != newLevel) {
+                    return newLevel;
                 }
-				return -1;
+                return -1;
 			} 
         });
 
-        try {
-            return (int) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return -1;
-        }
+        /* Wait for query to finish and return result */
+        return (int) future.join();
     }
 
     /**
@@ -386,11 +381,7 @@ public final class LevellingDatabaseAccessor extends DatabaseAccessor {
             }
         });
 
-        try {
-            return new GuildMemberLevelExperience(member, (int) future.get());
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return new GuildMemberLevelExperience(member, -1);
-        }
+        /* Wait for query to finish and return experience */
+        return new GuildMemberLevelExperience(member, (int) future.join());
     }
 }

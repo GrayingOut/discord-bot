@@ -1,5 +1,6 @@
 package me.grayingout.bot.logging;
 
+import me.grayingout.database.objects.GuildLoggingChannel;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -11,6 +12,6 @@ public class DeletedMessageLogger extends ListenerAdapter {
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
         /* Log the message */
-        BotLoggingChannel.getGuildBotLoggingChannel(event.getGuild()).logDeletedMessage(event);
+        GuildLoggingChannel.getGuildLoggingChannel(event.getGuild()).logDeletedMessage(event);
     }
 }

@@ -64,19 +64,12 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.RULES_COMMAND.getCommandData(),
                 BotCommandManager.BULK_DELETE_COMMAND.getCommandData(),
                 BotCommandManager.SLOWMODE_COMMAND.getCommandData(),
-                BotCommandManager.WARN_COMMAND.getCommandData(),
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
-                BotCommandManager.CLEAR_WARNINGS_COMMAND.getCommandData(),
-                BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData(),
-                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.getCommandData(),
-                BotCommandManager.LEVEL_COMMAND.getCommandData(),
-                BotCommandManager.SET_LEVEL_COMMAND.getCommandData(),
-                BotCommandManager.LEVEL_TOP_COMMAND.getCommandData(),
-                BotCommandManager.ADD_LEVEL_ROLE_COMMAND.getCommandData(),
-                BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData(),
-                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData(),
-                BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData(),
-                BotCommandManager.PLAY_AUDIO_COMMAND.getCommandData()
+                BotCommandManager.PLAY_AUDIO_COMMAND.getCommandData(),
+                BotCommandManager.LOGGING_COMMAND.getCommandData(),
+                BotCommandManager.LEVELS_COMMAND.getCommandData(),
+                BotCommandManager.LEVEL_ROLES_COMMAND.getCommandData(),
+                BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData()
             ).queue();
     }
 
@@ -120,42 +113,18 @@ public final class Bot extends ListenerAdapter {
                 /* Change the slowmode of a channel */
                 BotCommandManager.SLOWMODE_COMMAND.execute(event);
                 break;
-            case "warn":
-                /* Warn a member */
-                BotCommandManager.WARN_COMMAND.execute(event);
-                break;
             case "warnings":
-                /* Get list of members warnings */
+                /* Warn a member */
                 BotCommandManager.WARNINGS_COMMAND.execute(event);
                 break;
-            case "clear-warnings":
-                /* Delete a member's warnings */
-                BotCommandManager.CLEAR_WARNINGS_COMMAND.execute(event);
+            case "logging":
+                BotCommandManager.LOGGING_COMMAND.execute(event);
                 break;
-            case "remove-warning":
-                /* Delete a specific warning from a member */
-                BotCommandManager.REMOVE_WARNING_COMMAND.execute(event);
+            case "levels":
+                BotCommandManager.LEVELS_COMMAND.execute(event);
                 break;
-            case "set-logging-channel":
-                BotCommandManager.SET_LOGGING_CHANNEL_COMMAND.execute(event);
-                break;
-            case "level":
-                BotCommandManager.LEVEL_COMMAND.execute(event);
-                break;
-            case "set-level":
-                BotCommandManager.SET_LEVEL_COMMAND.execute(event);
-                break;
-            case "level-top":
-                BotCommandManager.LEVEL_TOP_COMMAND.execute(event);
-                break;
-            case "add-level-role":
-                BotCommandManager.ADD_LEVEL_ROLE_COMMAND.execute(event);
-                break;
-            case "get-level-roles":
-                BotCommandManager.GET_LEVEL_ROLES_COMMAND.execute(event);
-                break;
-            case "remove-level-role":
-                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.execute(event);
+            case "level-roles":
+                BotCommandManager.LEVEL_ROLES_COMMAND.execute(event);
                 break;
             case "welcome-message":
                 BotCommandManager.WELCOME_MESSAGE_COMMAND.execute(event);
