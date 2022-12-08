@@ -5,7 +5,18 @@ It is not meant to be used in an actual server, but feel free to use.
 
 The bot requires the `ADMINISTRATOR` permission to function properly.
 
+## Table of Contents
+1. [Features](#features)
+    1. [Overview](#overview)
+    2. [Slash Commands](#slash-commands)
+    3. [Logging](#logging)
+2. [Future Features](#future-features-maybe)
+3. [Running yourself](#running-yourself)
+4. [Found a bug/issue](#found-a-bugissue)
+
 ## Features
+
+### Overview
 
 - Message cache
 - Slash command support
@@ -24,7 +35,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 The bot has many slash commands - the amazing discord feature. Here is the list of them
 
 |Command|Description|Permission|
-|------------|---|---|
+|---|---|---|
 |`/level-roles add <role> <level>`| Adds a role as a reward for a level | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/level-roles remove <role>` | Removes a role from any reward level | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/level-roles list`| Gets a list of reward roles | `MANAGE_ROLES`, `MANAGE_SERVER` |
@@ -49,6 +60,16 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
 
+### Logging
+
+These are the types of logging the bot currently supports
+
+|Logging Type|Events Logged|
+|---|---|
+| MESSAGE_DELETION_LOGGING | `MESSAGE_DELETE` |
+| ROLE_LOGGING | `ROLE_CREATE`, `ROLE_DELETE`, `ROLE_UPDATE_NAME`, `ROLE_UPDATE_PERMISSIONS` |
+| CHANNEL_LOGGING | `CHANNEL_CREATE`, `CHANNEL_DELETE`, `CHANNEL_UPDATE_NAME` |
+
 ## Future Features (maybe)
 
 - Saving the message cache to a database
@@ -57,7 +78,6 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 - Polls
 - Giveaways
 - Role messages - messages that give you roles
-- More logging options
 - More moderation tools
 - [Playing audio](https://github.com/GrayingOut/discord-bot/tree/audio-player) - currently doesn't work
 
