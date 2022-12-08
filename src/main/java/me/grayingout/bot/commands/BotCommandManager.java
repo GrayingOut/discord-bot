@@ -61,6 +61,6 @@ public final class BotCommandManager {
                     .stream()
                     .map(c -> c.getCommandData())
                     .collect(Collectors.toList())
-            );
+            ).queue();
     }
 }
