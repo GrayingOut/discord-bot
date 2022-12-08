@@ -1,6 +1,7 @@
 package me.grayingout.database.entities;
 
 import java.util.HashMap;
+import java.util.List;
 
 import me.grayingout.bot.MessageCache;
 import me.grayingout.database.accessors.DatabaseAccessorManager;
@@ -40,17 +41,21 @@ public final class GuildLoggingChannel {
      */
     private GuildMessageChannel channel;
 
+    private List<LoggingEventType> enabledLoggingTypes;
+
     /**
      * Creates a new {@code GuildLoggingChannel} for the
      * specific guild
      * 
-     * @param guild     The guild
-     * @param channelId The logging channel id
+     * @param guild               The guild
+     * @param channelId           The logging channel id
+     * @param enabledLoggingTypes The logging types to log
      */
-    private GuildLoggingChannel(Guild guild, long channelId) {
+    private GuildLoggingChannel(Guild guild, long channelId, List<LoggingEventType> enabledLoggingTypes) {
         this.guild = guild;
         this.channelId = channelId;
         channel = guild.getChannelById(GuildMessageChannel.class, channelId);
+        this.enabledLoggingTypes = enabledLoggingTypes;
     }
 
     /**
@@ -67,7 +72,8 @@ public final class GuildLoggingChannel {
 
         guildLoggingChannels.put(guild.getIdLong(), new GuildLoggingChannel(
             guild,
-            DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannelId(guild)
+            DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannelId(guild),
+            DatabaseAccessorManager.getConfigurationDatabaseAccessor().getEnabledLoggingTypes(guild)
         ));
 
         return guildLoggingChannels.get(guild.getIdLong());
@@ -87,7 +93,28 @@ public final class GuildLoggingChannel {
      */
     public final void refresh() {
         channelId = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannelId(guild);
+        enabledLoggingTypes = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getEnabledLoggingTypes(guild);
         channel = guild.getChannelById(GuildMessageChannel.class, channelId);
+    }
+
+    /**
+     * Returns if this logging channel is logging events of the type
+     * specified
+     * 
+     * @param loggingEventType The type
+     * @return If it is logging them
+     */
+    public final boolean isLoggingTypeEnabled(LoggingEventType loggingEventType) {
+        return enabledLoggingTypes.contains(loggingEventType);
+    }
+
+    /**
+     * Gets the channel logging messages are sent in
+     * 
+     * @return The channel, or {@code null} if no channel setup
+     */
+    public final GuildMessageChannel getLoggingChannel() {
+        return channel;
     }
 
     /**
@@ -96,6 +123,10 @@ public final class GuildLoggingChannel {
      * @param event The deletion event
      */
     public final void logDeletedMessage(MessageDeleteEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.MESSAGE_DELETION_LOGGING)) {
+            return;
+        }
+
         if (channel == null) {
             return;
         }
@@ -127,6 +158,10 @@ public final class GuildLoggingChannel {
      * @param event The create event
      */
     public final void logChannelCreate(ChannelCreateEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING)) {
+            return;
+        }
+
         if (channel == null) {
             return;
         }
@@ -141,6 +176,10 @@ public final class GuildLoggingChannel {
      * @param event The deletion event
      */
     public final void logChannelDelete(ChannelDeleteEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING)) {
+            return;
+        }
+
         if (event.getChannel().getIdLong() == channelId) {
             /* Ignore if own channel deleted */
             return;
@@ -160,11 +199,30 @@ public final class GuildLoggingChannel {
      * @param event The rename event
      */
     public final void logChannelNameChanges(ChannelUpdateNameEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING)) {
+            return;
+        }
+
         if (channel == null) {
             return;
         }
 
         /* Log message */
         channel.sendMessageEmbeds(EmbedFactory.createChannelEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * The type of logging event
+     */
+    public static enum LoggingEventType {
+        /**
+         * Log deleted messages
+         */
+        MESSAGE_DELETION_LOGGING,
+
+        /**
+         * Log channel events
+         */
+        CHANNEL_LOGGING;
     }
 }

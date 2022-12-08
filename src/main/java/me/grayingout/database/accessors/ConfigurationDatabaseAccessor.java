@@ -5,9 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import me.grayingout.database.entities.GuildLoggingChannel;
+import me.grayingout.database.entities.GuildLoggingChannel.LoggingEventType;
 import me.grayingout.database.entities.GuildWelcomeMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import me.grayingout.util.WelcomeMessage;
@@ -39,6 +43,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
                     "CREATE TABLE IF NOT EXISTS GuildConfiguration ("
                   + "  guild_id INTEGER NOT NULL PRIMARY KEY,"
                   + "  logging_channel_id INTEGER DEFAULT -1,"
+                  + "  enabled_logging_types TEXT DEFAULT \"\","
                   + "  welcome_channel_id INTEGER DEFAULT -1,"
                   + "  welcome_message TEXT"
                   + ")");
@@ -204,6 +209,150 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
         
         /* Update the welcome message singleton */
         GuildWelcomeMessage.refreshWelcomeMessage(guild);
+    }
+
+    /**
+     * Enables a specific logging type in a guild
+     * 
+     * @param guild THe guild
+     * @param type The logging type
+     */
+    public final void enableLoggingType(Guild guild, GuildLoggingChannel.LoggingEventType type) {
+        /* Make sure guild has a config row */
+        createDefaultGuildConfig(guild);
+        
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement selectStatement = connection.prepareStatement(
+                    "SELECT enabled_logging_types FROM GuildConfiguration WHERE guild_id == ?"
+                );
+
+                selectStatement.setLong(1, guild.getIdLong());
+
+                /* Check a result set did come back - it should */
+                ResultSet set = selectStatement.executeQuery();
+                if (!set.next()) {
+                    return null;
+                }
+
+                /* Ignore if already enabled */
+                String currentLoggingTypes = set.getString("enabled_logging_types");
+                if (currentLoggingTypes.indexOf(type.name()) != -1) {
+                    return null;
+                }
+
+                /* Add the new type */
+                String newLoggingTypes = currentLoggingTypes + "," + type.name();
+
+                /* Update field */
+                PreparedStatement updateStatement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET enabled_logging_types = ? WHERE guild_id == ?"
+                );
+
+                updateStatement.setString(1, newLoggingTypes);
+                updateStatement.setLong(2, guild.getIdLong());
+
+                updateStatement.executeUpdate();
+
+                return null;
+            }
+        });
+
+        /* Wait for query to finish */
+        future.join();
+
+        /* Update guild logging channel */
+        GuildLoggingChannel.refreshLoggingChannel(guild);
+    }
+
+    /**
+     * Disables a specific logging type in a guild
+     * 
+     * @param guild The guild
+     * @param type The logging type
+     */
+    public final void disableLoggingType(Guild guild, GuildLoggingChannel.LoggingEventType type) {
+        /* Make sure guild has a config row */
+        createDefaultGuildConfig(guild);
+        
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement selectStatement = connection.prepareStatement(
+                    "SELECT enabled_logging_types FROM GuildConfiguration WHERE guild_id == ?"
+                );
+
+                selectStatement.setLong(1, guild.getIdLong());
+
+                /* Check a result set did come back - it should */
+                ResultSet set = selectStatement.executeQuery();
+                if (!set.next()) {
+                    return null;
+                }
+
+                /* Remove the type */
+                String currentLoggingTypes = set.getString("enabled_logging_types");
+                String newLoggingTypes = currentLoggingTypes.replace(type.name(), "").replace(",,", ",");
+
+                /* Update field */
+                PreparedStatement updateStatement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET enabled_logging_types = ? WHERE guild_id == ?"
+                );
+
+                updateStatement.setString(1, newLoggingTypes);
+                updateStatement.setLong(2, guild.getIdLong());
+
+                updateStatement.executeUpdate();
+
+                return null;
+            }
+        });
+
+        /* Wait for query to finish */
+        future.join();
+
+        /* Update guild logging channel */
+        GuildLoggingChannel.refreshLoggingChannel(guild);
+    }
+
+    /**
+     * Gets the enabled logging types for a guild
+     * 
+     * @param guild The guild
+     * @return The enabled logging types
+     */
+    public final List<GuildLoggingChannel.LoggingEventType> getEnabledLoggingTypes(Guild guild) {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<String>() {
+            @Override
+            public String execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT enabled_logging_types FROM GuildConfiguration WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                ResultSet set = statement.executeQuery();
+                if (!set.next()) {
+                    return "";
+                }
+
+                return set.getString("enabled_logging_types");
+            }
+        });
+
+        /* Wait for query to finish */
+        List<String> enabledLoggingTypesStrings = new ArrayList<String>(Arrays.asList(((String) future.join()).split(",")));
+        List<LoggingEventType> enabledLoggingEventTypes = new ArrayList<>();
+        
+        /* Get the logging event types which are enabled */
+        for (LoggingEventType loggingEventType : GuildLoggingChannel.LoggingEventType.values()) {
+            if (enabledLoggingTypesStrings.contains(loggingEventType.toString())) {
+                enabledLoggingEventTypes.add(loggingEventType);
+            }
+        }
+
+        return enabledLoggingEventTypes;
     }
 
     /**
