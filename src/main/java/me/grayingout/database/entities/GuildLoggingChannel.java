@@ -13,6 +13,11 @@ import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateNameEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
+import net.dv8tion.jda.api.events.role.RoleCreateEvent;
+import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdatePositionEvent;
 
 /**
  * A class used to log different bot actions to a guild's
@@ -122,12 +127,8 @@ public final class GuildLoggingChannel {
      * 
      * @param event The deletion event
      */
-    public final void logDeletedMessage(MessageDeleteEvent event) {
-        if (!enabledLoggingTypes.contains(LoggingEventType.MESSAGE_DELETION_LOGGING)) {
-            return;
-        }
-
-        if (channel == null) {
+    public final void logMessageDelete(MessageDeleteEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.MESSAGE_DELETION_LOGGING) || channel == null) {
             return;
         }
 
@@ -153,16 +154,83 @@ public final class GuildLoggingChannel {
     }
 
     /**
+     * Logs the creation of a role
+     * 
+     * @param event The role create event
+     */
+    public final void logRoleCreate(RoleCreateEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.ROLE_LOGGING) || channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createRoleEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * Logs the deletion of a role
+     * 
+     * @param event The role delete event
+     */
+    public final void logRoleDelete(RoleDeleteEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.ROLE_LOGGING) || channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createRoleEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * Logs the update of a role's name
+     * 
+     * @param event The role name update event
+     */
+    public final void logRoleNameUpdate(RoleUpdateNameEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.ROLE_LOGGING) || channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createRoleEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * Logs the update of a role's permissions
+     * 
+     * @param event The role permissions update event
+     */
+    public final void logRolePermissionsUpdate(RoleUpdatePermissionsEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.ROLE_LOGGING) || channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createRoleEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * Logs the update of a role's position
+     * 
+     * @param event The role position update event
+     */
+    public final void logRolePositionUpdate(RoleUpdatePositionEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.ROLE_LOGGING) || channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createRoleEventLogEmbed(event)).queue();
+    }
+
+
+    /**
      * Logs the creation of a channel
      * 
      * @param event The create event
      */
     public final void logChannelCreate(ChannelCreateEvent event) {
-        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING)) {
-            return;
-        }
-
-        if (channel == null) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING) || channel == null) {
             return;
         }
         
@@ -176,16 +244,12 @@ public final class GuildLoggingChannel {
      * @param event The deletion event
      */
     public final void logChannelDelete(ChannelDeleteEvent event) {
-        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING)) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING) || channel == null) {
             return;
         }
 
         if (event.getChannel().getIdLong() == channelId) {
             /* Ignore if own channel deleted */
-            return;
-        }
-
-        if (channel == null) {
             return;
         }
         
@@ -198,12 +262,8 @@ public final class GuildLoggingChannel {
      * 
      * @param event The rename event
      */
-    public final void logChannelNameChanges(ChannelUpdateNameEvent event) {
-        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING)) {
-            return;
-        }
-
-        if (channel == null) {
+    public final void logChannelNameUpdate(ChannelUpdateNameEvent event) {
+        if (!enabledLoggingTypes.contains(LoggingEventType.CHANNEL_LOGGING) || channel == null) {
             return;
         }
 
@@ -223,6 +283,11 @@ public final class GuildLoggingChannel {
         /**
          * Log channel events
          */
-        CHANNEL_LOGGING;
+        CHANNEL_LOGGING,
+        
+        /**
+         * Logging role events
+         */
+        ROLE_LOGGING;
     }
 }

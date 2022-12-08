@@ -24,6 +24,11 @@ import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.GenericChannelEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateNameEvent;
+import net.dv8tion.jda.api.events.role.GenericRoleEvent;
+import net.dv8tion.jda.api.events.role.RoleCreateEvent;
+import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 
 /**
  * A class used for making different types
@@ -62,6 +67,113 @@ public final class EmbedFactory {
     }
 
     /**
+     * An embed for logging a role event
+     * 
+     * @param event The role event
+     * @return The built embed
+     */
+    public static final MessageEmbed createRoleEventLogEmbed(GenericRoleEvent event) {
+        EmbedBuilder builder = new EmbedBuilder()
+            .setColor(Color.BLUE)
+            .setTimestamp(LocalDateTime.now());
+        
+        /* Add the fields */
+        builder.addField("Role", event.getRole().getAsMention(), false);
+        builder.addField("Role Id", event.getRole().getId(), false);
+        
+        /* Get title and add event specific fields */
+        StringBuilder titleBuilder = new StringBuilder();
+        if (event instanceof RoleCreateEvent) {
+            titleBuilder.append(":performing_arts: Role Created");
+        } else if (event instanceof RoleDeleteEvent) {
+            titleBuilder.append(":x: Role Deleted");
+        } else if (event instanceof RoleUpdateNameEvent) {
+            titleBuilder.append(":pencil: Role Renamed");
+            builder.addField("New Name", ((RoleUpdateNameEvent) event).getNewValue(), false);
+            builder.addField("Old Name", ((RoleUpdateNameEvent) event).getOldValue(), false);
+        } else if (event instanceof RoleUpdatePermissionsEvent) {
+            titleBuilder.append(":scales: Role Permissions Updated");
+            builder.addField(
+                "New Permissions",
+                ((RoleUpdatePermissionsEvent) event).getNewPermissions()
+                    .stream()
+                    .map(p -> "`"+p.getName()+"`")
+                    .collect(Collectors.joining(", ")),
+                false
+            );
+            builder.addField(
+                "Old Permissions",
+                ((RoleUpdatePermissionsEvent) event).getOldPermissions()
+                    .stream()
+                    .map(p -> "`"+p.getName()+"`")
+                    .collect(Collectors.joining(", ")),
+                false
+            );
+        }
+        builder.setTitle(titleBuilder.toString());
+
+        /* Find the user that did the action */
+        User user = null;
+        if (event instanceof RoleCreateEvent) {
+            /* Get the audit logs of type ROLE_CREATE */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.ROLE_CREATE)
+                .complete()
+                .stream()
+                .filter(e -> e.getTargetIdLong() == event.getRole().getIdLong())
+                .collect(Collectors.toList());
+            /* Get the user */
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
+        } else if (event instanceof RoleDeleteEvent) {
+            /* Get the audit logs of type ROLE_DELETE */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.ROLE_DELETE)
+                .complete()
+                .stream()
+                .filter(e -> e.getTargetIdLong() == event.getRole().getIdLong())
+                .collect(Collectors.toList());
+            /* Get the user */
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
+        } else if (event instanceof RoleUpdateNameEvent) {
+            /* Get the audit logs of type ROLE_UPDATE of change type ROLE_NAME */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.ROLE_UPDATE)
+                .complete()
+                .stream()
+                .filter(e -> e.getTargetIdLong() == event.getRole().getIdLong())
+                .filter(e -> e.getChangeByKey(AuditLogKey.ROLE_NAME) != null)
+                .collect(Collectors.toList());
+            /* Get the user */
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
+        } else if (event instanceof RoleUpdatePermissionsEvent) {
+            /* Get the audit logs of type ROLE_UPDATE of change type ROLE_PERMISSIONS */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.ROLE_UPDATE)
+                .complete()
+                .stream()
+                .filter(e -> e.getTargetIdLong() == event.getRole().getIdLong())
+                .filter(e -> e.getChangeByKey(AuditLogKey.ROLE_PERMISSIONS) != null)
+                .collect(Collectors.toList());
+            /* Get the user */
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
+        }
+
+        /* Add the user */
+        builder.addField("User", user == null ? "<unknown>" : user.getAsMention(), false);
+
+        /* Return the embed */
+        return builder.build();
+    }
+
+    /**
      * An embed for logging a channel event
      * 
      * @param event The channel event
@@ -75,88 +187,62 @@ public final class EmbedFactory {
             .setColor(Color.BLUE)
             .setTimestamp(LocalDateTime.now());
 
-        /* Create the embed title */
+        /* Add the fields */
+        builder.addField(channelType, event.getChannel().getAsMention(), false);
+        builder.addField(channelType + " Id", event.getChannel().getId(), false);
+
+        /* Get the embed title and event specific fields */
         StringBuilder titleBuilder = new StringBuilder();
         if (event instanceof ChannelDeleteEvent) {
             titleBuilder.append(":x: " + channelType + " Deleted");
         } else if (event instanceof ChannelUpdateNameEvent) {
             titleBuilder.append(":pencil: " + channelType + " Renamed");
+            builder.addField("New Name", ((ChannelUpdateNameEvent) event).getNewValue(), false);
+            builder.addField("Old Name", ((ChannelUpdateNameEvent) event).getOldValue(), false);
         } else if (event instanceof ChannelCreateEvent) {
             titleBuilder.append(":file_folder: " + channelType + " Created");
         }
         builder.setTitle(titleBuilder.toString());
 
-        /* Add the fields */
-        builder.addField(channelType, event.getChannel().getAsMention(), false);
-        builder.addField(channelType + " Id", event.getChannel().getId(), false);
-
-        if (event instanceof ChannelUpdateNameEvent) {
-            builder.addField("Old Name", ((ChannelUpdateNameEvent) event).getOldValue(), false);
-            builder.addField("New Name", ((ChannelUpdateNameEvent) event).getNewValue(), false);
-        }
-
         /* Find the user that did the action */
         User user = null;
         if (event instanceof ChannelDeleteEvent) {
-            /* Get the channel deleted audit logs */
+            /* Get the audit logs of type CHANNEL_DELETE */
             List<AuditLogEntry> entries = event.getGuild()
                 .retrieveAuditLogs()
                 .limit(10)
                 .type(ActionType.CHANNEL_DELETE)
-                .complete();
-            
-            /* Get delete entries with same target id as the channel deleted */
-            List<AuditLogEntry> matchingEntries = entries.stream()
+                .complete()
+                .stream()
                 .filter(e -> e.getTargetIdLong() == event.getChannel().getIdLong())
                 .collect(Collectors.toList());
-            
             /* Get the user */
-            if (matchingEntries.size() == 0) {
-                user = null;
-            } else {
-                user = matchingEntries.get(0).getUser();
-            }
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
         } else if (event instanceof ChannelUpdateNameEvent) {
-            /* Get the channel updated audit logs */
+            /* Get the audit logs of type CHANNEL_UPDATE of change type CHANNEL_NAME */
             List<AuditLogEntry> entries = event.getGuild()
                 .retrieveAuditLogs()
                 .limit(10)
                 .type(ActionType.CHANNEL_UPDATE)
-                .complete();
-            
-            /* Get update entries with same target id as the channel updated
-             * and are of key CHANNEL_NAME
-             */
-            List<AuditLogEntry> matchingEntries = entries.stream()
+                .complete()
+                .stream()
                 .filter(e -> e.getTargetIdLong() == event.getChannel().getIdLong())
                 .filter(e -> e.getChangeByKey(AuditLogKey.CHANNEL_NAME) != null)
                 .collect(Collectors.toList());
-            
             /* Get the user */
-            if (matchingEntries.size() == 0) {
-                user = null;
-            } else {
-                user = matchingEntries.get(0).getUser();
-            }
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
         } else if (event instanceof ChannelCreateEvent) {
-            /* Get the channel created audit logs */
+            /* Get the audit logs of type CHANNEL_CREATE */
             List<AuditLogEntry> entries = event.getGuild()
                 .retrieveAuditLogs()
                 .limit(10)
                 .type(ActionType.CHANNEL_CREATE)
-                .complete();
-            
-            /* Get created entries with same target id as the channel deleted */
-            List<AuditLogEntry> matchingEntries = entries.stream()
+                .complete()
+                .stream()
                 .filter(e -> e.getTargetIdLong() == event.getChannel().getIdLong())
                 .collect(Collectors.toList());
-            
             /* Get the user */
-            if (matchingEntries.size() == 0) {
-                user = null;
-            } else {
-                user = matchingEntries.get(0).getUser();
-            }
+            user = entries.size() == 0 ? null : entries.get(0).getUser();
         }
 
         /* Add the user */
