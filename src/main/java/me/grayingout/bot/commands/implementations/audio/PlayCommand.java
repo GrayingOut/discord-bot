@@ -1,4 +1,4 @@
-package me.grayingout.bot.commands.implementations;
+package me.grayingout.bot.commands.implementations.audio;
 
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
 import me.grayingout.bot.commands.BotCommand;
@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 /**
  * A slash command used to queue audio to be played
  */
-public final class PlayAudioCommand extends BotCommand {
+public final class PlayCommand extends BotCommand {
 
     @Override
     public CommandData getCommandData() {

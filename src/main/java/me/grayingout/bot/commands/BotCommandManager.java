@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
-import me.grayingout.bot.commands.implementations.JoinCommand;
-import me.grayingout.bot.commands.implementations.PlayAudioCommand;
 import me.grayingout.bot.commands.implementations.LevelRolesCommand;
 import me.grayingout.bot.commands.implementations.LevelsCommand;
 import me.grayingout.bot.commands.implementations.LoggingCommand;
@@ -14,6 +12,9 @@ import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarningsCommand;
 import me.grayingout.bot.commands.implementations.WelcomeMessageCommand;
+import me.grayingout.bot.commands.implementations.audio.JoinCommand;
+import me.grayingout.bot.commands.implementations.audio.LeaveCommand;
+import me.grayingout.bot.commands.implementations.audio.PlayCommand;
 import net.dv8tion.jda.api.JDA;
 
 /**
@@ -34,8 +35,9 @@ public final class BotCommandManager {
         put("slowmode", new SlowmodeCommand());
         put("warnings", new WarningsCommand());
         put("welcome-message", new WelcomeMessageCommand());
-        put("play", new PlayAudioCommand());
+        put("play", new PlayCommand());
         put("join", new JoinCommand());
+        put("leave", new LeaveCommand());
     }};
 
     /**
