@@ -5,15 +5,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.audit.ActionType;
+import net.dv8tion.jda.api.audit.AuditLogEntry;
+import net.dv8tion.jda.api.audit.AuditLogKey;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
+import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
+import net.dv8tion.jda.api.events.channel.GenericChannelEvent;
+import net.dv8tion.jda.api.events.channel.update.ChannelUpdateNameEvent;
 
 /**
  * A class used for making different types
@@ -52,6 +62,111 @@ public final class EmbedFactory {
     }
 
     /**
+     * An embed for logging a channel event
+     * 
+     * @param event The channel event
+     * @return The built embed
+     */
+    public static final MessageEmbed createChannelEventLogEmbed(GenericChannelEvent event) {
+        String channelType = event.getChannelType().equals(ChannelType.CATEGORY) ? "Category" : "Channel";
+
+        /* The embed builder */
+        EmbedBuilder builder = new EmbedBuilder()
+            .setColor(Color.BLUE)
+            .setTimestamp(LocalDateTime.now());
+
+        /* Create the embed title */
+        StringBuilder titleBuilder = new StringBuilder();
+        if (event instanceof ChannelDeleteEvent) {
+            titleBuilder.append(":x: " + channelType + " Deleted");
+        } else if (event instanceof ChannelUpdateNameEvent) {
+            titleBuilder.append(":pencil: " + channelType + " Renamed");
+        } else if (event instanceof ChannelCreateEvent) {
+            titleBuilder.append(":file_folder: " + channelType + " Created");
+        }
+        builder.setTitle(titleBuilder.toString());
+
+        /* Add the fields */
+        builder.addField(channelType, event.getChannel().getAsMention(), false);
+        builder.addField(channelType + " Id", event.getChannel().getId(), false);
+
+        if (event instanceof ChannelUpdateNameEvent) {
+            builder.addField("Old Name", ((ChannelUpdateNameEvent) event).getOldValue(), false);
+            builder.addField("New Name", ((ChannelUpdateNameEvent) event).getNewValue(), false);
+        }
+
+        /* Find the user that did the action */
+        User user = null;
+        if (event instanceof ChannelDeleteEvent) {
+            /* Get the channel deleted audit logs */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.CHANNEL_DELETE)
+                .complete();
+            
+            /* Get delete entries with same target id as the channel deleted */
+            List<AuditLogEntry> matchingEntries = entries.stream()
+                .filter(e -> e.getTargetIdLong() == event.getChannel().getIdLong())
+                .collect(Collectors.toList());
+            
+            /* Get the user */
+            if (matchingEntries.size() == 0) {
+                user = null;
+            } else {
+                user = matchingEntries.get(0).getUser();
+            }
+        } else if (event instanceof ChannelUpdateNameEvent) {
+            /* Get the channel updated audit logs */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.CHANNEL_UPDATE)
+                .complete();
+            
+            /* Get update entries with same target id as the channel updated
+             * and are of key CHANNEL_NAME
+             */
+            List<AuditLogEntry> matchingEntries = entries.stream()
+                .filter(e -> e.getTargetIdLong() == event.getChannel().getIdLong())
+                .filter(e -> e.getChangeByKey(AuditLogKey.CHANNEL_NAME) != null)
+                .collect(Collectors.toList());
+            
+            /* Get the user */
+            if (matchingEntries.size() == 0) {
+                user = null;
+            } else {
+                user = matchingEntries.get(0).getUser();
+            }
+        } else if (event instanceof ChannelCreateEvent) {
+            /* Get the channel created audit logs */
+            List<AuditLogEntry> entries = event.getGuild()
+                .retrieveAuditLogs()
+                .limit(10)
+                .type(ActionType.CHANNEL_CREATE)
+                .complete();
+            
+            /* Get created entries with same target id as the channel deleted */
+            List<AuditLogEntry> matchingEntries = entries.stream()
+                .filter(e -> e.getTargetIdLong() == event.getChannel().getIdLong())
+                .collect(Collectors.toList());
+            
+            /* Get the user */
+            if (matchingEntries.size() == 0) {
+                user = null;
+            } else {
+                user = matchingEntries.get(0).getUser();
+            }
+        }
+
+        /* Add the user */
+        builder.addField("User", user == null ? "<unknown>" : user.getAsMention(), false);
+
+        /* Build and return */
+        return builder.build();
+    }
+
+    /**
      * An embed for logging a deleted message
      * 
      * @param message The deleted message
@@ -62,8 +177,8 @@ public final class EmbedFactory {
         
         /* Build deleted message embed */
         EmbedBuilder builder = new EmbedBuilder()
-            .setColor(Color.RED)
-            .setTitle("✂ **Message Deleted in " + message.getChannel().getAsMention() + "**")
+            .setColor(Color.BLUE)
+            .setTitle("✂ **Message Deleted**")
             .addField("Channel", message.getChannel().getAsMention() + " (" + message.getChannel().getId() + ")", false)
             .addField("Author", message.getAuthor().getAsMention() + " (" + message.getAuthor().getId() + ")", false)
             .setFooter(message.getId())
@@ -103,7 +218,7 @@ public final class EmbedFactory {
 
         /* Build deleted message embed */
         EmbedBuilder builder = new EmbedBuilder()
-            .setColor(Color.RED)
+            .setColor(Color.BLUE)
             .setTitle("✂ **Message Deleted in " + channel.getAsMention() + "**")
             .setDescription(":warning: A message was deleted that was not stored in the bot's message cache. Limited data is available.")
             .addField("Channel", channel.getAsMention() + " (" + channel.getId() + ")", false)

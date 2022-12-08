@@ -8,6 +8,9 @@ import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
+import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
+import net.dv8tion.jda.api.events.channel.update.ChannelUpdateNameEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 
 /**
@@ -90,7 +93,7 @@ public final class GuildLoggingChannel {
     /**
      * Logs the deletion of a message
      * 
-     * @param event          The deletion event
+     * @param event The deletion event
      */
     public final void logDeletedMessage(MessageDeleteEvent event) {
         if (channel == null) {
@@ -116,5 +119,52 @@ public final class GuildLoggingChannel {
             event.getChannel(),
             event.getMessageIdLong()
         )).queue();
+    }
+
+    /**
+     * Logs the creation of a channel
+     * 
+     * @param event The create event
+     */
+    public final void logChannelCreate(ChannelCreateEvent event) {
+        if (channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createChannelEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * Logs the deletion of a channel
+     * 
+     * @param event The deletion event
+     */
+    public final void logChannelDelete(ChannelDeleteEvent event) {
+        if (event.getChannel().getIdLong() == channelId) {
+            /* Ignore if own channel deleted */
+            return;
+        }
+
+        if (channel == null) {
+            return;
+        }
+        
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createChannelEventLogEmbed(event)).queue();
+    }
+
+    /**
+     * Logs the renaming of a channel
+     * 
+     * @param event The rename event
+     */
+    public final void logChannelNameChanges(ChannelUpdateNameEvent event) {
+        if (channel == null) {
+            return;
+        }
+
+        /* Log message */
+        channel.sendMessageEmbeds(EmbedFactory.createChannelEventLogEmbed(event)).queue();
     }
 }
