@@ -35,9 +35,9 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/warnings list <member>`| View the warnings of a member | `MODERATE_MEMBERS` |
 |`/warnings clear <member>`| Clear a member's warnings | `MODERATE_MEMBERS` |
 |`/hello [member]`| Say hello to the bot | |
-|`/level get [member]`| Get your own or another member's level | |
-|`/level top`| View the top 5 levels | |
-|`/level set <member> <level>`| Set a member's level | `ADMINISTRATOR` |
+|`/levels get [member]`| Get your own or another member's level | |
+|`/levels top`| View the top 5 levels | |
+|`/levels set <member> <level>`| Set a member's level | `ADMINISTRATOR` |
 |`/reset-level <member>`| Reset a member's level | `ADMINISTRATOR` |
 |`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
 |`/logging set-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
