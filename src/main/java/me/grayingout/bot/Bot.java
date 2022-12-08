@@ -63,10 +63,7 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.RULES_COMMAND.getCommandData(),
                 BotCommandManager.BULK_DELETE_COMMAND.getCommandData(),
                 BotCommandManager.SLOWMODE_COMMAND.getCommandData(),
-                BotCommandManager.WARN_COMMAND.getCommandData(),
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
-                BotCommandManager.CLEAR_WARNINGS_COMMAND.getCommandData(),
-                BotCommandManager.REMOVE_WARNING_COMMAND.getCommandData(),
                 BotCommandManager.LOGGING_COMMAND.getCommandData(),
                 BotCommandManager.LEVEL_COMMAND.getCommandData(),
                 BotCommandManager.SET_LEVEL_COMMAND.getCommandData(),
@@ -118,21 +115,9 @@ public final class Bot extends ListenerAdapter {
                 /* Change the slowmode of a channel */
                 BotCommandManager.SLOWMODE_COMMAND.execute(event);
                 break;
-            case "warn":
-                /* Warn a member */
-                BotCommandManager.WARN_COMMAND.execute(event);
-                break;
             case "warnings":
-                /* Get list of members warnings */
+                /* Warn a member */
                 BotCommandManager.WARNINGS_COMMAND.execute(event);
-                break;
-            case "clear-warnings":
-                /* Delete a member's warnings */
-                BotCommandManager.CLEAR_WARNINGS_COMMAND.execute(event);
-                break;
-            case "remove-warning":
-                /* Delete a specific warning from a member */
-                BotCommandManager.REMOVE_WARNING_COMMAND.execute(event);
                 break;
             case "logging":
                 BotCommandManager.LOGGING_COMMAND.execute(event);
