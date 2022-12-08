@@ -28,7 +28,7 @@ public final class EmbedFactory {
      * @return The build embed
      */
     public static final MessageEmbed createInvalidIntegerOptionEmbed(String optionName) {
-        return EmbedFactory.createWarningEmbed("Invalid Argument", "`" + optionName + "` is not a valid integer");
+        return EmbedFactory.createErrorEmbed("Invalid Argument", "`" + optionName + "` is not a valid integer");
     }
 
     /**
