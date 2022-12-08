@@ -12,8 +12,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Hello command
 - Levelling system w/ role rewards
 - Warning system
-- Deleted message logging
-- Logging channel
+- Logging System
 - Bulk deletion
 - Slowmode
 - Welcome message w/ templating
@@ -38,6 +37,9 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/warnings clear <member>`| Clear a member's warnings | `ADMINISTRATOR` |
 |`/logging set-channel <channel>`| Set the bot logging channel | `MANAGE_SERVER` |
 |`/logging remove-channel <channel>`| Remove the bot logging channel | `MANAGE_SERVER` |
+|`/logging enable-logging <type>`| Enable a type of logging | `MANAGE_SERVER` |
+|`/logging disable-logging <type>`| Disable a type of logging | `MANAGE_SERVER` |
+|`/logging show-config`| Show the current logging setup | `MANAGE_SERVER` |
 |`/welcome-message set-channel <channel>`| Set the welcome message channel | `MANAGE_SERVER` |
 |`/welcome-message remove-channel`| Remove the welcome message channel | `MANAGE_SERVER` |
 |`/welcome-message set-message <message>`| Set the welcome message | `MANAGE_SERVER` |
