@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
+import me.grayingout.bot.commands.implementations.JoinCommand;
 import me.grayingout.bot.commands.implementations.PlayAudioCommand;
 import me.grayingout.bot.commands.implementations.LevelRolesCommand;
 import me.grayingout.bot.commands.implementations.LevelsCommand;
@@ -34,6 +35,7 @@ public final class BotCommandManager {
         put("warnings", new WarningsCommand());
         put("welcome-message", new WelcomeMessageCommand());
         put("play", new PlayAudioCommand());
+        put("join", new JoinCommand());
     }};
 
     /**

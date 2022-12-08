@@ -10,7 +10,10 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
+import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 /**
@@ -75,29 +78,47 @@ public final class GuildAudioPlayerManager {
     /**
      * Plays an audio from a URL
      * 
-     * @param url THe url
+     * @param member The member that added the audio
+     * @param channel The channel the /play command was sent in
+     * @param url The URL
      */
-    public final void playAudio(GuildMessageChannel channel, String url) {
+    public final void playAudio(Member member, GuildMessageChannel channel, String url) {
         GuildAudioPlayer guildAudioPlayer = getGuildAudioPlayer(channel.getGuild());
 
         audioPlayerManager.loadItemOrdered(guildAudioPlayer, url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                guildAudioPlayer.audioTrackScheduler.queue(track);
-                channel.sendMessage(
-                    "Audio added to queue: `" + track.getInfo().title + "` by `" + track.getInfo().author + "`"
+                guildAudioPlayer.queue(track);
+                channel.sendMessageEmbeds(
+                    EmbedFactory.createSuccessEmbed(
+                        "Audio Added to Queue",
+                        "Audio has been added to the audio queue",
+                        new Field[] {
+                            new Field("Title", track.getInfo().title, false),
+                            new Field("Author", track.getInfo().author, false),
+                            new Field("Added by", member.getAsMention(), false)
+                        }
+                    )
                 ).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
-                e.printStackTrace();
+                channel.sendMessageEmbeds(
+                    EmbedFactory.createErrorEmbed(
+                        "Failed to add Audio",
+                        e.getMessage()
+                    )
+                ).queue();
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage(
-                    "No match found"
+                channel.sendMessageEmbeds(
+                    EmbedFactory.createWarningEmbed(
+                        "Failed to add Audio",
+                        "No match was found for `" + url + "`"
+                    )
                 ).queue();
             }
 

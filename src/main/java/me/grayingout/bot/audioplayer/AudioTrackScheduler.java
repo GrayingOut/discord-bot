@@ -34,6 +34,12 @@ public class AudioTrackScheduler extends AudioEventAdapter {
         this.trackQueue = new LinkedBlockingQueue<>();
     }
 
+    /**
+     * Queues an audio track for playing immediately, if queue
+     * is empty, else adding it to the queue
+     * 
+     * @param audioTrack The audio track
+     */
     public final void queue(AudioTrack audioTrack) {
         /* Attempt to immediately play track */
         boolean playStarted = audioPlayer.startTrack(audioTrack, true);

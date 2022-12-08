@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/**
+ * A slash command used to queue audio to be played
+ */
 public final class PlayAudioCommand extends BotCommand {
 
     @Override
@@ -41,10 +44,12 @@ public final class PlayAudioCommand extends BotCommand {
             return;
         }
 
-        /* Join the channel if not in one */
+        /* Check in voice channel */
         GuildVoiceState selfVoiceState = event.getGuild().getSelfMember().getVoiceState();
         if (selfVoiceState.getChannel() == null) {
-            event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
+            event.getHook().sendMessageEmbeds(
+                EmbedFactory.createWarningEmbed("Invalid Audio Channel", "I must be in a voice channel to play audio")
+            ).queue();
             return;
         }
 
@@ -58,13 +63,12 @@ public final class PlayAudioCommand extends BotCommand {
 
         /* Play audio */
         GuildAudioPlayerManager.getInstance().playAudio(
+            event.getMember(),
             (GuildMessageChannel) event.getChannel(),
             event.getOption("url").getAsString()
         );
         
-        /* Send response message */
-        event.getHook().sendMessageEmbeds(
-            EmbedFactory.createSuccessEmbed("Audio Queued", "The audio has been queued")
-        ).queue();
+        /* Delete original message */
+        event.getHook().deleteOriginal().queue();
     }
 }
