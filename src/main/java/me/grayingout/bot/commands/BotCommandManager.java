@@ -1,5 +1,8 @@
 package me.grayingout.bot.commands;
 
+import java.util.HashMap;
+import java.util.stream.Collectors;
+
 import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.LevelRolesCommand;
@@ -9,53 +12,55 @@ import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.SlowmodeCommand;
 import me.grayingout.bot.commands.implementations.WarningsCommand;
 import me.grayingout.bot.commands.implementations.WelcomeMessageCommand;
+import net.dv8tion.jda.api.JDA;
 
 /**
- * Stores references to all bot commands
+ * Manages the {@code BotCommand}s
  */
 public final class BotCommandManager {
-    /**
-     * The {@code /hello [user:user]} slash command
-     */
-    public static final HelloCommand HELLO_COMMAND = new HelloCommand();
 
     /**
-     * The {@code /rules} slash command
+     * Stores the {@code BotCommand}s
      */
-    public static final RulesCommand RULES_COMMAND = new RulesCommand();
+    private static final HashMap<String, BotCommand> botCommands = new HashMap<String, BotCommand>() {{
+        put("bulk-delete", new BulkDeleteCommand());
+        put("hello", new HelloCommand());
+        put("level-roles", new LevelRolesCommand());
+        put("levels", new LevelsCommand());
+        put("logging", new LoggingCommand());
+        put("rules", new RulesCommand());
+        put("slowmode", new SlowmodeCommand());
+        put("warnings", new WarningsCommand());
+        put("welcome-message", new WelcomeMessageCommand());
+    }};
 
     /**
-     * The {@code /bulk-delete <count:integer>} slash command
+     * Private constructor
      */
-    public static final BulkDeleteCommand BULK_DELETE_COMMAND = new BulkDeleteCommand();
+    private BotCommandManager() {}
 
     /**
-     * The {@code /slowmode <seconds:integer>} slash command
+     * Gets a {@code BotCommand} by its command name
+     * 
+     * @param name The name of the command
+     * @return The command or {@code null} if no command exists
      */
-    public static final SlowmodeCommand SLOWMODE_COMMAND = new SlowmodeCommand();
+    public static final BotCommand getBotCommand(String name) {
+        return botCommands.get(name);
+    }
 
     /**
-     * The {@code /warn <member:user> [reason:string]} slash command
+     * Adds all commands to the provided JDA instance
+     * 
+     * @param jda The jda
      */
-    public static final WarningsCommand WARNINGS_COMMAND = new WarningsCommand();
-
-    /**
-     * The {@code /set-logging-channel <channel:channel>} slash command
-     */
-    public static final LoggingCommand LOGGING_COMMAND = new LoggingCommand();
-
-    /**
-     * The {@code /level [member:user]} slash command
-     */
-    public static final LevelsCommand LEVELS_COMMAND = new LevelsCommand();
-
-    /**
-     * The {@code /add-level-role <role:role> <level:int>} command
-     */
-    public static final LevelRolesCommand LEVEL_ROLES_COMMAND = new LevelRolesCommand();
-
-    /**
-     * The {@code /welcome-message (set-channel <channel:channel> | remove-channel | set-message <message:string>)} command
-     */
-    public static final WelcomeMessageCommand WELCOME_MESSAGE_COMMAND = new WelcomeMessageCommand();
+    public static final void updateJDACommands(JDA jda) {
+        jda.updateCommands()
+            .addCommands(
+                botCommands.values()
+                    .stream()
+                    .map(c -> c.getCommandData())
+                    .collect(Collectors.toList())
+            ).queue();
+    }
 }
