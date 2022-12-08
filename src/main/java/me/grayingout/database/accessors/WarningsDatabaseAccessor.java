@@ -1,4 +1,4 @@
-package me.grayingout.database.accessor;
+package me.grayingout.database.accessors;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import me.grayingout.database.objects.MemberWarning;
-import me.grayingout.database.objects.MemberWarningsListMessage;
+import me.grayingout.database.entities.MemberWarning;
+import me.grayingout.database.entities.MemberWarningsListMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;

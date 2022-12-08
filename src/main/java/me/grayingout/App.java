@@ -2,7 +2,7 @@ package me.grayingout;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import me.grayingout.bot.Bot;
-import me.grayingout.database.accessor.DatabaseAccessorManager;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
 
 /**
  * The main class

@@ -1,4 +1,4 @@
-package me.grayingout.database.accessor;
+package me.grayingout.database.accessors;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

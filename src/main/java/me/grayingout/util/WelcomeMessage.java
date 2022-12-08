@@ -1,6 +1,6 @@
 package me.grayingout.util;
 
-import me.grayingout.database.objects.GuildWelcomeMessage;
+import me.grayingout.database.entities.GuildWelcomeMessage;
 import net.dv8tion.jda.api.entities.Member;
 
 /**
