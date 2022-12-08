@@ -1,9 +1,9 @@
-package me.grayingout.database.objects;
+package me.grayingout.database.entities;
 
 import java.util.HashMap;
 
-import me.grayingout.bot.events.MessageCache;
-import me.grayingout.database.accessor.DatabaseAccessorManager;
+import me.grayingout.bot.MessageCache;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;

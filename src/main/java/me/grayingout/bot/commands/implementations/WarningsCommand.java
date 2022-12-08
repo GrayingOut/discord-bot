@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.accessor.DatabaseAccessorManager;
-import me.grayingout.database.objects.MemberWarning;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
+import me.grayingout.database.entities.MemberWarning;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.SlashCommands;
 import me.grayingout.util.Warnings;

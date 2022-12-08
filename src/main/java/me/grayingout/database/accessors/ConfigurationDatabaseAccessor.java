@@ -1,4 +1,4 @@
-package me.grayingout.database.accessor;
+package me.grayingout.database.accessors;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
 
-import me.grayingout.database.objects.GuildLoggingChannel;
-import me.grayingout.database.objects.GuildWelcomeMessage;
+import me.grayingout.database.entities.GuildLoggingChannel;
+import me.grayingout.database.entities.GuildWelcomeMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import me.grayingout.util.WelcomeMessage;
 import net.dv8tion.jda.api.entities.Guild;

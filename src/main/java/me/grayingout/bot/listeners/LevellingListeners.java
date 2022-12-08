@@ -1,6 +1,6 @@
-package me.grayingout.bot.events;
+package me.grayingout.bot.listeners;
 
-import me.grayingout.database.accessor.DatabaseAccessorManager;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
 import me.grayingout.util.Levelling;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 /**
  * Listeners for the levelling system
  */
-public class LevellingEventsHandler extends ListenerAdapter {
+public class LevellingListeners extends ListenerAdapter {
     
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {

@@ -1,6 +1,6 @@
 package me.grayingout.bot.logging;
 
-import me.grayingout.database.objects.GuildLoggingChannel;
+import me.grayingout.database.entities.GuildLoggingChannel;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

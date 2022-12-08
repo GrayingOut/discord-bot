@@ -3,8 +3,8 @@ package me.grayingout.bot.commands.implementations;
 import java.util.List;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.accessor.DatabaseAccessorManager;
-import me.grayingout.database.objects.GuildMemberLevelExperience;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
+import me.grayingout.database.entities.GuildMemberLevelExperience;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.Levelling;
 import me.grayingout.util.SlashCommands;

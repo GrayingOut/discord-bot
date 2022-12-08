@@ -1,4 +1,4 @@
-package me.grayingout.database.objects;
+package me.grayingout.database.entities;
 
 import me.grayingout.util.Levelling;
 import net.dv8tion.jda.api.entities.Member;

@@ -1,4 +1,4 @@
-package me.grayingout.database.objects;
+package me.grayingout.database.entities;
 
 import me.grayingout.App;
 import net.dv8tion.jda.api.entities.Guild;

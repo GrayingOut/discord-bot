@@ -1,4 +1,4 @@
-package me.grayingout.bot.events;
+package me.grayingout.bot;
 
 import java.util.HashMap;
 

@@ -4,10 +4,9 @@ import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.commands.BotCommandManager;
-import me.grayingout.bot.events.LevellingEventsHandler;
-import me.grayingout.bot.events.MessageCache;
-import me.grayingout.bot.events.WelcomeMessageListeners;
-import me.grayingout.bot.events.interactions.WarningsListInteractionHandler;
+import me.grayingout.bot.listeners.LevellingListeners;
+import me.grayingout.bot.listeners.WelcomeMessageListeners;
+import me.grayingout.bot.listeners.interactions.WarningsListInteractionListeners;
 import me.grayingout.bot.logging.DeletedMessageLogger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -36,9 +35,9 @@ public final class Bot extends ListenerAdapter {
         jda = JDABuilder.createDefault(token)
             .addEventListeners(
                 this,
-                new WarningsListInteractionHandler(),
+                new WarningsListInteractionListeners(),
                 new DeletedMessageLogger(),
-                new LevellingEventsHandler(),
+                new LevellingListeners(),
                 new WelcomeMessageListeners(),
                 MessageCache.getInstance()
             )

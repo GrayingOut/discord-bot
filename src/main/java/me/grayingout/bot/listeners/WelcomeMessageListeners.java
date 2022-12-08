@@ -1,6 +1,6 @@
-package me.grayingout.bot.events;
+package me.grayingout.bot.listeners;
 
-import me.grayingout.database.objects.GuildWelcomeMessage;
+import me.grayingout.database.entities.GuildWelcomeMessage;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.WelcomeMessage;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;

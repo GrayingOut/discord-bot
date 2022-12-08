@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import me.grayingout.bot.commands.BotCommand;
-import me.grayingout.database.accessor.DatabaseAccessorManager;
-import me.grayingout.database.objects.GuildLevelRole;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
+import me.grayingout.database.entities.GuildLevelRole;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.SlashCommands;
 import net.dv8tion.jda.api.Permission;
