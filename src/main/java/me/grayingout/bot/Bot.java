@@ -66,9 +66,7 @@ public final class Bot extends ListenerAdapter {
                 BotCommandManager.WARNINGS_COMMAND.getCommandData(),
                 BotCommandManager.LOGGING_COMMAND.getCommandData(),
                 BotCommandManager.LEVELS_COMMAND.getCommandData(),
-                BotCommandManager.ADD_LEVEL_ROLE_COMMAND.getCommandData(),
-                BotCommandManager.GET_LEVEL_ROLES_COMMAND.getCommandData(),
-                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.getCommandData(),
+                BotCommandManager.LEVEL_ROLES_COMMAND.getCommandData(),
                 BotCommandManager.WELCOME_MESSAGE_COMMAND.getCommandData()
             ).queue();
     }
@@ -123,14 +121,8 @@ public final class Bot extends ListenerAdapter {
             case "levels":
                 BotCommandManager.LEVELS_COMMAND.execute(event);
                 break;
-            case "add-level-role":
-                BotCommandManager.ADD_LEVEL_ROLE_COMMAND.execute(event);
-                break;
-            case "get-level-roles":
-                BotCommandManager.GET_LEVEL_ROLES_COMMAND.execute(event);
-                break;
-            case "remove-level-role":
-                BotCommandManager.REMOVE_LEVEL_ROLE_COMMAND.execute(event);
+            case "level-roles":
+                BotCommandManager.LEVEL_ROLES_COMMAND.execute(event);
                 break;
             case "welcome-message":
                 BotCommandManager.WELCOME_MESSAGE_COMMAND.execute(event);
