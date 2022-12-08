@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import me.grayingout.database.objects.GuildLoggingChannel;
 import me.grayingout.database.objects.GuildWelcomeMessage;
@@ -78,12 +77,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
             }
         });
 
-        try {
-            return (String) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return "";
-        }
+        return (String) future.join();
     }
 
     /**
@@ -96,7 +90,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
         /* Make sure the guild has a config */
         createDefaultGuildConfig(guild);
         
-        queueQuery(new DatabaseQuery<Void>() {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
             @Override
             public Void execute(Connection connection) throws SQLException {
                 PreparedStatement statement = connection.prepareStatement(
@@ -110,10 +104,13 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
 
                 return null;
             }
-        }).thenAccept(o -> {
-            /* Refresh the singleton */
-            GuildWelcomeMessage.refreshWelcomeMessage(guild);
         });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the welcome message singleton */
+        GuildWelcomeMessage.refreshWelcomeMessage(guild);
     }
 
     /**
@@ -142,12 +139,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
             }
         });
 
-        try {
-            return (long) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return -1L;
-        }
+        return (long) future.join();
     }
 
     /**
@@ -160,7 +152,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
         /* Make sure the guild has a config row */
         createDefaultGuildConfig(guild);
 
-        queueQuery(new DatabaseQuery<Void>() {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
             @Override
             public Void execute(Connection connection) throws SQLException {
                 PreparedStatement statement = connection.prepareStatement(
@@ -174,10 +166,13 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
 
                 return null;
             }
-        }).thenAccept(o -> {
-            /* Refresh the singleton */
-            GuildWelcomeMessage.refreshWelcomeMessage(guild);
         });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the welcome message singleton */
+        GuildWelcomeMessage.refreshWelcomeMessage(guild);
     }
 
     /**
@@ -189,7 +184,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
         /* Make sure the guild has a config row */
         createDefaultGuildConfig(guild);
 
-        queueQuery(new DatabaseQuery<Void>() {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
             @Override
             public Void execute(Connection connection) throws SQLException {
                 PreparedStatement statement = connection.prepareStatement(
@@ -202,10 +197,13 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
 
                 return null;
             }
-        }).thenAccept(o -> {
-            /* Refresh the singleton */
-            GuildWelcomeMessage.refreshWelcomeMessage(guild);
         });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the welcome message singleton */
+        GuildWelcomeMessage.refreshWelcomeMessage(guild);
     }
 
     /**
@@ -234,12 +232,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
             }
         });
 
-        try {
-            return (long) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return -1L;
-        }
+        return (long) future.join();
     }
 
     /**
@@ -252,7 +245,7 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
         /* Make sure the guild has a config row */
         createDefaultGuildConfig(guild);
 
-        queueQuery(new DatabaseQuery<Void>() {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
             @Override
             public Void execute(Connection connection) throws SQLException {
                 PreparedStatement statement = connection.prepareStatement(
@@ -267,10 +260,45 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
                 return null;
             }
             
-        }).thenAccept(o -> {
-            /* Update the singleton */
-            GuildLoggingChannel.refreshLoggingChannel(guild);
         });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the logging channel singleton */
+        GuildLoggingChannel.refreshLoggingChannel(guild);
+    }
+
+    /**
+     * Remove a logging channel from a guild
+     * 
+     * @param guild The guild
+     */
+    public final void removeLoggingChannel(Guild guild) {
+        /* Make sure the guild has a config row */
+        createDefaultGuildConfig(guild);
+
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET logging_channel_id = ? WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, -1);
+                statement.setLong(2, guild.getIdLong());
+
+                statement.executeUpdate();
+
+                return null;
+            }
+        });
+
+        /* Wait for query to finish */
+        future.join();
+        
+        /* Update the logging channel singleton */
+        GuildLoggingChannel.refreshLoggingChannel(guild);
     }
 
     /**
