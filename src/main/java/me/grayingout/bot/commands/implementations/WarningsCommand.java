@@ -54,43 +54,49 @@ public final class WarningsCommand extends BotCommand {
 
         switch (event.getSubcommandName()) {
             case "give": {
-                /* Get the warned member and warner member */
+                /* Get the member and moderator */
                 Member member = event.getOption("member").getAsMember();
                 Member moderator = event.getMember();
                 
-                /* Default reason */
-                String reason = "<no reason provided>";
-                
                 /* Check if reason provided */
+                String reason = "<no reason provided>";
                 if (event.getOption("reason") != null) {
                     reason = event.getOption("reason").getAsString();
                 }
 
-                /* Put the warning into the database */
+                /* Warn the member */
                 MemberWarning warning = DatabaseAccessorManager.getWarningsDatabaseAccessor().putWarning(
                     member,
                     moderator,
                     reason);
                 
-                /* Send response */
+                /* Check warning was put into the database */
                 if (warning != null) {
                     /* Send DM */
                     member.getUser().openPrivateChannel().complete().sendMessageEmbeds(Warnings.createDMWarningEmbed(member, moderator, reason)).queue();
 
-                    /* Send embed */
+                    /* Send success response */
                     event.getHook().sendMessageEmbeds(
                         Warnings.createWarningSuccessEmbed(member, moderator, reason, warning.getWarningId())
                     ).queue();
                     break;
                 }
                 
-                /* Error response */
+                /* Send error response */
                 event.getHook().sendMessageEmbeds(
                     EmbedFactory.createWarningEmbed("Database Access Error", "Failed to warn member. Contact the the bot developer.")
                 ).queue();
                 break;
             }
             case "remove": {
+                /* Check for additional permissions */
+                if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+                    event.getHook().sendMessageEmbeds(
+                        EmbedFactory.createWarningEmbed("Insufficient Permission", "This subcommand requires the `ADMINISTRATOR` permission.")
+                    ).queue();
+                    break;
+                }
+
                 Member member = event.getOption("member").getAsMember();
 
                 Integer id = SlashCommands.safelyGetIntOption(event, "id");
@@ -110,7 +116,6 @@ public final class WarningsCommand extends BotCommand {
 
                 /* Check warning exists */
                 MemberWarning warning = DatabaseAccessorManager.getWarningsDatabaseAccessor().getMemberWarningById(member, id);
-                
                 if (warning == null) {
                     event.getHook().sendMessageEmbeds(
                         EmbedFactory.createWarningEmbed("Invalid Id", "Warning not found for the provided id")
@@ -127,10 +132,19 @@ public final class WarningsCommand extends BotCommand {
                 break;
             }
             case "clear": {
-                Member member = event.getOption("member").getAsMember();
+                /* Check for additional permission */
+                if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+                    event.getHook().sendMessageEmbeds(
+                        EmbedFactory.createWarningEmbed("Insufficient Permission", "This subcommand requires the `ADMINISTRATOR` permission.")
+                    ).queue();
+                    break;
+                }
 
+                /* Clear the members warnings */
+                Member member = event.getOption("member").getAsMember();
                 DatabaseAccessorManager.getWarningsDatabaseAccessor().clearMemberWarnings(member);
 
+                /* Send success response */
                 event.getHook().sendMessageEmbeds(
                     EmbedFactory.createSuccessEmbed("Cleared Warnings", "All warnings have been cleared for " + member.getAsMention())
                 ).queue();
