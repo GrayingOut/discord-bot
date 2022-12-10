@@ -24,6 +24,11 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     private final BlockingQueue<AudioTrack> trackQueue;
 
     /**
+     * Stores the current playing track
+     */
+    private AudioTrack playingTrack;
+
+    /**
      * Creates a new {@code AudioTrackScheduler} for an
      * {@code AudioPlayer}
      * 
@@ -32,6 +37,7 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     public AudioTrackScheduler(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         this.trackQueue = new LinkedBlockingQueue<>();
+        playingTrack = null;
     }
 
     /**
@@ -43,10 +49,12 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     public final void queue(AudioTrack audioTrack) {
         /* Attempt to immediately play track */
         boolean playStarted = audioPlayer.startTrack(audioTrack, true);
-
+        
         if (!playStarted) {
             trackQueue.offer(audioTrack);
+            return;
         }
+        playingTrack = audioTrack;
     }
 
     /**
@@ -54,11 +62,23 @@ public class AudioTrackScheduler extends AudioEventAdapter {
      */
     public final void nextTrack() {
         /* Starts the next track */
-        audioPlayer.startTrack(trackQueue.poll(), false);
+        AudioTrack track = trackQueue.poll();
+        audioPlayer.startTrack(track, false);
+        playingTrack = track;
+    }
+
+    /**
+     * Returns the current audio track playing
+     * 
+     * @return The audio track, or {@code null} if not track is playing
+     */
+    public final AudioTrack getPlayingTrack() {
+        return playingTrack;
     }
     
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        playingTrack = null;
         if (endReason.mayStartNext) {
             nextTrack();
         }

@@ -49,6 +49,15 @@ public final class GuildAudioPlayer {
     }
 
     /**
+     * Stops the currently playing track
+     */
+    public final void stop() {
+        if (audioTrackScheduler.getPlayingTrack() != null) {
+            audioTrackScheduler.getPlayingTrack().stop();
+        }
+    }
+
+    /**
      * Gets the guild's audio player send handler
      * 
      * @return The {@code AudioPlayerSendHandler}
