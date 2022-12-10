@@ -11,15 +11,14 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 /**
- * A slash command used to queue audio to be played
+ * A slash command used to search for an audio
  */
-public final class PlayCommand extends BotCommand {
+public final class SearchCommand extends BotCommand {
 
     @Override
     public CommandData getCommandData() {
-        return Commands.slash("play", "Play an audio from its url")
-            .addOption(OptionType.STRING, "url", "The audio url", true)
-            .setGuildOnly(true);
+        return Commands.slash("search", "Search for an audio")
+            .addOption(OptionType.STRING, "search", "The audio to search for", true);
     }
 
     @Override
@@ -60,10 +59,9 @@ public final class PlayCommand extends BotCommand {
             return;
         }
 
-        /* Play audio */
-        GuildAudioPlayerManager.getInstance().playAudio(event);
+        /* Search for the audio */
+        GuildAudioPlayerManager.getInstance().searchAudio(event);
         
-        /* Delete original message */
         event.getHook().deleteOriginal().queue();
-    }
+    }    
 }

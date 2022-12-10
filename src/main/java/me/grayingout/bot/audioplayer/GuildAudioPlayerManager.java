@@ -12,9 +12,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 /**
  * Manages the {@code GuildAudioPlayer}s
@@ -76,55 +75,112 @@ public final class GuildAudioPlayerManager {
     }
 
     /**
-     * Plays an audio from a URL
+     * Search for an audio to play from a slash command
      * 
-     * @param member The member that added the audio
-     * @param channel The channel the /play command was sent in
-     * @param url The URL
+     * @param event The slash command event
      */
-    public final void playAudio(Member member, GuildMessageChannel channel, String url) {
-        GuildAudioPlayer guildAudioPlayer = getGuildAudioPlayer(channel.getGuild());
+    public final void searchAudio(SlashCommandInteractionEvent event) {
+        GuildAudioPlayer guildAudioPlayer = getGuildAudioPlayer(event.getGuild());
 
-        audioPlayerManager.loadItemOrdered(guildAudioPlayer, url, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                guildAudioPlayer.queue(track);
-                channel.sendMessageEmbeds(
-                    EmbedFactory.createSuccessEmbed(
-                        "Audio Added to Queue",
-                        "Audio has been added to the audio queue",
-                        new Field[] {
-                            new Field("Title", track.getInfo().title, false),
-                            new Field("Author", track.getInfo().author, false),
-                            new Field("Added by", member.getAsMention(), false)
-                        }
-                    )
-                ).queue();
-            }
+        audioPlayerManager.loadItemOrdered(
+            guildAudioPlayer,
+            "ytsearch:" + event.getOption("search").getAsString(),
+            new AudioResultHandler(event));
+    }
 
-            @Override
-            public void loadFailed(FriendlyException e) {
-                channel.sendMessageEmbeds(
-                    EmbedFactory.createErrorEmbed(
-                        "Failed to add Audio",
-                        e.getMessage()
-                    )
-                ).queue();
-            }
+    /**
+     * Plays an audio from a slash command
+     * 
+     * @param event The slash command event
+     */
+    public final void playAudio(SlashCommandInteractionEvent event) {
+        GuildAudioPlayer guildAudioPlayer = getGuildAudioPlayer(event.getGuild());
 
-            @Override
-            public void noMatches() {
-                channel.sendMessageEmbeds(
+        audioPlayerManager.loadItemOrdered(
+            guildAudioPlayer,
+            event.getOption("url").getAsString(),
+            new AudioResultHandler(event));
+    }
+
+    private final class AudioResultHandler implements AudioLoadResultHandler {
+
+        /**
+         * The interaction event that this result handler is for
+         */
+        private final SlashCommandInteractionEvent event;
+
+        /**
+         * Creates a new {@code AudioResultHandler} for a
+         * slash command interaction
+         * 
+         * @param event The slash command interaction event
+         */
+        public AudioResultHandler(SlashCommandInteractionEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public void trackLoaded(AudioTrack track) {
+            getGuildAudioPlayer(event.getGuild()).queue(track);
+            event.getChannel().sendMessageEmbeds(
+                EmbedFactory.createSuccessEmbed(
+                    "Audio Added to Queue",
+                    "Audio has been added to the audio queue",
+                    new Field[] {
+                        new Field("Title", track.getInfo().title, false),
+                        new Field("Author", track.getInfo().author, false),
+                        new Field("Added by", event.getMember().getAsMention(), false)
+                    }
+                )
+            ).queue();
+        }
+
+        @Override
+        public void loadFailed(FriendlyException e) {
+            event.getChannel().sendMessageEmbeds(
+                EmbedFactory.createErrorEmbed(
+                    "Failed to add Audio",
+                    e.getMessage()
+                )
+            ).queue();
+        }
+
+        @Override
+        public void noMatches() {
+            event.getChannel().sendMessageEmbeds(
+                EmbedFactory.createWarningEmbed(
+                    "Failed to add Audio",
+                    "No match was found"
+                )
+            ).queue();
+        }
+
+        @Override
+        public void playlistLoaded(AudioPlaylist playlist) {
+            if (playlist.getTracks().size() < 1) {
+                event.getChannel().sendMessageEmbeds(
                     EmbedFactory.createWarningEmbed(
                         "Failed to add Audio",
-                        "No match was found for `" + url + "`"
+                        "No match was found"
                     )
                 ).queue();
+                return;
             }
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-            }
-        });
+            AudioTrack track = playlist.getTracks().get(0);
+
+            getGuildAudioPlayer(event.getGuild()).queue(track);
+            event.getChannel().sendMessageEmbeds(
+                EmbedFactory.createSuccessEmbed(
+                    "Audio Added to Queue",
+                    "Audio has been added to the audio queue",
+                    new Field[] {
+                        new Field("Title", track.getInfo().title, false),
+                        new Field("Author", track.getInfo().author, false),
+                        new Field("Added by", event.getMember().getAsMention(), false)
+                    }
+                )
+            ).queue();
+        }
     }
 }
