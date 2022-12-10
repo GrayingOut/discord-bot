@@ -1,24 +1,23 @@
 package me.grayingout.bot.commands.implementations.audio;
 
+import me.grayingout.bot.audioplayer.GuildAudioPlayer;
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
-import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.Audio;
+import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 /**
- * A slash command used to queue audio to be played
+ * A slash command used to stop playing all audio and
+ * clear the queue
  */
-public final class PlayCommand extends BotCommand {
+public final class StopCommand extends BotCommand {
 
     @Override
     public CommandData getCommandData() {
-        return Commands.slash("play", "Play an audio from its url")
-            .addOption(OptionType.STRING, "url", "The url of the audio source", true)
-            .setGuildOnly(true);
+        return Commands.slash("stop", "Stop playing audio and clear the queue");
     }
 
     @Override
@@ -30,13 +29,18 @@ public final class PlayCommand extends BotCommand {
             return;
         }
 
-        /* Load the audio */
-        AudioLoadResult loadResult = GuildAudioPlayerManager
+        GuildAudioPlayer guildAudioPlayer = GuildAudioPlayerManager
             .getInstance()
-            .getGuildAudioPlayer(event.getGuild())
-            .queueAudioByURL(event.getOption("url").getAsString());
+            .getGuildAudioPlayer(event.getGuild());
         
-        /* Handle the response */
-        Audio.handleAudioLoadResult(event, loadResult);
+        /* Stop playing and clear the queue */
+        guildAudioPlayer.stopPlaying();
+        guildAudioPlayer.clearQueue();
+
+        /* Response */
+        event.getHook().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
+            "Audio Stopped",
+            "The audio playing has been stopped and the queue has been cleared"
+        )).queue();
     }
 }

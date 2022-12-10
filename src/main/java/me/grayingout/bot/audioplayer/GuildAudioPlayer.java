@@ -43,12 +43,18 @@ public final class GuildAudioPlayer {
     }
 
     /**
-     * Stops the currently playing track
+     * Stops the currently playing {@code AudioTrack} if one
+     * is playing
      */
-    public final void stop() {
-        if (audioTrackScheduler.getPlayingTrack() != null) {
-            audioTrackScheduler.getPlayingTrack().stop();
-        }
+    public final void stopPlaying() {
+        audioTrackScheduler.stop();
+    }
+
+    /**
+     * Clears the {@code AudioTrackScheduler}'s queue
+     */
+    public final void clearQueue() {
+        audioTrackScheduler.clear();
     }
 
     /**

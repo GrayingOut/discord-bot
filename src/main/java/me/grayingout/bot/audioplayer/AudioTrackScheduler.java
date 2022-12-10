@@ -58,6 +58,20 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     }
 
     /**
+     * Clears the {@code AudioTrack} queue
+     */
+    public final void clear() {
+        trackQueue.clear();
+    }
+
+    /**
+     * Stops the currently playing {@code AudioTrack}
+     */
+    public final void stop() {
+        audioPlayer.stopTrack();
+    }
+
+    /**
      * Start the next track
      */
     public final void nextTrack() {

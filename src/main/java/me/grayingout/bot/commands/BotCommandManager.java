@@ -16,6 +16,7 @@ import me.grayingout.bot.commands.implementations.audio.JoinCommand;
 import me.grayingout.bot.commands.implementations.audio.LeaveCommand;
 import me.grayingout.bot.commands.implementations.audio.PlayCommand;
 import me.grayingout.bot.commands.implementations.audio.SearchCommand;
+import me.grayingout.bot.commands.implementations.audio.StopCommand;
 import net.dv8tion.jda.api.JDA;
 
 /**
@@ -40,6 +41,7 @@ public final class BotCommandManager {
         put("join", new JoinCommand());
         put("leave", new LeaveCommand());
         put("search", new SearchCommand());
+        put("stop", new StopCommand());
     }};
 
     /**
