@@ -1,9 +1,12 @@
 package me.grayingout.bot.commands.implementations.audio;
 
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
+import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
+import me.grayingout.bot.audioplayer.handler.AudioLoadResultType;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -60,10 +63,38 @@ public final class PlayCommand extends BotCommand {
             return;
         }
 
-        /* Play audio */
-        GuildAudioPlayerManager.getInstance().playAudio(event);
+        /* Load the audio */
+        AudioLoadResult loadResult = GuildAudioPlayerManager
+            .getInstance()
+            .getGuildAudioPlayer(event.getGuild())
+            .queueAudioByURL(event.getOption("url").getAsString());
         
-        /* Delete original message */
-        event.getHook().deleteOriginal().queue();
+        /* Track queued */
+        if (loadResult.getResultType().equals(AudioLoadResultType.TRACK_LOADED)) {
+            event.getHook().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
+                "Audio has been Queued",
+                "The requested audio has been added to the queue",
+                new Field[] {
+                    new Field("Title", loadResult.getLoadedAudioTrack().getInfo().title, false),
+                    new Field("Author", loadResult.getLoadedAudioTrack().getInfo().author, false)
+                }
+            )).queue();
+            return;
+        }
+
+        /* No math */
+        if (loadResult.getResultType().equals(AudioLoadResultType.NO_MATCH)) {
+            event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
+                "Audio Not Found",
+                "The requested audio was not found"
+            )).queue();
+            return;
+        }
+        
+        /* Error */
+        event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
+            "An Error Occurred",
+            "An error occurred queueing the requested audio. Please try again."
+        )).queue();
     }
 }

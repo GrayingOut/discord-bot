@@ -4,6 +4,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
+import me.grayingout.bot.audioplayer.handler.AudioLoadHandler;
+import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
+import me.grayingout.bot.audioplayer.handler.AudioLoadResultType;
+
 /**
  * Manages the playing of audio in a guild
  */
@@ -37,16 +41,6 @@ public final class GuildAudioPlayer {
         audioPlayer.addListener(audioTrackScheduler);
         audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
     }
-    
-    /**
-     * Queues an audio track for playing, or plays immediately
-     * if the queue is empty
-     * 
-     * @param track The audio track
-     */
-    public final void queue(AudioTrack track) {
-        audioTrackScheduler.queue(track);
-    }
 
     /**
      * Stops the currently playing track
@@ -58,11 +52,73 @@ public final class GuildAudioPlayer {
     }
 
     /**
+     * Queues an audio track for playing, by getting it
+     * from the provided URL using the provided audio
+     * player manager
+     * 
+     * @param manager The audio player manager
+     * @param url     The URL of the audio
+     * @return The {@code AudioLoadResult} of attempting to queue the url
+     */
+    public final AudioLoadResult queueAudioByURL(String url) {
+        AudioLoadHandler handler = new AudioLoadHandler(this);
+
+        GuildAudioPlayerManager
+            .getInstance()
+            .getAudioPlayerManager()
+            .loadItemOrdered(this, url, handler);
+        
+        AudioLoadResult result = handler.awaitLoadResult();
+
+        if (result.getResultType().equals(AudioLoadResultType.TRACK_LOADED)) {
+            audioTrackScheduler.queue(result.getLoadedAudioTrack());
+        }
+        
+        return result;
+    }
+
+    /**
+     * Queues an audio track for playing, by searching
+     * for it on YouTube using the provided audio
+     * player manager
+     * 
+     * @param manager The audio player manager
+     * @param query   The search query
+     * @return The {@code AudioLoadResult} of attempting to queue the query
+     */
+    public final AudioLoadResult queueAudioByYTSearch(String query) {
+        AudioLoadHandler handler = new AudioLoadHandler(this);
+
+        GuildAudioPlayerManager
+            .getInstance()
+            .getAudioPlayerManager()
+            .loadItemOrdered(this, "ytsearch:" + query, handler);
+        
+        AudioLoadResult result = handler.awaitLoadResult();
+
+        if (result.getResultType().equals(AudioLoadResultType.TRACK_LOADED)) {
+            audioTrackScheduler.queue(result.getLoadedAudioTrack());
+        }
+        
+        return result;
+    }
+
+    /**
      * Gets the guild's audio player send handler
      * 
      * @return The {@code AudioPlayerSendHandler}
      */
     public final AudioPlayerSendHandler getAudioPlayerSendHandler() {
         return audioPlayerSendHandler;
+    }
+
+    /**
+     * Get the currently playing {@code AudioTrack} or
+     * {@code null} if no track is playing
+     * 
+     * @return The playing {@code AudioTrack} or {@code null}
+     */
+    public final AudioTrack getPlayingAudioTrack() {
+        return audioTrackScheduler.getPlayingTrack();
     }
 }

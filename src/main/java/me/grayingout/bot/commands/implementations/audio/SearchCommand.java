@@ -1,9 +1,12 @@
 package me.grayingout.bot.commands.implementations.audio;
 
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
+import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
+import me.grayingout.bot.audioplayer.handler.AudioLoadResultType;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -18,7 +21,7 @@ public final class SearchCommand extends BotCommand {
     @Override
     public CommandData getCommandData() {
         return Commands.slash("search", "Search for an audio")
-            .addOption(OptionType.STRING, "search", "The audio to search for", true);
+            .addOption(OptionType.STRING, "search", "The audio to search for on YouTube", true);
     }
 
     @Override
@@ -60,8 +63,37 @@ public final class SearchCommand extends BotCommand {
         }
 
         /* Search for the audio */
-        GuildAudioPlayerManager.getInstance().searchAudio(event);
+        AudioLoadResult loadResult = GuildAudioPlayerManager
+            .getInstance()
+            .getGuildAudioPlayer(event.getGuild())
+            .queueAudioByYTSearch(event.getOption("search").getAsString());
         
-        event.getHook().deleteOriginal().queue();
+        /* Track queued */
+        if (loadResult.getResultType().equals(AudioLoadResultType.TRACK_LOADED)) {
+            event.getHook().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
+                "Audio has been Queued",
+                "The requested audio has been added to the queue",
+                new Field[] {
+                    new Field("Title", loadResult.getLoadedAudioTrack().getInfo().title, false),
+                    new Field("Author", loadResult.getLoadedAudioTrack().getInfo().author, false)
+                }
+            )).queue();
+            return;
+        }
+
+        /* No math */
+        if (loadResult.getResultType().equals(AudioLoadResultType.NO_MATCH)) {
+            event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
+                "Audio Not Found",
+                "The requested audio was not found"
+            )).queue();
+            return;
+        }
+        
+        /* Error */
+        event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
+            "An Error Occurred",
+            "An error occurred queueing the requested audio. Please try again."
+        )).queue();
     }    
 }
