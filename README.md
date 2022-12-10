@@ -28,6 +28,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Slowmode
 - Welcome message w/ templating
 - Rules command (used to print a pretty embed) - edit code to customise
+- Playing audio
 - Persistence with sqlite
 
 ### Slash Commands
@@ -59,6 +60,11 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/hello [member]`| Say hello to the bot | |
 |`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
+|`/join`| Joins the member's audio channel | |
+|`/leave`| Leaves its current audio channel | |
+|`/play <url>`| Plays an audio from a URL | |
+|`/search <search>`| Searches YouTube for an audio | |
+|`/stop`| Stops the current playing audio and clears the audio queue | |
 
 ### Logging
 
