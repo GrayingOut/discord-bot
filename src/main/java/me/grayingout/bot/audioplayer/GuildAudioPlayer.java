@@ -42,6 +42,10 @@ public final class GuildAudioPlayer {
         audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
     }
 
+    public final AudioTrack getPlayingAudioTrack() {
+        return audioTrackScheduler.getPlayingTrack();
+    }
+
     /**
      * Stops the currently playing {@code AudioTrack} if one
      * is playing
@@ -116,15 +120,5 @@ public final class GuildAudioPlayer {
      */
     public final AudioPlayerSendHandler getAudioPlayerSendHandler() {
         return audioPlayerSendHandler;
-    }
-
-    /**
-     * Get the currently playing {@code AudioTrack} or
-     * {@code null} if no track is playing
-     * 
-     * @return The playing {@code AudioTrack} or {@code null}
-     */
-    public final AudioTrack getPlayingAudioTrack() {
-        return audioTrackScheduler.getPlayingTrack();
     }
 }
