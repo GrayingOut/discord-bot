@@ -3,20 +3,21 @@ package me.grayingout.bot.commands;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import me.grayingout.bot.commands.implementations.BulkDeleteCommand;
 import me.grayingout.bot.commands.implementations.HelloCommand;
-import me.grayingout.bot.commands.implementations.LevelRolesCommand;
-import me.grayingout.bot.commands.implementations.LevelsCommand;
 import me.grayingout.bot.commands.implementations.LoggingCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
-import me.grayingout.bot.commands.implementations.SlowmodeCommand;
-import me.grayingout.bot.commands.implementations.WarningsCommand;
 import me.grayingout.bot.commands.implementations.WelcomeMessageCommand;
 import me.grayingout.bot.commands.implementations.audio.JoinCommand;
 import me.grayingout.bot.commands.implementations.audio.LeaveCommand;
 import me.grayingout.bot.commands.implementations.audio.PlayCommand;
+import me.grayingout.bot.commands.implementations.audio.PlayingCommand;
 import me.grayingout.bot.commands.implementations.audio.SearchCommand;
 import me.grayingout.bot.commands.implementations.audio.StopCommand;
+import me.grayingout.bot.commands.implementations.levelling.LevelRolesCommand;
+import me.grayingout.bot.commands.implementations.levelling.LevelsCommand;
+import me.grayingout.bot.commands.implementations.moderation.BulkDeleteCommand;
+import me.grayingout.bot.commands.implementations.moderation.SlowmodeCommand;
+import me.grayingout.bot.commands.implementations.moderation.WarningsCommand;
 import net.dv8tion.jda.api.JDA;
 
 /**
@@ -42,6 +43,7 @@ public final class BotCommandManager {
         put("leave", new LeaveCommand());
         put("search", new SearchCommand());
         put("stop", new StopCommand());
+        put("playing", new PlayingCommand());
     }};
 
     /**

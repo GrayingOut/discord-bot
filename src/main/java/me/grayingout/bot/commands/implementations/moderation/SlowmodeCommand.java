@@ -1,4 +1,4 @@
-package me.grayingout.bot.commands.implementations;
+package me.grayingout.bot.commands.implementations.moderation;
 
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.EmbedFactory;
