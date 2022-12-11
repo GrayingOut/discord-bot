@@ -3,6 +3,7 @@ package me.grayingout.bot.listeners;
 import me.grayingout.database.entities.GuildWelcomeMessage;
 import me.grayingout.util.EmbedFactory;
 import me.grayingout.util.WelcomeMessage;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -22,11 +23,20 @@ public final class WelcomeMessageListeners extends ListenerAdapter {
 
         String message = WelcomeMessage.formatWelcomeMessage(welcomeMessage, event.getMember());
 
+        int memberCount = event.getGuild().getMemberCount();
+
         /* Create and send the welcome message */
         welcomeMessage.getWelcomeChannel().sendMessageEmbeds(
             EmbedFactory.createGenericEmbed(
                 "Welcome",
-                message
+                message,
+                new Field[] {
+                    new Field(
+                        "Member Number",
+                        ""+memberCount,
+                        false
+                    )
+                }
                 )
         ).queue();
     }

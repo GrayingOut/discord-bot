@@ -87,7 +87,7 @@ public final class GuildWelcomeMessage {
      * Refreshes the data within this singleton
      */
     public final void refresh() {
-        channelId = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getLoggingChannelId(guild);
+        channelId = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getWelcomeChannelId(guild);
         channel = guild.getChannelById(GuildMessageChannel.class, channelId);
         message = DatabaseAccessorManager.getConfigurationDatabaseAccessor().getWelcomeMessage(guild);
     }
