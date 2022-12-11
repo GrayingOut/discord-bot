@@ -23,7 +23,7 @@ public final class Warnings {
     /**
      * The page size of the warnings list
      */
-    public static final double WARNINGS_PAGE_SIZE = 5d;
+    public static final int WARNINGS_PAGE_SIZE = 5;
 
     /**
      * Creates the warning embed sent to a warned user's DMs
@@ -117,7 +117,9 @@ public final class Warnings {
         }
 
         /* Make sure page is within bounds */
-        int boundedPage = Math.max(Math.min(getNumberOfPages(warnings.size()), page), 1);
+        int boundedPage = Paging.boundPage(page, WARNINGS_PAGE_SIZE, warnings.size());
+
+        System.out.printf("1. %s %s\n", page, boundedPage);
 
         /* Update page in database */
         DatabaseAccessorManager.getWarningsDatabaseAccessor().updateMemberWarningsListMessagePage(
@@ -155,7 +157,7 @@ public final class Warnings {
         }
 
         /* Check if on last page */
-        if (currentPage >= (int) Math.ceil(numberOfWarnings / WARNINGS_PAGE_SIZE)) {
+        if (currentPage >= Paging.getNumberOfPages(WARNINGS_PAGE_SIZE, numberOfWarnings)) {
             nextPageButton = nextPageButton.asDisabled();
         }
 
@@ -172,8 +174,10 @@ public final class Warnings {
      */
     public static final MessageEmbed createWarningsPageEmbed(Member member, List<MemberWarning> warnings, int page) {
         /* Get indexes of the start and end of the page */
-        int pageStartIndex = getPageStartIndex(page, warnings.size());
-        int pageEndIndex = getPageEndIndex(page, warnings.size());
+        int pageStartIndex = Paging.getPageStartIndex(page, WARNINGS_PAGE_SIZE, warnings.size());
+        int pageEndIndex = Paging.getPageEndIndex(page, WARNINGS_PAGE_SIZE, warnings.size());
+
+        System.out.printf("2. %s %s %s\n", page, pageStartIndex, pageEndIndex);
         
         ArrayList<Field> warningFields = new ArrayList<>();
         
@@ -199,73 +203,9 @@ public final class Warnings {
                 "The user has a total of **%s** warnings\n\nShowing page **%s** of **%s**",
                 warnings.size(),
                 page,
-                getNumberOfPages(warnings.size())
+                Paging.getNumberOfPages(WARNINGS_PAGE_SIZE, warnings.size())
             ),
             warningFields.toArray(new Field[] {})
         );
-    }
-
-    /**
-     * Calculates the number of pages possible in a list
-     * of warnings
-     * 
-     * @param numberOfWarnings The number of warnings
-     * @return The number of possible pages
-     */
-    public static final int getNumberOfPages(int numberOfWarnings) {
-        /* Check if not warning */
-        if (numberOfWarnings == 0) {
-            return 1;
-        }
-
-        /* Calculate page count */
-        return (int) Math.ceil(numberOfWarnings / WARNINGS_PAGE_SIZE);
-    }
-
-    /**
-     * Calculates the start index of the warnings array for the
-     * provided page
-     * 
-     * @param page             The page
-     * @param numberOfWarnings The number of warnings
-     * @return The start index
-     */
-    public static final int getPageStartIndex(int page, int numberOfWarnings) {
-        /* Check if not warnings */
-        if (numberOfWarnings == 0) {
-            return 0;
-        }
-
-        /* Calculate index */
-        int startIndex = (int) ((page - 1) * WARNINGS_PAGE_SIZE);
-
-        /* Check if outside bounds */
-        if (startIndex >= numberOfWarnings) {
-            startIndex = numberOfWarnings - 1;
-        }
-
-        /* Return index */
-        return startIndex;
-    }
-
-    /**
-     * Calculates the end index of the warnings array for the
-     * provided page
-     * 
-     * @param page             The page
-     * @param numberOfWarnings The number of warnings
-     * @return The end index
-     */
-    public static final int getPageEndIndex(int page, int numberOfWarnings) {
-        /* Get the start index */
-        int startIndex = getPageStartIndex(page, numberOfWarnings);
-
-        /* Check if enough warnings after start index for page */
-        if (numberOfWarnings >= startIndex + WARNINGS_PAGE_SIZE) {
-            return (int) (startIndex + WARNINGS_PAGE_SIZE);
-        }
-
-        /* Not enough after start index for page */
-        return numberOfWarnings;
     }
 }
