@@ -3,6 +3,8 @@ package me.grayingout.bot.interactables.audioqueue;
 import java.util.HashMap;
 
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
+import me.grayingout.util.Audio;
+import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -51,6 +53,13 @@ public final class AudioQueueMessageManager extends ListenerAdapter {
                 break;
             }
             case "audio_queue_clear": {
+                /* Check member is a DJ */
+                if (!Audio.isMemberAValidDJ(event.getMember())) {
+                    event.deferReply(true).queue();
+                    event.getHook().sendMessageEmbeds(EmbedFactory.createNotADJEmbed()).queue();
+                    break;
+                }
+
                 event.deferEdit().queue();
                 if (messages.get(event.getMessageIdLong()) == null) break;
 

@@ -24,6 +24,12 @@ public final class StopCommand extends BotCommand {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
+        /* Check member is a DJ */
+        if (!Audio.isMemberAValidDJ(event.getMember())) {
+            event.getHook().sendMessageEmbeds(EmbedFactory.createNotADJEmbed()).queue();
+            return;
+        }
+
         /* Check the execution environment */
         if (!Audio.checkValidCommandExecutionState(event, true)) {
             return;

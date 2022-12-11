@@ -2,6 +2,7 @@ package me.grayingout.util;
 
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -9,10 +10,13 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
 import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
 import me.grayingout.bot.audioplayer.handler.AudioLoadResultType;
+import me.grayingout.database.accessors.DatabaseAccessorManager;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
@@ -31,6 +35,30 @@ public final class Audio {
      * The page size of the warnings list
      */
     public static final int QUEUE_PAGE_SIZE = 5;
+
+    /**
+     * Returns whether a member is a DJ (they can use
+     * DJ commands, which are restricted commands)
+     * 
+     * @param member The member to check
+     * @return If the member is a DJ
+     */
+    public static final boolean isMemberAValidDJ(Member member) {
+        /* Check member's permissions first, and owner status */
+        EnumSet<Permission> permissions = member.getPermissions();
+        if (permissions.contains(Permission.ADMINISTRATOR) || permissions.contains(Permission.MANAGE_SERVER) || member.isOwner()) {
+            return true;
+        }
+
+        /* Check DJ role */
+        Role djRole = DatabaseAccessorManager.getConfigurationDatabaseAccessor()
+            .getGuildDJRole(member.getGuild());
+        if (member.getRoles().contains(djRole)) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Formats the duration/position of an {@code AudioTrack} into

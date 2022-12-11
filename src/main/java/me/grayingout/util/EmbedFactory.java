@@ -67,10 +67,19 @@ public final class EmbedFactory {
     }
 
     /**
+     * An embed for when a DJ command is executed by a non-DJ
+     * 
+     * @return The built embed
+     */
+    public static final MessageEmbed createNotADJEmbed() {
+        return createErrorEmbed("Insufficient Permission", "This can only be used by a DJ");
+    }
+
+    /**
      * An embed for when an audio channel command is executed
      * outside an audio channel
      * 
-     * @return The build embed
+     * @return The built embed
      */
     public static final MessageEmbed createNotExecutedInAudioChannelEmbed() {
         return createWarningEmbed("Invalid Audio Channel", "This command can only be used in an audio channel");
@@ -80,7 +89,7 @@ public final class EmbedFactory {
      * An embed for when the bot is not connected to the same
      * audio channel as the member executing the command
      * 
-     * @return The build embed
+     * @return The built embed
      */
     public static final MessageEmbed createNotConnectedToSameAudioChannelEmbed() {
         return createWarningEmbed("Invalid Audio Channel", "You must be connected to the same audio channel as me to use this command");
@@ -90,7 +99,7 @@ public final class EmbedFactory {
      * An embed for when the bot is not connected to an audio
      * channel for executing a command
      * 
-     * @return The build embed
+     * @return The built embed
      */
     public static final MessageEmbed createNotConnectedToAudioChannelEmbed() {
         return createWarningEmbed("Invalid Audio Channel", "I must be connected to an audio channel to use this command");
