@@ -77,20 +77,8 @@ public final class PlayingCommand extends BotCommand {
 
         progressBarBuilder.append(PROGRESS_STRING_BASE);
         progressBarBuilder.setCharAt((int) Math.floor(progress*PROGRESS_STRING_BASE.length()), 'o');
-
-        /* Format the timings */
-        String durationString = String.format(
-            "%02d:%02d:%02d",
-            (long)(trackDurationSeconds/3600),
-            (long)(trackDurationSeconds%3600)/60,
-            (long)(trackDurationSeconds%60));
-        String positionString = String.format(
-            "%02d:%02d:%02d",
-            (long)(trackPositionSeconds/3600),
-            (long)(trackPositionSeconds%3600)/60,
-            (long)(trackPositionSeconds%60));
         
-        progressBarBuilder.append("\n`" + positionString + "/" + durationString + "`");
+        progressBarBuilder.append("\n`" + Audio.formatAudioTrackTime(trackPositionSeconds) + "/" + Audio.formatAudioTrackTime(trackDurationSeconds) + "`");
 
         return progressBarBuilder.toString().replaceAll("-", ":heavy_minus_sign:").replace("o", ":black_circle:");
     }

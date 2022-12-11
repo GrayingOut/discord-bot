@@ -15,6 +15,17 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 public final class Audio {
 
     /**
+     * Formats the duration/position of an {@code AudioTrack} into
+     * hh:mm:ss
+     * 
+     * @param time The time in seconds
+     * @return The formatted time
+     */
+    public static final String formatAudioTrackTime(long timeSeconds) {
+        return String.format("%02d:%02d:%02d", (int)(timeSeconds/3600), (int)((timeSeconds%3600)/60), (int)(timeSeconds%60));
+    }
+
+    /**
      * Handles the audio load result for a slash command
      * 
      * @param event  The slash command event
