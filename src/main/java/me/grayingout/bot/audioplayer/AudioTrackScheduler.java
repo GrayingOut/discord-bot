@@ -51,6 +51,15 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     }
 
     /**
+     * Gets the queue of tracks to be played
+     * 
+     * @return The array of upcoming {@code AudioTrack}s
+     */
+    public final AudioTrack[] getQueue() {
+        return trackQueue.toArray(new AudioTrack[] {});
+    }
+
+    /**
      * Clears the {@code AudioTrack} queue
      */
     public final void clear() {

@@ -42,8 +42,24 @@ public final class GuildAudioPlayer {
         audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
     }
 
+    /**
+     * Gets the currently playing {@code AudioTrack},
+     * or {@code null} if not track is playing
+     * 
+     * @return The playing audio {@code AudioTrack} or {@code null}
+     */
     public final AudioTrack getPlayingAudioTrack() {
         return audioTrackScheduler.getPlayingTrack();
+    }
+
+    /**
+     * Gets the list of upcoming {@code AudioTrack}s to
+     * be played
+     * 
+     * @return The list of upcoming {@code AudioTrack}s
+     */
+    public final AudioTrack[] getAudioTrackQueue() {
+        return audioTrackScheduler.getQueue();
     }
 
     /**
