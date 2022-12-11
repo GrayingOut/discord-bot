@@ -28,7 +28,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Slowmode
 - Welcome message w/ templating
 - Rules command (used to print a pretty embed) - edit code to customise
-- Playing audio
+- Playing audio w/ DJ role
 - Persistence with sqlite
 
 ### Slash Commands
@@ -64,7 +64,13 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/leave`| Leaves its current audio channel | |
 |`/play <url>`| Plays an audio from a URL | |
 |`/search <search>`| Searches YouTube for an audio | |
-|`/stop`| Stops the current playing audio and clears the audio queue | |
+|`/stop`| Stops the current playing audio and clears the audio queue | `DJ_USER`\* |
+|`/queue`| View an interactable queue list message | `DJ_USER`\* - for the clear queue action |
+|`/dj-role set <role>`| Set the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
+|`/dj-role get`| View the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
+|`/dj-role remove`| Remove the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
+
+\*`DJ_USER` refers to a user who is either the owner, has `MANAGE_SERVER`, or has `ADMINISTRATOR`
 
 ### Logging
 
