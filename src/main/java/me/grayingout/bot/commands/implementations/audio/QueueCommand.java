@@ -24,6 +24,10 @@ public final class QueueCommand extends BotCommand {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
+        if (!Audio.checkValidCommandExecutionState(event, true)) {
+            return;
+        }
+
         /* Create the message */
         MessageCreateData data = Audio.createAudioQueueMessageMessage(event.getGuild());
 
