@@ -7,6 +7,7 @@ import me.grayingout.bot.commands.implementations.HelloCommand;
 import me.grayingout.bot.commands.implementations.LoggingCommand;
 import me.grayingout.bot.commands.implementations.RulesCommand;
 import me.grayingout.bot.commands.implementations.WelcomeMessageCommand;
+import me.grayingout.bot.commands.implementations.audio.DJRoleCommand;
 import me.grayingout.bot.commands.implementations.audio.JoinCommand;
 import me.grayingout.bot.commands.implementations.audio.LeaveCommand;
 import me.grayingout.bot.commands.implementations.audio.PlayCommand;
@@ -46,6 +47,7 @@ public final class BotCommandManager {
         put("stop", new StopCommand());
         put("playing", new PlayingCommand());
         put("queue", new QueueCommand());
+        put("dj-role", new DJRoleCommand());
     }};
 
     /**
