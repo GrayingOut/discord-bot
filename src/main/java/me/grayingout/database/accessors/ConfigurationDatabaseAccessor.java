@@ -16,6 +16,7 @@ import me.grayingout.database.entities.GuildWelcomeMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import me.grayingout.util.WelcomeMessage;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 /**
@@ -45,13 +46,95 @@ public final class ConfigurationDatabaseAccessor extends DatabaseAccessor {
                   + "  logging_channel_id INTEGER DEFAULT -1,"
                   + "  enabled_logging_types TEXT DEFAULT \"\","
                   + "  welcome_channel_id INTEGER DEFAULT -1,"
-                  + "  welcome_message TEXT"
+                  + "  welcome_message TEXT,"
+                  + "  dj_role_id INTEGER DEFAULT -1"
                   + ")");
                 
                 return null;
             }
         });
     }
+
+    /**
+     * Removes the DJ role in a guild
+     * 
+     * @param guild The guild
+     */
+    public final void removeGuildDJRole(Guild guild) {
+
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET dj_role_id = -1 WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                statement.executeUpdate();
+
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Updates the DJ role in a guild
+     * 
+     * @param guild The guild
+     * @param role  The role to use
+     */
+    public final void updateGuildDJRole(Guild guild, Role role) {
+        /* Make sure guild has a config */
+        createDefaultGuildConfig(guild);
+
+        queueQuery(new DatabaseQuery<Void>() {
+            @Override
+            public Void execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE GuildConfiguration SET dj_role_id = ? WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, role.getIdLong());
+                statement.setLong(2, guild.getIdLong());
+
+                statement.executeUpdate();
+
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Gets the DJ role in a guild or {@code null} if
+     * there is no DJ role
+     * 
+     * @param guild The guild
+     * @return The DJ role, or {@code null}
+     */
+    public final Role getGuildDJRole(Guild guild) {
+        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<Long>() {
+            @Override
+            public Long execute(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT dj_role_id FROM GuildConfiguration WHERE guild_id == ?"
+                );
+
+                statement.setLong(1, guild.getIdLong());
+
+                ResultSet set = statement.executeQuery();
+
+                if (!set.next()) {
+                    return -1L;
+                }
+
+                return set.getLong("dj_role_id");
+            }
+        });
+
+        return guild.getRoleById((long) future.join());
+    }
+
     /**
      * Gets the welcome message used for a specific guild
      * 

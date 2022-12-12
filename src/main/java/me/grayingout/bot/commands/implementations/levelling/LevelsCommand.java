@@ -1,4 +1,4 @@
-package me.grayingout.bot.commands.implementations;
+package me.grayingout.bot.commands.implementations.levelling;
 
 import java.util.List;
 

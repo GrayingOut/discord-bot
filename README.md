@@ -28,6 +28,7 @@ The bot requires the `ADMINISTRATOR` permission to function properly.
 - Slowmode
 - Welcome message w/ templating
 - Rules command (used to print a pretty embed) - edit code to customise
+- Playing audio w/ DJ role
 - Persistence with sqlite
 
 ### Slash Commands
@@ -59,6 +60,18 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/hello [member]`| Say hello to the bot | |
 |`/rules`| Pretty print an embed of the rules | `ADMINISTRATOR` |
 |`/slowmode <seconds>`| Set the slowmode of a channel | `MANAGE_CHANNEL` |
+|`/join`| Joins the member's audio channel | |
+|`/leave`| Leaves its current audio channel | |
+|`/play <url>`| Plays an audio from a URL | |
+|`/search <search>`| Searches YouTube for an audio | |
+|`/stop`| Stops the current playing audio and clears the audio queue | `DJ_USER`\* |
+|`/queue`| View an interactable queue list message | `DJ_USER`\* - for the clear queue action |
+|`/playing`| View the currently playing audio track | |
+|`/dj-role set <role>`| Set the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
+|`/dj-role get`| View the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
+|`/dj-role remove`| Remove the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
+
+\*`DJ_USER` refers to a user who is either the owner, has `MANAGE_SERVER`, has `ADMINISTRATOR`, or has the DJ role
 
 ### Logging
 
@@ -79,7 +92,7 @@ These are the types of logging the bot currently supports
 - Giveaways
 - Role messages - messages that give you roles
 - More moderation tools
-- [Playing audio](https://github.com/GrayingOut/discord-bot/tree/audio-player) - in development
+- More audio commands (/skip, /pause, /resume, /loop)
 
 ## Running yourself
 
