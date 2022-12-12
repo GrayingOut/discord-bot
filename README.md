@@ -92,7 +92,7 @@ These are the types of logging the bot currently supports
 - Giveaways
 - Role messages - messages that give you roles
 - More moderation tools
-- [Playing audio](https://github.com/GrayingOut/discord-bot/tree/audio-player) - in development
+- More audio commands (/skip, /pause, /resume, /loop)
 
 ## Running yourself
 
