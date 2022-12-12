@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.commands.BotCommandManager;
 import me.grayingout.bot.interactables.audioqueue.AudioQueueMessageManager;
+import me.grayingout.bot.interactables.playingaudio.PlayingAudioMessageManager;
 import me.grayingout.bot.listeners.LevellingListeners;
 import me.grayingout.bot.listeners.LoggingListeners;
 import me.grayingout.bot.listeners.WelcomeMessageListeners;
@@ -41,6 +42,7 @@ public final class Bot extends ListenerAdapter {
                 new LevellingListeners(),
                 new WelcomeMessageListeners(),
                 new AudioQueueMessageManager(),
+                new PlayingAudioMessageManager(),
                 MessageCache.getInstance()
             )
             .enableIntents(
