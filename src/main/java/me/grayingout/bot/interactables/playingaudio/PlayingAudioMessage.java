@@ -37,7 +37,7 @@ public final class PlayingAudioMessage {
     /**
      * Creates a new {@code PlayingAudioMessage}
      * 
-     * @param event The slash command
+     * @param message The associated message
      */
     public PlayingAudioMessage(Message message) {
         this.message = message;

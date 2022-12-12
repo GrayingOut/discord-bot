@@ -13,10 +13,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import me.grayingout.database.entities.MemberWarning;
-import me.grayingout.database.entities.MemberWarningsListMessage;
 import me.grayingout.database.query.DatabaseQuery;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 
 /**
  * Class for accessing and updating information
@@ -47,16 +45,6 @@ public final class WarningsDatabaseAccessor extends DatabaseAccessor {
                   + "  moderator_id INTEGER NOT NULL,"
                   + "  received_at INTEGER NOT NULL,"
                   + "  reason TEXT NOT NULL"
-                  + ")");
-            
-                /* Creates the table that stores the state of warning list messages */
-                statement.execute(
-                    "CREATE TABLE IF NOT EXISTS MemberWarningsListMessage ("
-                  + "  message_id INTEGER NOT NULL PRIMARY KEY,"
-                  + "  channel_id INTEGER NOT NULL,"
-                  + "  guild_id INTEGER NOT NULL,"
-                  + "  member_id INTEGER NOT NULL,"
-                  + "  page INTEGER NOT NULL"
                   + ")");
                 
                 return null;
@@ -263,103 +251,5 @@ public final class WarningsDatabaseAccessor extends DatabaseAccessor {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Puts the data associated with a member warnings list message
-     * into the database
-     * 
-     * @param message The warnings list message
-     * @param member  The member the warnings belong to
-     * @param page    The current page
-     */
-    public final void putMemberWarningsListMessage(Message message, Member member, int page) {
-        queueQuery(new DatabaseQuery<Void>() {
-            @Override
-            public Void execute(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO MemberWarningsListMessage (message_id, channel_id, guild_id, member_id, page) VALUES (?, ?, ?, ?, ?)"
-                );
-
-                statement.setLong(1, message.getIdLong());
-                statement.setLong(2, message.getChannel().getIdLong());
-                statement.setLong(3, message.getGuild().getIdLong());
-                statement.setLong(4, member.getIdLong());
-                statement.setInt(5, page);
-    
-                statement.executeUpdate();
-
-                return null;
-            }
-        });
-    }
-
-    /**
-     * Gets the data associated with the warnings list message provided
-     * or {@code null} if there is no match in the database or an error
-     * occurs
-     * 
-     * @param message The message
-     * @return The data, or {@code null}
-     */
-    public final MemberWarningsListMessage getMemberWarningsListMessage(Message message) {
-        CompletableFuture<Object> future = queueQuery(new DatabaseQuery<MemberWarningsListMessage>() {
-            @Override
-            public MemberWarningsListMessage execute(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM MemberWarningsListMessage WHERE message_id == ?"
-                );
-                
-                statement.setLong(1, message.getIdLong());
-
-                ResultSet set = statement.executeQuery();
-
-                /* Check result was found */
-                if (!set.next()) {
-                    return null;
-                }
-
-                /* Construct MemberWarningsListMessage */
-                return new MemberWarningsListMessage(
-                    set.getLong("message_id"),
-                    set.getLong("channel_id"),
-                    set.getLong("guild_id"),
-                    set.getLong("member_id"),
-                    set.getInt("page")
-                );
-            }
-        });
-
-        try {
-            return (MemberWarningsListMessage) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Updates the current page in the database for a member
-     * warnings list message
-     * 
-     * @param message The message
-     * @param page    The new page
-     */
-    public final void updateMemberWarningsListMessagePage(Message message, int page) {
-        queueQuery(new DatabaseQuery<Void>() {
-            @Override
-            public Void execute(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE MemberWarningsListMessage SET page = ? WHERE message_id == ?"
-                );
-
-                statement.setInt(1, page);
-                statement.setLong(2, message.getIdLong());
-    
-                statement.executeUpdate();
-
-                return null;
-            }
-        });
     }
 }
