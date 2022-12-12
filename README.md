@@ -66,11 +66,12 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/search <search>`| Searches YouTube for an audio | |
 |`/stop`| Stops the current playing audio and clears the audio queue | `DJ_USER`\* |
 |`/queue`| View an interactable queue list message | `DJ_USER`\* - for the clear queue action |
+|`/playing`| View the currently playing audio track | |
 |`/dj-role set <role>`| Set the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/dj-role get`| View the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/dj-role remove`| Remove the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
 
-\*`DJ_USER` refers to a user who is either the owner, has `MANAGE_SERVER`, or has `ADMINISTRATOR`
+\*`DJ_USER` refers to a user who is either the owner, has `MANAGE_SERVER`, has `ADMINISTRATOR`, or has the DJ role
 
 ### Logging
 
