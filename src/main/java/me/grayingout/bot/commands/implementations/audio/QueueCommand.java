@@ -29,7 +29,7 @@ public final class QueueCommand extends BotCommand {
         }
 
         /* Create the message */
-        MessageCreateData data = Audio.createAudioQueueMessageMessage(event.getGuild());
+        MessageCreateData data = AudioQueueMessage.createAudioQueueMessageData(event.getGuild());
 
         event.getHook().sendMessage(data).queue(m -> {
             /* Register the message */
