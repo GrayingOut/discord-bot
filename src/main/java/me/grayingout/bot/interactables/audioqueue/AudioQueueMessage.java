@@ -43,7 +43,7 @@ public final class AudioQueueMessage {
     /**
      * Creates a new {@code AudioQueueMessage}
      * 
-     * @param event The slash command
+     * @param message The associated message
      */
     public AudioQueueMessage(Message message) {
         this.message = message;

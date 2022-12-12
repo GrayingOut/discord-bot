@@ -6,10 +6,10 @@ import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.commands.BotCommandManager;
 import me.grayingout.bot.interactables.audioqueue.AudioQueueMessageManager;
 import me.grayingout.bot.interactables.playingaudio.PlayingAudioMessageManager;
+import me.grayingout.bot.interactables.warningslist.WarningsListMessageManager;
 import me.grayingout.bot.listeners.LevellingListeners;
 import me.grayingout.bot.listeners.LoggingListeners;
 import me.grayingout.bot.listeners.WelcomeMessageListeners;
-import me.grayingout.bot.listeners.interactions.WarningsListInteractionListeners;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -37,10 +37,10 @@ public final class Bot extends ListenerAdapter {
         jda = JDABuilder.createDefault(token)
             .addEventListeners(
                 this,
-                new WarningsListInteractionListeners(),
                 new LoggingListeners(),
                 new LevellingListeners(),
                 new WelcomeMessageListeners(),
+                new WarningsListMessageManager(),
                 new AudioQueueMessageManager(),
                 new PlayingAudioMessageManager(),
                 MessageCache.getInstance()

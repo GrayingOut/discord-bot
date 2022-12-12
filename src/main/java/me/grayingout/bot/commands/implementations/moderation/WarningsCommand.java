@@ -1,9 +1,10 @@
 package me.grayingout.bot.commands.implementations.moderation;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.grayingout.bot.commands.BotCommand;
+import me.grayingout.bot.interactables.warningslist.WarningsListMessage;
+import me.grayingout.bot.interactables.warningslist.WarningsListMessageManager;
 import me.grayingout.database.accessors.DatabaseAccessorManager;
 import me.grayingout.database.entities.MemberWarning;
 import me.grayingout.util.EmbedFactory;
@@ -17,8 +18,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
-import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 /**
@@ -164,32 +163,11 @@ public final class WarningsCommand extends BotCommand {
                     return;
                 }
 
-                /* Get member's warnings */
-                List<MemberWarning> warnings = DatabaseAccessorManager.getWarningsDatabaseAccessor().getMemberWarnings(member);
-                if (warnings == null) {
-                    event.getHook().sendMessageEmbeds(
-                        EmbedFactory.createWarningEmbed("Database Access Error", "Failed to get member warnings. Contact the bot developer.")
-                    ).queue(message -> {
-                        message.delete().queueAfter(3, TimeUnit.SECONDS);
-                    });
-                    return;
-                }
-
-                int numberOfWarnings = warnings.size();
-
-                /* Get the previous and next buttons */
-                List<ItemComponent> buttons = Warnings.getNavigationButtons(1, numberOfWarnings);
-
-                /* Create the message */
-                MessageCreateData messageCreateData = new MessageCreateBuilder()
-                    .addEmbeds(Warnings.createWarningsPageEmbed(member, warnings, 1))
-                    .addActionRow(buttons)
-                    .build();
-
-                /* Send the message and update the database on success */
-                event.getHook().sendMessage(messageCreateData).queue(message -> {
-                    /* Add message to database */
-                    DatabaseAccessorManager.getWarningsDatabaseAccessor().putMemberWarningsListMessage(message, member, 1);
+                /* Create the message data */
+                MessageCreateData data = WarningsListMessage.createWarningsListMessageData(member);
+                event.getHook().sendMessage(data).queue(m -> {
+                    /* Register message */
+                    WarningsListMessageManager.register(new WarningsListMessage(m, member));
                 });
                 break;
             }
