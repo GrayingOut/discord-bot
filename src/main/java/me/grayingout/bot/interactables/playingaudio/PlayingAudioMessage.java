@@ -7,6 +7,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import me.grayingout.bot.audioplayer.GuildAudioPlayer;
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
+import me.grayingout.bot.audioplayer.skip.GuildSkipAudio;
+import me.grayingout.bot.audioplayer.skip.GuildSkipAudioManager;
 import me.grayingout.util.Audio;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.entities.Guild;
@@ -102,6 +104,8 @@ public final class PlayingAudioMessage {
             );
         }
 
+        GuildSkipAudio guildSkipAudio = GuildSkipAudioManager.getInstance().getGuildSkipAudio(guild);
+
         return EmbedFactory.createGenericEmbed(
             "📀 Currently Playing",
             "",
@@ -109,7 +113,18 @@ public final class PlayingAudioMessage {
                 new Field("Title", track.getInfo().title, false),
                 new Field("Author", track.getInfo().author, false),
                 new Field("Progress", getPlayProgressString(track), false),
-                new Field("Looping", ""+guildAudioPlayer.isLooping(), false)
+                new Field("Looping", ""+guildAudioPlayer.isLooping(), false),
+                new Field(
+                    "Vote Skips",
+                    !guildSkipAudio.isVoteSkipActive()
+                        ? "No vote skip active"
+                        : String.format(
+                            "Vote Skip Active: **%s/%s**",
+                            guildSkipAudio.getCurrentVoteSkips(),
+                            guildSkipAudio.getVoteSkipsThreshold()
+                        ),
+                    false
+                )
             }
         );
     }
@@ -122,14 +137,8 @@ public final class PlayingAudioMessage {
      */
     private static final List<Button> getActionRowButtons(Guild guild) {
         Button refreshButton = Button.secondary("playing_audio_refresh", "Refresh");
-        Button loopButton = Button.primary("playing_audio_loop", "Toggle Loop");
-        Button skipButton = Button.danger("playing_audio_skip", "Skip");
 
-        if (GuildAudioPlayerManager.getInstance().getGuildAudioPlayer(guild).getPlayingAudioTrack() == null) {
-            skipButton = skipButton.asDisabled();
-        }
-
-        return Arrays.asList(refreshButton, loopButton, skipButton);
+        return Arrays.asList(refreshButton);
     }
 
     /**

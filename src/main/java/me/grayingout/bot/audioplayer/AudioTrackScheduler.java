@@ -8,6 +8,9 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import me.grayingout.bot.audioplayer.skip.GuildSkipAudioManager;
+import net.dv8tion.jda.api.entities.Guild;
+
 /**
  * Event listener for the {@code AudioPlayer} instance
  */
@@ -29,15 +32,22 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     private boolean loopCurrentTrack;
 
     /**
+     * The guild this {@code AudioTrackScheduler} belongs to
+     */
+    private final Guild guild;
+
+    /**
      * Creates a new {@code AudioTrackScheduler} for an
      * {@code AudioPlayer}
      * 
+     * @param guild The guild this {@code AudioTrackScheduler} belongs to
      * @param audioPlayer The audio player instance
      */
-    public AudioTrackScheduler(AudioPlayer audioPlayer) {
+    public AudioTrackScheduler(Guild guild, AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         this.trackQueue = new LinkedBlockingQueue<>();
         loopCurrentTrack = false;
+        this.guild = guild;
     }
 
     /**
@@ -120,6 +130,8 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
+            /* Clear current skip vote */
+            GuildSkipAudioManager.getInstance().getGuildSkipAudio(guild).resetVoteSkips();
             return;
         }
 
@@ -129,6 +141,9 @@ public class AudioTrackScheduler extends AudioEventAdapter {
             return;
         }
         
+        /* Clear current skip vote */
+        GuildSkipAudioManager.getInstance().getGuildSkipAudio(guild).resetVoteSkips();
+
         if (endReason.mayStartNext) {
             nextTrack();
         }

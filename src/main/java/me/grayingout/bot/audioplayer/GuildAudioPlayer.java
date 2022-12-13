@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.grayingout.bot.audioplayer.handler.AudioLoadHandler;
 import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
 import me.grayingout.bot.audioplayer.handler.AudioLoadResultType;
+import net.dv8tion.jda.api.entities.Guild;
 
 /**
  * Manages the playing of audio in a guild
@@ -33,13 +34,14 @@ public final class GuildAudioPlayer {
     private final AudioPlayerSendHandler audioPlayerSendHandler;
 
     /**
-     * Creates a new {@code GuildAudioPlayerManager}
+     * Creates a new {@code GuildAudioPlayer}
      * 
+     * @param guild The guild this {@code GuildAudioPlayer} belongs to
      * @param audioPlayerManager The audio player manager
      */
-    public GuildAudioPlayer(AudioPlayerManager audioPlayerManager) {
+    public GuildAudioPlayer(Guild guild, AudioPlayerManager audioPlayerManager) {
         audioPlayer = audioPlayerManager.createPlayer();
-        audioTrackScheduler = new AudioTrackScheduler(audioPlayer);
+        audioTrackScheduler = new AudioTrackScheduler(guild, audioPlayer);
         audioPlayer.addListener(audioTrackScheduler);
         audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
     }

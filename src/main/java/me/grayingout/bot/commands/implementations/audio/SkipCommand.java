@@ -2,6 +2,8 @@ package me.grayingout.bot.commands.implementations.audio;
 
 import me.grayingout.bot.audioplayer.GuildAudioPlayer;
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
+import me.grayingout.bot.audioplayer.skip.GuildSkipAudio;
+import me.grayingout.bot.audioplayer.skip.GuildSkipAudioManager;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.Audio;
 import me.grayingout.util.EmbedFactory;
@@ -21,8 +23,6 @@ public final class SkipCommand extends BotCommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
-
         /* Check execution environment */
         if (!Audio.checkValidCommandExecutionState(event, true)) {
             return;
@@ -33,6 +33,7 @@ public final class SkipCommand extends BotCommand {
 
         /* Check an audio is playing */
         if (guildAudioPlayer.getPlayingAudioTrack() == null) {
+            event.deferReply(true).queue();
             event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
                 "No Audio Playing",
                 "There needs to be an audio playing to use this command"
@@ -40,12 +41,43 @@ public final class SkipCommand extends BotCommand {
             return;
         }
 
-        /* Skip the audio */
-        guildAudioPlayer.skip();
+        GuildSkipAudio guildSkipAudio = GuildSkipAudioManager.getInstance()
+            .getGuildSkipAudio(event.getGuild());
 
-        event.getHook().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
-            "Audio Skipped",
-            "The playing audio track has been skipped"
+        /* Check if member has already voted */
+        if (guildSkipAudio.hasMemberAlreadyVotedToSkip(event.getMember())) {
+            event.deferReply(true).queue();
+            event.getHook().sendMessageEmbeds(EmbedFactory.createErrorEmbed(
+                "Already Voted",
+                "You have already voted to skip the audio"
+            )).queue();
+            return;
+        }
+        
+        event.deferReply().queue();
+
+        /* Add member's vote */
+        boolean skipSuccess = guildSkipAudio.addVoteSkip(event.getMember());
+
+        /* Send skip vote confirmation */
+        event.getHook().sendMessageEmbeds(EmbedFactory.createGenericEmbed(
+            "📀 Voted to Skip",
+            String.format(
+                "%s has voted to skip **(%s/%s)**\nUse `/skip` to participate",
+                event.getMember().getAsMention(),
+                guildSkipAudio.getCurrentVoteSkips(),
+                guildSkipAudio.getVoteSkipsThreshold())
         )).queue();
+
+        /* Check of vote successful */
+        if (skipSuccess) {
+            guildAudioPlayer.skip();
+    
+            event.getChannel().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
+                "Audio Skipped",
+                "A vote skip has been successful. The audio has been skipped"
+            )).queue();
+            return;
+        }
     }
 }

@@ -67,7 +67,7 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/stop`| Stops the current playing audio and clears the audio queue | `DJ_USER`\* |
 |`/queue`| View an interactable queue list message | `DJ_USER`\* - for the clear queue action |
 |`/playing`| View the currently playing audio track | |
-|`/skip`| Skip the currently playing audio track | |
+|`/skip`| Vote to skip the current track | |
 |`/loop <enabled>`| Enables looping the next/currently playing audio | `DJ_USER` |
 |`/dj-role set <role>`| Set the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/dj-role get`| View the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
