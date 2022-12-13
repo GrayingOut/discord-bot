@@ -78,6 +78,14 @@ public final class GuildAudioPlayer {
     }
 
     /**
+     * Ends the currently playing audio and starts the
+     * next audio
+     */
+    public final void skip() {
+        audioTrackScheduler.nextTrack();
+    }
+
+    /**
      * Queues an audio track for playing, by getting it
      * from the provided URL using the provided audio
      * player manager

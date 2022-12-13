@@ -73,7 +73,7 @@ public final class PlayingAudioMessage {
     public static final MessageCreateData createPlayingAudioMessageData(Guild guild) {
         return new MessageCreateBuilder()
             .setEmbeds(createPlayingAudioMessageEmbed(guild))
-            .setActionRow(getActionRowButtons())
+            .setActionRow(getActionRowButtons(guild))
             .build();
     }
 
@@ -112,12 +112,18 @@ public final class PlayingAudioMessage {
     /**
      * Creates the action row buttons for the message
      * 
+     * @param guild The guild the action row is for
      * @return The list of action row buttons
      */
-    private static final List<Button> getActionRowButtons() {
+    private static final List<Button> getActionRowButtons(Guild guild) {
         Button refreshButton = Button.secondary("playing_audio_refresh", "Refresh");
+        Button skipButton = Button.danger("playing_audio_skip", "Skip");
 
-        return Arrays.asList(refreshButton);
+        if (GuildAudioPlayerManager.getInstance().getGuildAudioPlayer(guild).getPlayingAudioTrack() == null) {
+            skipButton = skipButton.asDisabled();
+        }
+
+        return Arrays.asList(refreshButton, skipButton);
     }
 
     /**

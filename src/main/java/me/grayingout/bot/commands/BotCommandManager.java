@@ -14,6 +14,7 @@ import me.grayingout.bot.commands.implementations.audio.PlayCommand;
 import me.grayingout.bot.commands.implementations.audio.PlayingCommand;
 import me.grayingout.bot.commands.implementations.audio.QueueCommand;
 import me.grayingout.bot.commands.implementations.audio.SearchCommand;
+import me.grayingout.bot.commands.implementations.audio.SkipCommand;
 import me.grayingout.bot.commands.implementations.audio.StopCommand;
 import me.grayingout.bot.commands.implementations.levelling.LevelRolesCommand;
 import me.grayingout.bot.commands.implementations.levelling.LevelsCommand;
@@ -47,6 +48,7 @@ public final class BotCommandManager {
         put("stop", new StopCommand());
         put("playing", new PlayingCommand());
         put("queue", new QueueCommand());
+        put("skip", new SkipCommand());
         put("dj-role", new DJRoleCommand());
     }};
 

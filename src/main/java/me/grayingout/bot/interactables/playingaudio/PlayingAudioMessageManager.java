@@ -2,6 +2,7 @@ package me.grayingout.bot.interactables.playingaudio;
 
 import java.util.HashMap;
 
+import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -32,6 +33,16 @@ public final class PlayingAudioMessageManager extends ListenerAdapter {
                 if (messages.get(event.getMessageIdLong()) == null) break;
 
                 messages.get(event.getMessageIdLong()).refresh();
+                break;
+            }
+            case "playing_audio_skip": {
+                event.deferEdit().queue();
+                if (messages.get(event.getMessageIdLong()) == null) break;
+
+                GuildAudioPlayerManager.getInstance().getGuildAudioPlayer(event.getGuild()).skip();
+
+                messages.get(event.getMessageIdLong()).refresh();
+                break;
             }
         }
     }
