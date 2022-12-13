@@ -1,5 +1,7 @@
 package me.grayingout.bot.audioplayer;
 
+import java.util.Arrays;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -40,6 +42,19 @@ public final class GuildAudioPlayer {
         audioTrackScheduler = new AudioTrackScheduler(audioPlayer);
         audioPlayer.addListener(audioTrackScheduler);
         audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
+    }
+
+    /**
+     * Returns if the audio track contains the specific audio
+     * track
+     * 
+     * @param track The audio track to check
+     * @return If it is in the queue
+     */
+    public final boolean queueContains(AudioTrack track) {
+        return Arrays.stream(audioTrackScheduler.getQueue())
+            .filter(t -> t.getIdentifier().equals(track.getIdentifier()))
+            .count() > 0;
     }
 
     /**
