@@ -58,6 +58,7 @@ public final class PlayingAudioMessage {
     public final void refresh() {
         MessageEditData data = new MessageEditBuilder()
             .setEmbeds(createPlayingAudioMessageEmbed(message.getGuild()))
+            .setActionRow(getActionRowButtons(message.getGuild()))
             .build();
         
         /* Edit the message */
