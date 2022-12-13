@@ -94,7 +94,10 @@ public final class PlayingAudioMessage {
         if (track == null) {
             return EmbedFactory.createGenericEmbed(
                 "📀 Currently Playing",
-                "There is not track currently playing"
+                "There is not track currently playing",
+                new Field[] {
+                    new Field("Looping", ""+guildAudioPlayer.isLooping(), false)
+                }
             );
         }
 
@@ -104,7 +107,8 @@ public final class PlayingAudioMessage {
             new Field[] {
                 new Field("Title", track.getInfo().title, false),
                 new Field("Author", track.getInfo().author, false),
-                new Field("Progress", getPlayProgressString(track), false)
+                new Field("Progress", getPlayProgressString(track), false),
+                new Field("Looping", ""+guildAudioPlayer.isLooping(), false)
             }
         );
     }
@@ -117,13 +121,14 @@ public final class PlayingAudioMessage {
      */
     private static final List<Button> getActionRowButtons(Guild guild) {
         Button refreshButton = Button.secondary("playing_audio_refresh", "Refresh");
+        Button loopButton = Button.primary("playing_audio_loop", "Toggle Loop");
         Button skipButton = Button.danger("playing_audio_skip", "Skip");
 
         if (GuildAudioPlayerManager.getInstance().getGuildAudioPlayer(guild).getPlayingAudioTrack() == null) {
             skipButton = skipButton.asDisabled();
         }
 
-        return Arrays.asList(refreshButton, skipButton);
+        return Arrays.asList(refreshButton, loopButton, skipButton);
     }
 
     /**

@@ -43,6 +43,27 @@ public final class GuildAudioPlayer {
     }
 
     /**
+     * Returns if looping is enabled
+     */
+    public final boolean isLooping() {
+        return audioTrackScheduler.isLoopingEnabled();
+    }
+    
+    /**
+     * Disables looping of the current track
+     */
+    public final void disableLoop() {
+        audioTrackScheduler.setLoopingEnabled(false);
+    }
+
+    /**
+     * Enables looping of the current track
+     */
+    public final void enableLoop() {
+        audioTrackScheduler.setLoopingEnabled(true);
+    }
+
+    /**
      * Gets the currently playing {@code AudioTrack},
      * or {@code null} if not track is playing
      * 

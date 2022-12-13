@@ -68,6 +68,7 @@ The bot has many slash commands - the amazing discord feature. Here is the list 
 |`/queue`| View an interactable queue list message | `DJ_USER`\* - for the clear queue action |
 |`/playing`| View the currently playing audio track | |
 |`/skip`| Skip the currently playing audio track | |
+|`/loop <enabled>`| Enables looping the next/currently playing audio | `DJ_USER` |
 |`/dj-role set <role>`| Set the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/dj-role get`| View the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
 |`/dj-role remove`| Remove the DJ role | `MANAGE_ROLES`, `MANAGE_SERVER` |
@@ -93,7 +94,7 @@ These are the types of logging the bot currently supports
 - Giveaways
 - Role messages - messages that give you roles
 - More moderation tools
-- More audio commands (/pause, /resume, /loop)
+- More audio commands (/pause, /resume)
 - /skip command uses a voting system
 
 ## Running yourself

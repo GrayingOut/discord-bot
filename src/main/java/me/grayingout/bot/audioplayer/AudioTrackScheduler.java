@@ -24,6 +24,11 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     private final BlockingQueue<AudioTrack> trackQueue;
 
     /**
+     * Whether looping of the current track is enabled
+     */
+    private boolean loopCurrentTrack;
+
+    /**
      * Creates a new {@code AudioTrackScheduler} for an
      * {@code AudioPlayer}
      * 
@@ -32,6 +37,7 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     public AudioTrackScheduler(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         this.trackQueue = new LinkedBlockingQueue<>();
+        loopCurrentTrack = false;
     }
 
     /**
@@ -41,6 +47,8 @@ public class AudioTrackScheduler extends AudioEventAdapter {
      * @param audioTrack The audio track
      */
     public final void queue(AudioTrack audioTrack) {
+        audioTrack.makeClone();
+
         /* Attempt to immediately play track */
         boolean playStarted = audioPlayer.startTrack(audioTrack, true);
         
@@ -48,6 +56,24 @@ public class AudioTrackScheduler extends AudioEventAdapter {
             trackQueue.offer(audioTrack);
             return;
         }
+    }
+
+    /**
+     * Returns if looping is enabled
+     * 
+     * @return If looping is enabled
+     */
+    public final boolean isLoopingEnabled() {
+        return loopCurrentTrack;
+    }
+
+    /**
+     * Sets whether looping is enabled
+     * 
+     * @param enabled If looping is enabled
+     */
+    public final void setLoopingEnabled(boolean enabled) {
+        loopCurrentTrack = enabled;
     }
 
     /**
@@ -93,6 +119,16 @@ public class AudioTrackScheduler extends AudioEventAdapter {
     
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if (endReason.equals(AudioTrackEndReason.LOAD_FAILED)) {
+            return;
+        }
+
+        /* Check if looping enabled, and audio track wasn't stopped (/skip, /stop) */
+        if (loopCurrentTrack && !endReason.equals(AudioTrackEndReason.STOPPED)) {
+            player.startTrack(track.makeClone(), false);
+            return;
+        }
+        
         if (endReason.mayStartNext) {
             nextTrack();
         }

@@ -2,7 +2,10 @@ package me.grayingout.bot.interactables.playingaudio;
 
 import java.util.HashMap;
 
+import me.grayingout.bot.audioplayer.GuildAudioPlayer;
 import me.grayingout.bot.audioplayer.GuildAudioPlayerManager;
+import me.grayingout.util.Audio;
+import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -43,6 +46,29 @@ public final class PlayingAudioMessageManager extends ListenerAdapter {
 
                 messages.get(event.getMessageIdLong()).refresh();
                 break;
+            }
+            case "playing_audio_loop": {
+                /* Check member is a DJ */
+                if (!Audio.isMemberAValidDJ(event.getMember())) {
+                    event.deferReply(true).queue();
+                    event.getHook().sendMessageEmbeds(EmbedFactory.createNotADJEmbed()).queue();
+                    break;
+                }
+                
+                event.deferEdit().queue();
+                if (messages.get(event.getMessageIdLong()) == null) break;
+
+                GuildAudioPlayer guildAudioPlayer = GuildAudioPlayerManager.getInstance()
+                    .getGuildAudioPlayer(event.getGuild());
+                
+                /* Toggle loop */
+                if (guildAudioPlayer.isLooping()) {
+                    guildAudioPlayer.disableLoop();
+                    messages.get(event.getMessageIdLong()).refresh();
+                    return;
+                }
+                guildAudioPlayer.enableLoop();
+                messages.get(event.getMessageIdLong()).refresh();
             }
         }
     }

@@ -6,18 +6,16 @@ import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.util.Audio;
 import me.grayingout.util.EmbedFactory;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-/**
- * A slash command used to stop playing all audio and
- * clear the queue
- */
-public final class StopCommand extends BotCommand {
+public final class LoopCommand extends BotCommand {
 
     @Override
     public CommandData getCommandData() {
-        return Commands.slash("stop", "Stop playing audio and clear the queue");
+        return Commands.slash("loop", "Sets whether audio looping is enabled")
+            .addOption(OptionType.BOOLEAN, "enabled", "If looping is enabled", true);
     }
 
     @Override
@@ -28,26 +26,34 @@ public final class StopCommand extends BotCommand {
             event.getHook().sendMessageEmbeds(EmbedFactory.createNotADJEmbed()).queue();
             return;
         }
-
         event.deferReply().queue();
 
-        /* Check the execution environment */
+        /* Check execution environment */
         if (!Audio.checkValidCommandExecutionState(event, true)) {
             return;
         }
 
-        GuildAudioPlayer guildAudioPlayer = GuildAudioPlayerManager
-            .getInstance()
+        boolean enabled = event.getOption("enabled").getAsBoolean();
+
+        GuildAudioPlayer guildAudioPlayer = GuildAudioPlayerManager.getInstance()
             .getGuildAudioPlayer(event.getGuild());
         
-        /* Stop playing and clear the queue */
-        guildAudioPlayer.stopPlaying();
-        guildAudioPlayer.clearQueue();
-
-        /* Response */
+        /* Enable */
+        if (enabled) {
+            guildAudioPlayer.enableLoop();
+            event.getHook().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
+                "Loop Enabled",
+                "The current or next playing track will now loop"
+            )).queue();
+            return;
+        }
+        
+        /* Disable */
+        guildAudioPlayer.disableLoop();
         event.getHook().sendMessageEmbeds(EmbedFactory.createSuccessEmbed(
-            "Audio Stopped",
-            "The audio playing has been stopped and the queue has been cleared"
+            "Loop Disable",
+            "The current track will no longer loop"
         )).queue();
     }
+    
 }
