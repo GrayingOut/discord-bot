@@ -95,7 +95,6 @@ These are the types of logging the bot currently supports
 - Role messages - messages that give you roles
 - More moderation tools
 - More audio commands (/pause, /resume)
-- /skip command uses a voting system
 
 ## Running yourself
 
