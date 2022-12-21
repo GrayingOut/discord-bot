@@ -21,11 +21,17 @@ public final class AudioLoadHandler implements AudioLoadResultHandler {
     private final CompletableFuture<AudioLoadResult> future;
 
     /**
+     * The {@code GuildAudioPlayer} this result is for
+     */
+    private final GuildAudioPlayer guildAudioPlayer;
+
+    /**
      * Creates a new {@code AudioLoadHandler}
      * 
      * @param guildAudioPlayer The {@code GuildAudioPlayer} this result is for
      */
     public AudioLoadHandler(GuildAudioPlayer guildAudioPlayer) {
+        this.guildAudioPlayer = guildAudioPlayer;
         future = new CompletableFuture<>();
     }
 
@@ -60,10 +66,21 @@ public final class AudioLoadHandler implements AudioLoadResultHandler {
         /* Playlist was found; check if for search result */
         if (playlist.isSearchResult()) {
             if (playlist.getTracks().size() > 0) {
+                AudioTrack track = playlist.getTracks().get(0);
+
+                if (guildAudioPlayer.queueContains(track)) {
+                    /* Track already added */
+                    future.complete(new AudioLoadResult(
+                        AudioLoadResultType.ALREADY_ADDED,
+                        track
+                    ));
+                    return;
+                }
+
                 /* Track was found; queue for playing */
                 future.complete(new AudioLoadResult(
                     AudioLoadResultType.TRACK_LOADED,
-                    playlist.getTracks().get(0)
+                    track
                 ));
             }
         }
@@ -71,6 +88,15 @@ public final class AudioLoadHandler implements AudioLoadResultHandler {
 
     @Override
     public void trackLoaded(AudioTrack track) {
+        if (guildAudioPlayer.queueContains(track)) {
+            /* Track already added */
+            future.complete(new AudioLoadResult(
+                AudioLoadResultType.ALREADY_ADDED,
+                track
+            ));
+            return;
+        }
+
         /* Track was found; queue for playing */
         future.complete(new AudioLoadResult(
             AudioLoadResultType.TRACK_LOADED,

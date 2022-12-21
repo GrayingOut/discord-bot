@@ -32,6 +32,7 @@ public final class PlayingAudioMessageManager extends ListenerAdapter {
                 if (messages.get(event.getMessageIdLong()) == null) break;
 
                 messages.get(event.getMessageIdLong()).refresh();
+                break;
             }
         }
     }

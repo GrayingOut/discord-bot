@@ -2,6 +2,7 @@ package me.grayingout.bot;
 
 import java.util.stream.Collectors;
 
+import me.grayingout.bot.audioplayer.skip.GuildSkipAudioManager;
 import me.grayingout.bot.commands.BotCommand;
 import me.grayingout.bot.commands.BotCommandManager;
 import me.grayingout.bot.interactables.audioqueue.AudioQueueMessageManager;
@@ -43,6 +44,7 @@ public final class Bot extends ListenerAdapter {
                 new WarningsListMessageManager(),
                 new AudioQueueMessageManager(),
                 new PlayingAudioMessageManager(),
+                GuildSkipAudioManager.getInstance(),
                 MessageCache.getInstance()
             )
             .enableIntents(

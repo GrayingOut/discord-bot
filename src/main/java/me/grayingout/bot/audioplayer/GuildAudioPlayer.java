@@ -1,5 +1,7 @@
 package me.grayingout.bot.audioplayer;
 
+import java.util.Arrays;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -7,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.grayingout.bot.audioplayer.handler.AudioLoadHandler;
 import me.grayingout.bot.audioplayer.handler.AudioLoadResult;
 import me.grayingout.bot.audioplayer.handler.AudioLoadResultType;
+import net.dv8tion.jda.api.entities.Guild;
 
 /**
  * Manages the playing of audio in a guild
@@ -31,15 +34,50 @@ public final class GuildAudioPlayer {
     private final AudioPlayerSendHandler audioPlayerSendHandler;
 
     /**
-     * Creates a new {@code GuildAudioPlayerManager}
+     * Creates a new {@code GuildAudioPlayer}
      * 
+     * @param guild The guild this {@code GuildAudioPlayer} belongs to
      * @param audioPlayerManager The audio player manager
      */
-    public GuildAudioPlayer(AudioPlayerManager audioPlayerManager) {
+    public GuildAudioPlayer(Guild guild, AudioPlayerManager audioPlayerManager) {
         audioPlayer = audioPlayerManager.createPlayer();
-        audioTrackScheduler = new AudioTrackScheduler(audioPlayer);
+        audioTrackScheduler = new AudioTrackScheduler(guild, audioPlayer);
         audioPlayer.addListener(audioTrackScheduler);
         audioPlayerSendHandler = new AudioPlayerSendHandler(audioPlayer);
+    }
+
+    /**
+     * Returns if the audio track contains the specific audio
+     * track
+     * 
+     * @param track The audio track to check
+     * @return If it is in the queue
+     */
+    public final boolean queueContains(AudioTrack track) {
+        return Arrays.stream(audioTrackScheduler.getQueue())
+            .filter(t -> t.getIdentifier().equals(track.getIdentifier()))
+            .count() > 0;
+    }
+
+    /**
+     * Returns if looping is enabled
+     */
+    public final boolean isLooping() {
+        return audioTrackScheduler.isLoopingEnabled();
+    }
+    
+    /**
+     * Disables looping of the current track
+     */
+    public final void disableLoop() {
+        audioTrackScheduler.setLoopingEnabled(false);
+    }
+
+    /**
+     * Enables looping of the current track
+     */
+    public final void enableLoop() {
+        audioTrackScheduler.setLoopingEnabled(true);
     }
 
     /**
@@ -75,6 +113,14 @@ public final class GuildAudioPlayer {
      */
     public final void clearQueue() {
         audioTrackScheduler.clear();
+    }
+
+    /**
+     * Ends the currently playing audio and starts the
+     * next audio
+     */
+    public final void skip() {
+        audioTrackScheduler.nextTrack();
     }
 
     /**

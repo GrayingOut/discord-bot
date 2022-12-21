@@ -74,6 +74,15 @@ public final class Audio {
             return;
         }
 
+        /* Already in the queue */
+        if (loadResult.getResultType().equals(AudioLoadResultType.ALREADY_ADDED)) {
+            event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
+                "Audio Already Added",
+                "The requested audio is already in the queue"
+            )).queue();
+            return;
+        }
+
         /* No match */
         if (loadResult.getResultType().equals(AudioLoadResultType.NO_MATCH)) {
             event.getHook().sendMessageEmbeds(EmbedFactory.createWarningEmbed(
@@ -100,6 +109,10 @@ public final class Audio {
      * @return If it is a valid execution environment
      */
     public static final boolean checkValidCommandExecutionState(SlashCommandInteractionEvent event, boolean checkBotInChannel) {
+        if (!event.isAcknowledged()) {
+            event.deferReply().queue();
+        }
+
         /* Check channel is an audio channel */
         if (!isAudioChannel(event.getChannel())) {
             event.getHook().sendMessageEmbeds(EmbedFactory.createNotExecutedInAudioChannelEmbed()).queue();

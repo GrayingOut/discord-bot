@@ -56,7 +56,7 @@ public final class GuildAudioPlayerManager {
      */
     public final GuildAudioPlayer getGuildAudioPlayer(Guild guild) {
         if (guildAudioPlayers.get(guild.getIdLong()) == null) {
-            GuildAudioPlayer guildAudioPlayer = new GuildAudioPlayer(audioPlayerManager);
+            GuildAudioPlayer guildAudioPlayer = new GuildAudioPlayer(guild, audioPlayerManager);
             
             /* Set the audio send handler on the guild */
             guild.getAudioManager().setSendingHandler(guildAudioPlayer.getAudioPlayerSendHandler());
